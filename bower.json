@@ -1,0 +1,21 @@
+{
+  "name": "firephish",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Raikia <chrisking517@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://raikia.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "1.x"
+  }
+}
