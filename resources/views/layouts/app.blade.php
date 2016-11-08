@@ -61,6 +61,7 @@
                     <ul class="nav child_menu">
                       <li><a href="#">All Targets</a></li>
                       <li><a href="#">Add / Import Target</a></li>
+                      <li><a href="#">Manage Target Lists</a></li>
                       
                     </ul>
                   </li>
