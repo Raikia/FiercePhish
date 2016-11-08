@@ -23,6 +23,8 @@ Route::get('profile/{id?}', 'UserController@get_editprofile');
 Route::post('profile', 'UserController@post_editprofile');
 
 
+// TargetsController Routes...
+Route::get('targets', 'TargetsController@index');
 
 
 // Dashboard Routes...
