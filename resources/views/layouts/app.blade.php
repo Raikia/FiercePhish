@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentallela Alela! | </title>
+    <title>FirePhish &raquo; Dashboard </title>
 
     <!-- Bootstrap -->
     <link href="vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,6 +16,7 @@
 
     <!-- Custom Theme Style -->
     <link href="css/custom.css" rel="stylesheet">
+    <link href="css/firephish.css" rel="stylesheet">
   </head>
 
   <body class="nav-md">
@@ -24,12 +25,12 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentellela Alela!</span></a>
+              <a href="index.html" class="site_title"><i class="fa fa-envelope-o"></i> <span><span style="color: #BB2125">Fire</span>Phish</span></a>
             </div>
 
             <div class="clearfix"></div>
 
-            <!-- menu profile quick info -->
+            <!-- menu profile quick info --><!--
             <div class="profile">
               <div class="profile_pic">
                 <img src="images/img.jpg" alt="..." class="img-circle profile_img">
@@ -38,7 +39,7 @@
                 <span>Welcome,</span>
                 <h2>John Doe</h2>
               </div>
-            </div>
+            </div>-->
             <!-- /menu profile quick info -->
 
             <br />
@@ -51,52 +52,43 @@
                   <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="index.html">Dashboard</a></li>
-                      <li><a href="index2.html">Dashboard2</a></li>
-                      <li><a href="index3.html">Dashboard3</a></li>
+                      <li><a href="index2.html">Statistics</a></li>
+
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-bullseye"></i> Targets <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="form.html">General Form</a></li>
-                      <li><a href="form_advanced.html">Advanced Components</a></li>
-                      <li><a href="form_validation.html">Form Validation</a></li>
-                      <li><a href="form_wizards.html">Form Wizard</a></li>
-                      <li><a href="form_upload.html">Form Upload</a></li>
-                      <li><a href="form_buttons.html">Form Buttons</a></li>
+                      <li><a href="form.html">All Targets</a></li>
+                      <li><a href="form_advanced.html">Add / Import Target</a></li>
+                      
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-desktop"></i> UI Elements <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-play"></i> Campaigns <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="general_elements.html">General Elements</a></li>
-                      <li><a href="media_gallery.html">Media Gallery</a></li>
-                      <li><a href="typography.html">Typography</a></li>
-                      <li><a href="icons.html">Icons</a></li>
-                      <li><a href="glyphicons.html">Glyphicons</a></li>
-                      <li><a href="widgets.html">Widgets</a></li>
-                      <li><a href="invoice.html">Invoice</a></li>
-                      <li><a href="inbox.html">Inbox</a></li>
-                      <li><a href="calendar.html">Calendar</a></li>
+                      <li><a href="general_elements.html">View all campaigns</a></li>
+                      <li><a href="media_gallery.html">Create new campaign</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
+                  
+                  <li><a><i class="fa fa-envelope-o"></i> Emails <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="tables.html">Tables</a></li>
-                      <li><a href="tables_dynamic.html">Table Dynamic</a></li>
+                      <li><a href="chartjs.html">View Emails</a></li>
+                      <li><a href="chartjs2.html">Email Templates</a></li>
+                      <li><a href="morisjs.html">Inbox</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-bar-chart-o"></i> Data Presentation <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-sitemap"></i>Sites <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="chartjs.html">Chart JS</a></li>
-                      <li><a href="chartjs2.html">Chart JS2</a></li>
-                      <li><a href="morisjs.html">Moris JS</a></li>
-                      <li><a href="echarts.html">ECharts</a></li>
-                      <li><a href="other_charts.html">Other Charts</a></li>
+                      <li><a href="fixed_sidebar.html">View all sites</a></li>
+                      <li><a href="fixed_footer.html">Site cloner</a></li>
+                      <li><a href="fixed_footer.html">Site customizer</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-clone"></i>Layouts <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-gear"></i> Settings <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
-                      <li><a href="fixed_footer.html">Fixed Footer</a></li>
+                      <li><a href="tables.html">User Management</a></li>
+                      <li><a href="tables_dynamic.html">Configuration</a></li>
+                      <li><a href="tables_dynamic.html">Import / Export</a></li>
                     </ul>
                   </li>
                 </ul>
@@ -148,6 +140,7 @@
             <!-- /sidebar menu -->
 
             <!-- /menu footer buttons -->
+            <!--
             <div class="sidebar-footer hidden-small">
               <a data-toggle="tooltip" data-placement="top" title="Settings">
                 <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
@@ -161,7 +154,7 @@
               <a data-toggle="tooltip" data-placement="top" title="Logout">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
-            </div>
+            </div>-->
             <!-- /menu footer buttons -->
           </div>
         </div>
@@ -189,7 +182,7 @@
                       </a>
                     </li>
                     <li><a href="javascript:;">Help</a></li>
-                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                    <li><a href="{{ action('Auth\AuthController@logout') }}"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                   </ul>
                 </li>
 
