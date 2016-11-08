@@ -52,7 +52,7 @@
                 <ul class="nav side-menu">
                   <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="#">Dashboard</a></li>
+                      <li><a href="/">Dashboard</a></li>
                       <li><a href="#">Statistics</a></li>
 
                     </ul>
@@ -162,7 +162,7 @@
                   </ul>
                 </li>
 
-                <li role="presentation" class="dropdown">
+                <!--<li role="presentation" class="dropdown">
                   <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-envelope-o"></i>
                     <span class="badge bg-red">6</span>
@@ -225,7 +225,7 @@
                       </div>
                     </li>
                   </ul>
-                </li>
+                </li>-->
               </ul>
             </nav>
           </div>
