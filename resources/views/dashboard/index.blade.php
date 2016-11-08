@@ -57,8 +57,20 @@
       </div>
       <div class="x_content">
           Add content to the page ..a. {{ Auth::user() }}
+          <br /><br />
+          <div class="progress">
+            <div class="progress-bar progress-bar-info" data-transitiongoal="65">65%</div>
+          </div>
       </div>
     </div>
   </div>
 </div>
+@endsection
+
+
+
+@section('footer')
+<script type="text/javascript">
+  
+</script>
 @endsection
