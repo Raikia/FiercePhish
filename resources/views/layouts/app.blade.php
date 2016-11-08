@@ -15,6 +15,8 @@
     <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css') }}" rel="stylesheet">
 
+    <link href="{{ asset('vendor/datatables/media/css/dataTables.bootstrap.css') }}" rel="stylesheet">
+    
     <!-- Custom Theme Style -->
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/firephish.css') }}" rel="stylesheet">
@@ -59,7 +61,7 @@
                   </li>
                   <li><a><i class="fa fa-bullseye"></i> Targets <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="#">All Targets</a></li>
+                      <li><a href="{{ action('TargetsController@index') }}">All Targets</a></li>
                       <li><a href="#">Add / Import Target</a></li>
                       <li><a href="#">Manage Target Lists</a></li>
                       
@@ -261,7 +263,8 @@
     <script src="{{ asset('vendor/fastclick/lib/fastclick.js') }}"></script>
     <!-- NProgress -->
     <script src="{{ asset('vendor/nprogress/nprogress.js') }}"></script>
-    
+    <script src="{{ asset('vendor/datatables/media/js/jquery.dataTables.js') }}"></script>
+    <script src="{{ asset('vendor/datatables/media/js/dataTables.bootstrap.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap-progressbar/bootstrap-progressbar.min.js') }}"></script>
     <script src="{{ asset('vendor/jquery.inputmask/dist/jquery.inputmask.bundle.js') }}"></script>
     <!-- Custom Theme Scripts -->
@@ -272,6 +275,7 @@
       $(document).ready(function() {
         $(".alert").slideDown(1000).delay(10000).slideUp(1000);
         $(":input").inputmask();
+        $(".datatable").dataTable();
       });
     </script>
   </body>

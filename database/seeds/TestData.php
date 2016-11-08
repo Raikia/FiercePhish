@@ -23,5 +23,6 @@ class TestData extends Seeder
         $l1->users()->attach($t3);
         
         $l2->users()->attach($t2);
+        $l2->users()->attach($t1);
     }
 }
