@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="logo">
-    <img src="images/login_logo.png" style="width: 100px;" />
+    <img src="{{ asset('images/login_logo.png') }}" style="width: 100px;" />
 </div>
 <div class="login-page">
   <div class="form">
@@ -12,7 +12,7 @@
              <div class="error">{{ $error }}</div>
          @endforeach
      @endif
-    <form class="login-form" method="post" action="{{ url('login') }}">
+    <form class="login-form" method="post" action="{{ action('Auth\AuthController@login') }}">
         {{ csrf_field() }}
       <input type="text" name="name" placeholder="Username" autofocus />
       <input type="password" name="password" placeholder="Password"/>
