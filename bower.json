@@ -16,6 +16,10 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "1.x"
+    "jquery": "1.x",
+    "font-awesome": "^4.7.0",
+    "bootstrap": "3.x",
+    "fastclick": "^1.0.6",
+    "nprogress": "^0.2.0"
   }
 }
