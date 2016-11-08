@@ -10,14 +10,14 @@
     <title>FirePhish &raquo; Dashboard </title>
 
     <!-- Bootstrap -->
-    <link href="vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="vendor/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css') }}" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="css/custom.css" rel="stylesheet">
-    <link href="css/firephish.css" rel="stylesheet">
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/firephish.css') }}" rel="stylesheet">
   </head>
 
   <body class="nav-md">
@@ -236,6 +236,7 @@
         <!-- page content -->
         <div class="right_col" role="main">
           <div class="">
+            @include('common.notifications')
             @yield('content')
           </div>
         </div>
@@ -253,17 +254,24 @@
     </div>
 
     <!-- jQuery -->
-    <script src="vendor/jquery/dist/jquery.min.js"></script>
+    <script src="{{ asset('vendor/jquery/dist/jquery.min.js') }}"></script>
     <!-- Bootstrap -->
-    <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="{{ asset('vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <!-- FastClick -->
-    <script src="vendor/fastclick/lib/fastclick.js"></script>
+    <script src="{{ asset('vendor/fastclick/lib/fastclick.js') }}"></script>
     <!-- NProgress -->
-    <script src="vendor/nprogress/nprogress.js"></script>
+    <script src="{{ asset('vendor/nprogress/nprogress.js') }}"></script>
     
-    <script src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="{{ asset('vendor/bootstrap-progressbar/bootstrap-progressbar.min.js') }}"></script>
+    <script src="{{ asset('vendor/jquery.inputmask/dist/jquery.inputmask.bundle.js') }}"></script>
     <!-- Custom Theme Scripts -->
-    <script src="js/custom.js"></script>
+    <script src="{{ asset('js/custom.js') }}"></script>
     @yield('footer')
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $(".alert").slideDown(1000).delay(10000).slideUp(1000);
+        $(":input").inputmask();
+      });
+    </script>
   </body>
 </html>

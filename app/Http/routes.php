@@ -18,6 +18,10 @@ Route::post('login', 'Auth\AuthController@login');
 Route::get('logout', 'Auth\AuthController@logout');
 
 
+// UserController Routes...
+Route::get('profile', 'UserController@get_editprofile');
+Route::post('profile', 'UserController@post_editprofile');
+Route::get('profile/{id}', 'UserController@get_editprofile');
 
 
 
