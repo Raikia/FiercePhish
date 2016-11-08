@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTargetListsTable extends Migration
+class CreateTargetlistsTargetusers extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,10 @@ class CreateTargetListsTable extends Migration
      */
     public function up()
     {
-        Schema::create('target_lists', function (Blueprint $table) {
+        Schema::create('target_list_target_user', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->integer('target_user_id');
+            $table->integer('target_list_id');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ class CreateTargetListsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('target_lists');
+        Schema::drop('target_list_target_user');
     }
 }
