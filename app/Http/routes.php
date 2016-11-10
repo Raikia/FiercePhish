@@ -37,4 +37,4 @@ Route::get('/', 'DashboardController@index');
 
 
 // Ajax Routes...
-Route::post('ajax/targetuser/note', 'AjaxController@edit_targetuser_note');
+Route::post('ajax/targetuser/note', 'AjaxController@edit_targetuser_notes');
