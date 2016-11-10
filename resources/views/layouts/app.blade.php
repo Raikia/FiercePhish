@@ -18,6 +18,8 @@
     <link href="{{ asset('vendor/datatables/media/css/dataTables.bootstrap.css') }}" rel="stylesheet">
     
     <link href="{{ asset('vendor/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/datatables-select/css/select.bootstrap.scss') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/datatables-select/css/select.dataTables.scss') }}" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/firephish.css') }}" rel="stylesheet">
@@ -268,6 +270,7 @@
     <script src="{{ asset('vendor/bootstrap-progressbar/bootstrap-progressbar.min.js') }}"></script>
     <script src="{{ asset('vendor/jquery.inputmask/dist/jquery.inputmask.bundle.js') }}"></script>
     <script src="{{ asset('vendor/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables-select/js/dataTables.select.js') }}"></script>
     <!-- Custom Theme Scripts -->
     <script src="{{ asset('js/custom.js') }}"></script>
     @yield('footer')
@@ -276,7 +279,6 @@
       $(document).ready(function() {
         $(".alert").slideDown(1000).delay(10000).slideUp(1000);
         $(":input").inputmask();
-        $(".datatable").dataTable();
       });
     </script>
   </body>

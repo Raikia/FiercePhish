@@ -27,3 +27,11 @@ body {
 .nav.side-menu > li.current-page, .nav.side-menu > li.active {
   border-right: 5px solid #BB2125; }
   
+
+.select-info {
+  margin-left: 30px;
+}
+
+tr.selected {
+  background-color: #B0BED9 !important;
+}

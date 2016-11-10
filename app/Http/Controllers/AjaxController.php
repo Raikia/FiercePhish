@@ -18,7 +18,7 @@ class AjaxController extends Controller
     
     public function edit_targetuser_note(Request $request)
     {
-        if (!$request->has('value') || !$request->has('pk'))
+        if (!$request->has('pk'))
             return Response::json("Invalid target user: ", 400);
         $t = TargetUser::findOrFail($request->input('pk'));
         $t->note = $request->input('value');
