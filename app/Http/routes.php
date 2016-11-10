@@ -27,6 +27,7 @@ Route::post('profile', 'UserController@post_editprofile');
 Route::get('targets', 'TargetsController@index');
 Route::post('targets/add', 'TargetsController@addTarget');
 Route::post('targets/import', 'TargetsController@importTargets');
+Route::get('targets/list', 'TargetsController@targetlists_index');
 
 
 // Dashboard Routes...
@@ -34,3 +35,6 @@ Route::get('/home', 'DashboardController@index');
 Route::get('/', 'DashboardController@index');
 
 
+
+// Ajax Routes...
+Route::post('ajax/targetuser/note', 'AjaxController@edit_targetuser_note');
