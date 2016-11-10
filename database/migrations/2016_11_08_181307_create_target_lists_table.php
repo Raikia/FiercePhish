@@ -15,6 +15,7 @@ class CreateTargetListsTable extends Migration
         Schema::create('target_lists', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->text('notes');
             $table->timestamps();
         });
     }

@@ -14,7 +14,7 @@ class TestData extends Seeder
     public function run()
     {
         $t1 = TargetUser::create(['first_name' => 'Fred', 'last_name' => 'Jones', 'email' => 'fredjones@gmail.com']);
-        $t2 = TargetUser::create(['first_name' => 'John', 'last_name' => 'Fyfe', 'email' => 'johnfyfe@gmail.com']);
+        $t2 = TargetUser::create(['first_name' => 'John', 'last_name' => 'Fyfe', 'email' => 'johnfyfe@gmail.com', 'notes' => 'Test note']);
         $t3 = TargetUser::create(['first_name' => 'Bob', 'last_name' => 'Anderson', 'email' => 'bobanderson@gmail.com']);
         $l1 = TargetList::create(['name' => 'Test List 1']);
         $l2 = TargetList::create(['name' => 'Another Test List 2']);
