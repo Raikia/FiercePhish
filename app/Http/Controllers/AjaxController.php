@@ -16,12 +16,12 @@ class AjaxController extends Controller
         $this->middleware('auth');
     }
     
-    public function edit_targetuser_note(Request $request)
+    public function edit_targetuser_notes(Request $request)
     {
         if (!$request->has('pk'))
             return Response::json("Invalid target user: ", 400);
         $t = TargetUser::findOrFail($request->input('pk'));
-        $t->note = $request->input('value');
+        $t->notes = $request->input('value');
         $t->save();
         return Response::json("Success", 200);
     }

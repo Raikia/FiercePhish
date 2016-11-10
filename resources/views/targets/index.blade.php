@@ -42,7 +42,7 @@
                                       N/A
                                   @endif
                               </td>
-                              <td><a href="#" class="editnotes" data-type="text" data-pk="{{ $user->id }}" data-url="{{ action('AjaxController@edit_targetuser_note') }}" data-title="Enter note">{{ $user->note }}</a></td>
+                              <td><a href="#" class="editnotes" data-type="text" data-pk="{{ $user->id }}" data-url="{{ action('AjaxController@edit_targetuser_notes') }}" data-title="Enter note">{{ $user->notes }}</a></td>
                           </tr>
                       @endforeach
                   @else
@@ -139,7 +139,7 @@
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="input-group">
-                    <p style="margin-top: 8px;">First Name, Last Name, Email</p>
+                    <p style="margin-top: 8px;">First Name, Last Name, Email, [Notes]</p>
                 </div>
               <!--<label class="btn btn-default btn-file">
                   Browse <input type="file" style="display: none;" />

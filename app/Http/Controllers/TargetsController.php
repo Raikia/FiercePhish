@@ -59,7 +59,7 @@ class TargetsController extends Controller
             $line = trim($line);
             if ($line == "")
                 continue;
-            $parts = explode(",", $line);
+            $parts = str_getcsv($line, ",", '"');
             for ($x=0; $x<count($parts); ++$x)
             {
                 $parts[$x] = trim(trim($parts[$x]),'"');
@@ -76,6 +76,8 @@ class TargetsController extends Controller
                     $t->first_name = $parts[0];
                     $t->last_name = $parts[1];
                     $t->email = $parts[2];
+                    if (count($parts) > 3)
+                        $t->notes = $parts[3];
                     try
                     {
                         $t->save();
