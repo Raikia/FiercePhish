@@ -21,6 +21,7 @@
                       <th>Last name</th>
                       <th>Email</th>
                       <th>List Membership</th>
+                      <th>Notes</th>
                   </tr>
               </thead>
               <tbody>
@@ -41,6 +42,7 @@
                                       N/A
                                   @endif
                               </td>
+                              <td><a href="#" class="editnotes" data-type="text" data-pk="{{ $user->id }}" data-url="{{ action('AjaxController@edit_targetuser_note') }}" data-title="Enter note">{{ $user->note }}</a></td>
                           </tr>
                       @endforeach
                   @else
@@ -179,5 +181,7 @@
         $("#import_file").val('');
         $("#selectedFile").val('');
     });
+    
+    $(".editnotes").editable();
 </script>
 @endsection

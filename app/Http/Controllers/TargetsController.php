@@ -97,4 +97,10 @@ class TargetsController extends Controller
             $ret_obj = $ret_obj->withErrors('Unable to add targets from line'.((count($errors)==1)?'':'s').' ' . implode(', ', $errors));
         return $ret_obj;
     }
+    
+    
+    public function targetlists_index()
+    {
+        
+    }
 }
