@@ -17,6 +17,7 @@ class CreateTargetUsersTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email');
+            $table->unique(['first_name','last_name','email']);
             $table->timestamps();
         });
     }

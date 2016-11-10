@@ -25,6 +25,8 @@ Route::post('profile', 'UserController@post_editprofile');
 
 // TargetsController Routes...
 Route::get('targets', 'TargetsController@index');
+Route::post('targets/add', 'TargetsController@addTarget');
+Route::post('targets/import', 'TargetsController@importTargets');
 
 
 // Dashboard Routes...
