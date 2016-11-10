@@ -14,7 +14,7 @@
   <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
       <div class="x_content">
-          <table id="datatable" class="table table-striped table-bordered datatable">
+          <table class="table table-striped table-bordered datatable">
               <thead>
                   <tr>
                       <th>First name</th>
@@ -167,6 +167,7 @@
 
 @section('footer')
 <script type="text/javascript">
+    /* global $ */
     $("#add_target_clear_btn").click(function() {
         $("#first_name").val('');
         $("#last_name").val('');
@@ -182,6 +183,14 @@
         $("#selectedFile").val('');
     });
     
+    var dt = $(".datatable").DataTable();
+    
     $(".editnotes").editable();
+    
+    $(".editnotes").on('save', function() {
+        setTimeout(function() {
+            dt.rows().invalidate();
+        }, 500);
+    })
 </script>
 @endsection
