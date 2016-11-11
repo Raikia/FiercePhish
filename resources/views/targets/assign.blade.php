@@ -39,7 +39,7 @@
                                           @endforeach
                                       </ul>
                                   @else
-                                      N/A
+                                      None
                                   @endif
                               </td>
                               <td>{{ $user->notes }}</td>
@@ -58,8 +58,8 @@
           <br />
           <br />
           <input type="number" placeholder="X amount" min="1" id="numToSelect" style="padding-left: 5px; width: 80px;" /> 
-          <input type="button" id="numToSelect" value="Select X Amount Randomly" style="margin-left: 10px; margin-right: 10px;" />
-          Only unassigned targets: <input type="checkbox" id="unused" value="unassigned_only" />
+          <input type="button" id="numToSelect_btn" value="Select X Amount Randomly" style="margin-left: 10px; margin-right: 10px;" />
+          Only unassigned targets: <input type="checkbox" id="unusedOnly" value="unassigned_only" />
       </div>
     </div>
   </div>
@@ -191,6 +191,37 @@
     
     $("#deselectAll_btn").click(function() {
         dt.rows().deselect();
+    });
+    
+    $("#numToSelect_btn").click(function() {
+        var max = $("#numToSelect").val()
+        if (!$.isNumeric(max))
+        {
+            $("#numToSelect").val('');
+            return;
+        }
+        if ($("#unusedOnly").prop('checked'))
+        {
+            var unassigned_ones = dt.column(3).data().filter(function(val, index, api) {
+                if (val == "None")
+                    return true;
+                return false;
+            });
+            
+            for (var x=0; x < max; ++x)
+            {
+                var random_row = Math.floor(Math.random() * (unassigned_ones.length));
+                dt.row(random_row).select();
+            }
+        }
+        else
+        {
+            for (var x = 0; x < max; ++x)
+            {
+                var random_row = Math.floor(Math.random() * (dt.rows().data().length));
+                dt.row(random_row).select();
+            }
+        }
     });
 </script>
 @endsection
