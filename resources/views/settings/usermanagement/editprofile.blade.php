@@ -87,14 +87,19 @@
                         <label for="current_password" class="control-label col-md-3 col-sm-3 col-xs-12">Current Password <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="current_password" name="current_password" class="form-control col-md-7 col-xs-12" required="required" type="text">
+                          <input id="current_password" name="current_password" class="form-control col-md-7 col-xs-12" required="required" type="password">
                         </div>
                       </div>
                       @endif
                       <div class="ln_solid"></div>
                       <div class="form-group">
                         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                          <!--<button type="submit" class="btn btn-primary">Cancel</button>-->
+                          @if ($self != '')
+                            <a href="{{ action('SettingsController@index') }}" class="btn btn-primary">Back</a>
+                            <input type="hidden" name="type" value="diff" />
+                          @else
+                            <input type="hidden" name="type" value="self" />
+                          @endif
                           <button type="submit" class="btn btn-success">Save Profile</button>
                         </div>
                       </div>

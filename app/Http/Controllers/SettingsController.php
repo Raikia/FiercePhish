@@ -43,7 +43,7 @@ class SettingsController extends Controller
         $user = auth()->user();
         if ($id != "")
             $user = User::findOrFail($id);
-        return view('settings.usermanagement.editprofile')->with('user', $user);
+        return view('settings.usermanagement.editprofile')->with('user', $user)->with('self', $id);
     }
     
     public function post_editprofile(Request $request)
@@ -69,9 +69,12 @@ class SettingsController extends Controller
         }
         $user->name = $request->input('name');
         $user->email = $request->input('email');
-        $user->password = Hash::make($request->input('password'));
+        if (!empty($request->input('password')))
+            $user->password = Hash::make($request->input('password'));
         $user->phone_number = $request->input('phone_number');
         $user->save();
+        if ($request->input('type') == 'diff')
+            return redirect()->action('SettingsController@index')->with('success', 'Profile updated successfully');
         return back()->with('success', 'Profile updated successfully');
     }
 }
