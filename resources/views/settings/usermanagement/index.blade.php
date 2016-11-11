@@ -63,7 +63,7 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Username <span class="required">*</span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="text" id="name" name="name" required="required" class="form-control col-md-7 col-xs-12">
+              <input type="text" id="name" name="name" required="required" class="form-control col-md-7 col-xs-12" value="{{ old('name') }}">
             </div>
           </div>
           <div class="form-group">
@@ -77,13 +77,13 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Email <span class="required">*</span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="email" id="email" name="email" required="required" class="form-control col-md-7 col-xs-12">
+              <input type="email" id="email" name="email" required="required" class="form-control col-md-7 col-xs-12" value="{{ old('email') }}">
             </div>
           </div>
           <div class="form-group">
             <label for="phone_number" class="control-label col-md-3 col-sm-3 col-xs-12">Phone Number </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <input id="phone_number" class="form-control col-md-7 col-xs-12" type="text" name="phone_number" data-inputmask="'mask' : '(999) 999-9999'" >
+              <input id="phone_number" class="form-control col-md-7 col-xs-12" type="text" name="phone_number" data-inputmask="'mask' : '(999) 999-9999'"  value="{{ old('phone_number') }}">
               <span class="fa fa-phone form-control-feedback right" aria-hidden="true"></span>
             </div>
           </div>
@@ -91,7 +91,7 @@
           <div class="ln_solid"></div>
           <div class="form-group">
             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-              <button type="button" id="add_target_clear_btn" class="btn btn-primary">Clear</button>
+              <button type="button" id="add_user_clear_btn" class="btn btn-primary">Clear</button>
               <button type="submit" class="btn btn-success">Create User</button>
             </div>
           </div>
@@ -111,44 +111,51 @@
       </div>
       <div class="x_content">
 
-        <form class="form-horizontal form-label-left" enctype="multipart/form-data" method="post" action="{{ action('TargetsController@importTargets') }}">
+        <form class="form-horizontal form-label-left" id="deleteUserForm" method="post" action="{{ action('SettingsController@deleteUser') }}">
           {{ csrf_field() }}
           <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="import_file">Import File  <span class="required">*</span>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="import_file">Select User <span class="required">*</span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="input-group">
-                    <span class="input-group-btn">
-                        <label class="btn btn-primary"><i class="fa fa-file-o"></i><input type="file" name="import_file" id="import_file" style="visibility: hidden; position:absolute;" /></label>
-                    </span>
-                    <input type="text" id="selectedFile" class="form-control" readonly />
+                    <select class="form-control" style="width: 200px;" name="user">
+                        <option></option>
+                        @foreach ($users as $user)
+                            @if ($user->id != auth()->user()->id)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endif
+                        @endforeach
+                    </select>
                 </div>
                 
-              <!--<label class="btn btn-default btn-file">
-                  Browse <input type="file" style="display: none;" />
-              </label>-->
-              <!--<input type="file" id="first_name" name="first_name" required="required" class="form-control col-md-7 col-xs-12">-->
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first_name">CSV Format 
-            </label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="input-group">
-                    <p style="margin-top: 8px;">First Name, Last Name, Email, [Notes]</p>
-                </div>
-              <!--<label class="btn btn-default btn-file">
-                  Browse <input type="file" style="display: none;" />
-              </label>-->
-              <!--<input type="file" id="first_name" name="first_name" required="required" class="form-control col-md-7 col-xs-12">-->
             </div>
           </div>
           
           <div class="ln_solid"></div>
           <div class="form-group">
             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-              <button type="button" id="import_file_clear_btn" class="btn btn-primary">Clear</button>
-              <button type="submit" class="btn btn-success">Create Target</button>
+              <button type="button" class="btn btn-success" data-toggle="modal" data-target=".deleteuser-modal-sm">Delete User</button>
+              <div class="modal fade deleteuser-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-sm">
+                      <div class="modal-content">
+
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                          </button>
+                          <h4 class="modal-title" id="myModalLabel2">Are you sure?</h4>
+                        </div>
+                        <div class="modal-body">
+                          <h4>Delete User?</h4>
+                          <p>This action cannot be undone!</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                          <button type="button" id="deleteUser_btn" class="btn btn-danger" style="margin-bottom: 5px;">Delete User</button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
             </div>
           </div>
 
@@ -164,29 +171,15 @@
 @section('footer')
 <script type="text/javascript">
     /* global $ */
-    $("#add_target_clear_btn").click(function() {
-        $("#first_name").val('');
-        $("#last_name").val('');
+    $("#add_user_clear_btn").click(function() {
+        $("#name").val('');
         $("#email").val('');
+        $("#password").val('');
+        $("#phone_number").val('');
     });
     
-    $("#import_file").change(function() {
-        $("#selectedFile").val($(this).val());
-    });
-    
-    $("#import_file_clear_btn").click(function() {
-        $("#import_file").val('');
-        $("#selectedFile").val('');
-    });
-    
-    var dt = $(".datatable").DataTable();
-    
-    $(".editnotes").editable();
-    
-    $(".editnotes").on('save', function() {
-        setTimeout(function() {
-            dt.rows().invalidate();
-        }, 500);
+    $("#deleteUser_btn").click(function() {
+        $("#deleteUserForm").submit();
     })
 </script>
 @endsection

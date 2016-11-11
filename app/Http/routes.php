@@ -32,6 +32,7 @@ Route::post('targets/assign/set', 'TargetsController@assignToLists');
 // SettingsController Routes...
 Route::get('settings/users', 'SettingsController@index');
 Route::post('settings/users/add', 'SettingsController@addUser');
+Route::post('settings/users/delete', 'SettingsController@deleteUser');
 Route::get('settings/profile/{id?}', 'SettingsController@get_editprofile');
 Route::post('settings/profile', 'SettingsController@post_editprofile');
 
