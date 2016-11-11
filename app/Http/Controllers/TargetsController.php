@@ -19,7 +19,7 @@ class TargetsController extends Controller
     
     public function index()
     {
-        $targetUsers = TargetUser::with('lists')->orderBy('last_name')->get();
+        $targetUsers = TargetUser::with('lists')->orderBy('first_name')->get();
         return view('targets.index')->with('targetUsers', $targetUsers);
     }
     
@@ -126,7 +126,7 @@ class TargetsController extends Controller
     
     public function assign_index()
     {
-        $targetUsers = TargetUser::with('lists')->orderBy('last_name')->get();
+        $targetUsers = TargetUser::with('lists')->orderBy('first_name')->get();
         return view('targets.assign')->with('targetUsers', $targetUsers);
     }
 }
