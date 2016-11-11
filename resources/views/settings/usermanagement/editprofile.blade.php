@@ -44,7 +44,7 @@
         <div class="clearfix"></div>
       </div>-->
       <div class="x_content">
-          <form class="form-horizontal form-label-left" method="post" action="{{ action('UserController@post_editprofile') }}">
+          <form class="form-horizontal form-label-left" method="post" action="{{ action('SettingsController@post_editprofile') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="user_id" value="{{ $user->id }}" />
                       <div class="form-group">
