@@ -38,6 +38,18 @@ class SettingsController extends Controller
         return back()->with('success', 'User created successfully');
     }
     
+    public function deleteUser(Request $request)
+    {
+        $this->validate($request, [
+            'user' => 'required|integer'
+        ]);
+        $user = User::findOrFail($request->input('user'));
+        if ($user->id == auth()->user()->id)
+            return back()->withErrors('You cannot delete yourself!');
+        $user->delete();
+        return back()->with('success', 'User has been successfully deleted');
+    }
+    
     public function get_editprofile($id="")
     {
         $user = auth()->user();
