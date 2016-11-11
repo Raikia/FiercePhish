@@ -150,7 +150,7 @@ class TargetsController extends Controller
         if ($request->input('type') == 'edit')
         {
             $list->users()->sync($ids);
-            return back()->with('success', 'List has been edited and now has ' . count($list->users));
+            return back()->with('success', 'List has been edited and now has ' . count($list->users) . ' users');
         }
         else
         {
