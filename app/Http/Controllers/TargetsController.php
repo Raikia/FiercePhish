@@ -103,6 +103,6 @@ class TargetsController extends Controller
     
     public function targetlists_index()
     {
-        
+        return view('targets.lists');
     }
 }
