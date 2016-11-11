@@ -131,7 +131,15 @@ class TargetsController extends Controller
         $selectedList = new TargetList();
         if ($id !== null)
             $selectedList = TargetList::findOrFail($id);
-        return view('targets.assign')->with('targetUsers', $targetUsers)->with('targetLists', $targetLists)->with('selectedList', $selectedList);
+        $ret_obj =  view('targets.assign')->with('targetUsers', $targetUsers)->with('targetLists', $targetLists)->with('selectedList', $selectedList);
+        $warn = '';
+        if (count($targetUsers) === 0)
+            $warn = 'You must add at least one user first!';
+        elseif (count($targetLists) === 0)
+            $warn = 'You must add at least one list first!';
+        if (!empty($warn))
+            return $ret_obj->with('warn', $warn);
+        return $ret_obj;
     }
     
     public function assignToLists(Request $request)
