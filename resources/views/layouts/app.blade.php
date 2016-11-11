@@ -65,6 +65,7 @@
                   <li><a><i class="fa fa-bullseye"></i> Targets <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{ action('TargetsController@index') }}">All Targets</a></li>
+                      <li><a href="{{ action('TargetsController@targetlists_index') }}">All Lists</a></li>
                       <li><a href="#">Manage Target Lists</a></li>
                       
                     </ul>
