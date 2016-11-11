@@ -103,6 +103,30 @@ class TargetsController extends Controller
     
     public function targetlists_index()
     {
-        return view('targets.lists');
+        $targetLists = TargetList::with('users')->orderBy('name')->get();
+        return view('targets.lists')->with('targetLists', $targetLists);
+    }
+    
+    public function addList(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|max:255',
+        ]);
+        $checkList = TargetList::where('name', $request->input('name'))->get();
+        if (count($checkList) == 0)
+        {
+            TargetList::create($request->all());
+            return back()->with('success', 'List added successfully');
+        }
+        else
+        {
+            return back()->withErrors('List already exists');
+        }
+    }
+    
+    public function assign_index()
+    {
+        $targetUsers = TargetUser::with('lists')->orderBy('last_name')->get();
+        return view('targets.assign')->with('targetUsers', $targetUsers);
     }
 }

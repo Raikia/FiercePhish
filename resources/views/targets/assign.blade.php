@@ -4,7 +4,7 @@
 
 <div class="page-title">
   <div class="title_left">
-    <h3>List of Lists</h3>
+    <h3>List of Targets</h3>
   </div>
 </div>
 
@@ -17,27 +17,49 @@
           <table class="table table-striped table-bordered datatable">
               <thead>
                   <tr>
-                      <th>Name</th>
-                      <th># of Users</th>
+                      <th>First name</th>
+                      <th>Last name</th>
+                      <th>Email</th>
+                      <th>List Membership</th>
                       <th>Notes</th>
                   </tr>
               </thead>
               <tbody>
-                  @if (count($targetLists) > 0)
-                      @foreach ($targetLists as $list)
+                  @if (count($targetUsers) > 0)
+                      @foreach ($targetUsers as $user)
                           <tr>
-                              <td>{{ $list->name }}</td>
-                              <td>{{ count($list->users) }}</td>
-                              <td><a href="#" class="editnotes" data-type="text" data-pk="{{ $list->id }}" data-url="{{ action('AjaxController@edit_targetlist_notes') }}" data-title="Enter note">{{ $list->notes }}</a></td>
+                              <td>{{ $user->first_name }}</td>
+                              <td>{{ $user->last_name }}</td>
+                              <td>{{ $user->email }}</td>
+                              <td>
+                                  @if (count($user->lists) > 0)
+                                      <ul>
+                                          @foreach ($user->lists as $l)
+                                              <li>{{ $l->name }}</li>
+                                          @endforeach
+                                      </ul>
+                                  @else
+                                      N/A
+                                  @endif
+                              </td>
+                              <td>{{ $user->notes }}</td>
                           </tr>
                       @endforeach
                   @else
                       <tr>
-                          <td colspan="4" style="text-align: center;">No Lists Yet</td>
+                          <td colspan="4" style="text-align: center;">No Targets Yet</td>
                       </tr>
                   @endif
               </tbody>
           </table>
+          <input type="button" id="selectAllOnPage_btn" value="Select All on Page" />
+          <input type="button" id="selectAll_btn" value="Select All" style="margin-left: 30px;" />
+          <input type="button" id="deselectAll_btn" value="Deselect All" style="margin-left: 30px;" />
+          <br />
+          <br />
+          <input type="number" placeholder="X amount" min="1" id="numToSelect" style="padding-left: 5px; width: 80px;" /> 
+          <input type="button" id="numToSelect" value="Select X Amount Randomly" style="margin-left: 10px; margin-right: 10px;" />
+          Only unassigned targets: <input type="checkbox" id="unused" value="unassigned_only" />
       </div>
     </div>
   </div>
@@ -45,30 +67,44 @@
 
 
 <!----------------- -->
-
+<!--
 <div class="row">
   <div class="col-md-6 col-sm-6 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2><i class="fa fa-plus"></i> Add a List</h2>
+        <h2><i class="fa fa-plus"></i> Add a Target</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
 
-        <form class="form-horizontal form-label-left" method="post" action="{{ action('TargetsController@addList') }}">
+        <form class="form-horizontal form-label-left" method="post" action="{{ action('TargetsController@addTarget') }}">
           {{ csrf_field() }}
           <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name <span class="required">*</span>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first_name">First Name <span class="required">*</span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="text" id="name" name="name" required="required" class="form-control col-md-7 col-xs-12">
+              <input type="text" id="first_name" name="first_name" required="required" class="form-control col-md-7 col-xs-12">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last_name">Last Name <span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="text" id="last_name" name="last_name" required="required" class="form-control col-md-7 col-xs-12">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Email <span class="required">*</span></label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input id="email" class="form-control col-md-7 col-xs-12" required="required" type="text" name="email">
             </div>
           </div>
 
           <div class="ln_solid"></div>
           <div class="form-group">
             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-              <button type="submit" class="btn btn-success">Create List</button>
+              <button type="button" id="add_target_clear_btn" class="btn btn-primary">Clear</button>
+              <button type="submit" class="btn btn-success">Create Target</button>
             </div>
           </div>
 
@@ -78,7 +114,7 @@
     </div>
   </div>
 
-<!--
+
   <div class="col-md-6 col-sm-6 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
@@ -132,24 +168,29 @@
 
       </div>
     </div>
-  </div>-->
+  </div>
 </div>
-
+-->
 @endsection
 
 @section('footer')
 <script type="text/javascript">
     /* global $ */
     
+    var dt = $(".datatable").DataTable({
+        select: 'multi'
+    });
     
-    var dt = $(".datatable").DataTable();
+    $("#selectAllOnPage_btn").click(function() {
+        dt.rows({ page:'current' }).select();
+    });
     
-    $(".editnotes").editable();
+    $("#selectAll_btn").click(function() {
+        dt.rows().select();
+    });
     
-    $(".editnotes").on('save', function() {
-        setTimeout(function() {
-            dt.rows().invalidate();
-        }, 500);
-    })
+    $("#deselectAll_btn").click(function() {
+        dt.rows().deselect();
+    });
 </script>
 @endsection

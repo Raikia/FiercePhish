@@ -27,7 +27,9 @@ Route::post('profile', 'UserController@post_editprofile');
 Route::get('targets', 'TargetsController@index');
 Route::post('targets/add', 'TargetsController@addTarget');
 Route::post('targets/import', 'TargetsController@importTargets');
-Route::get('targets/list', 'TargetsController@targetlists_index');
+Route::get('targets/lists', 'TargetsController@targetlists_index');
+Route::post('targets/lists/add', 'TargetsController@addList');
+Route::get('targets/assign', 'TargetsController@assign_index');
 
 
 // Dashboard Routes...
@@ -38,3 +40,4 @@ Route::get('/', 'DashboardController@index');
 
 // Ajax Routes...
 Route::post('ajax/targetuser/note', 'AjaxController@edit_targetuser_notes');
+Route::post('ajax/targetlist/note', 'AjaxController@edit_targetlist_notes');
