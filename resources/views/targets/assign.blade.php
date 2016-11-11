@@ -57,9 +57,10 @@
           <input type="button" id="deselectAll_btn" value="Deselect All" style="margin-left: 30px;" />
           <br />
           <br />
-          <input type="number" placeholder="X amount" min="1" id="numToSelect" style="padding-left: 5px; width: 80px;" /> 
+          <input type="number" placeholder="X amount" min="1" max="{{ count($targetUsers) }}" id="numToSelect" style="padding-left: 5px; width: 80px;" /> 
           <input type="button" id="numToSelect_btn" value="Select X Amount Randomly" style="margin-left: 10px; margin-right: 10px;" />
-          Only unassigned targets: <input type="checkbox" id="unusedOnly" value="unassigned_only" />
+          Only unassigned targets: <input type="checkbox" id="unusedOnly" value="unassigned_only" style="margin-right: 10px;" />
+          <span id="randomSelectError" style="color: #DD0000;"></span>
       </div>
     </div>
   </div>
@@ -194,34 +195,51 @@
     });
     
     $("#numToSelect_btn").click(function() {
-        var max = $("#numToSelect").val()
+        var max = Math.min($("#numToSelect").val(), dt.rows({selected: false}).count());
+        if (max == 0)
+            setError("No rows to select")
+        else if ($("#numToSelect").val() != max)
+            setError("Too many rows requested, selecting all");
+        else if ($("#numToSelect").val() == dt.rows({selected: false}).count())
+            setError("All rows being selected");
+        else
+            setError("");
         if (!$.isNumeric(max))
         {
             $("#numToSelect").val('');
+            setError("Invalid number");
             return;
         }
         if ($("#unusedOnly").prop('checked'))
         {
-            var unassigned_ones = dt.column(3).data().filter(function(val, index, api) {
-                if (val == "None")
-                    return true;
-                return false;
-            });
-            
-            for (var x=0; x < max; ++x)
+            var unselected_ones = dt.rows({selected: false}).eq(0).filter( function(rowIdx) {
+                    return dt.cell(rowIdx, 3).data() == "None" ? true : false;
+                });
+            max = Math.min(max, unselected_ones.length);
+            if (max == 0)
+                setError("No unassigned rows remaining");
+            for (var x=0; x<max; ++x)
             {
-                var random_row = Math.floor(Math.random() * (unassigned_ones.length));
-                dt.row(random_row).select();
+                var unselected_ones = dt.rows({selected: false}).eq(0).filter( function(rowIdx) {
+                    return dt.cell(rowIdx, 3).data() == "None" ? true : false;
+                });
+                var random_row = Math.floor(Math.random() * (unselected_ones.count()));
+                dt.row(unselected_ones[random_row], {selected: false}).select();
             }
         }
         else
         {
-            for (var x = 0; x < max; ++x)
+            
+            for (var x=0; x<max; ++x)
             {
-                var random_row = Math.floor(Math.random() * (dt.rows().data().length));
-                dt.row(random_row).select();
+                var unselected_ones = dt.rows({selected: false}).indexes();
+                var random_row = Math.floor(Math.random() * (unselected_ones.count()));
+                dt.row(unselected_ones[random_row], {selected: false}).select();
             }
         }
     });
+    function setError(str) {
+        $("#randomSelectError").html(str);
+    }
 </script>
 @endsection
