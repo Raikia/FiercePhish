@@ -5,14 +5,37 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+
 use App\User;
 use Hash;
 
-class UserController extends Controller
+class SettingsController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
+    }
+    
+    public function index()
+    {
+        $users = User::orderBy('name')->get();
+        return view('settings.usermanagement.index')->with('users', $users);
+    }
+    
+    public function addUser(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|max:255|unique:users',
+            'email' => 'required|max:255|email',
+            'password' => 'required|min:6'
+        ]);
+        $newUser = new User();
+        $newUser->name = $request->input('name');
+        $newUser->email = $request->input('email');
+        $newUser->phone_number = $request->input('phone_number');
+        $newUser->password = Hash::make($request->input('password'));
+        $newUser->save();
+        return back()->with('success', 'User created successfully');
     }
     
     public function get_editprofile($id="")
@@ -20,7 +43,7 @@ class UserController extends Controller
         $user = auth()->user();
         if ($id != "")
             $user = User::findOrFail($id);
-        return view('user.editprofile')->with('user', $user);
+        return view('settings.usermanagement.editprofile')->with('user', $user);
     }
     
     public function post_editprofile(Request $request)

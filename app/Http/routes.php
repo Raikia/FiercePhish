@@ -18,10 +18,6 @@ Route::post('login', 'Auth\AuthController@login');
 Route::get('logout', 'Auth\AuthController@logout');
 
 
-// UserController Routes...
-Route::get('profile/{id?}', 'UserController@get_editprofile');
-Route::post('profile', 'UserController@post_editprofile');
-
 
 // TargetsController Routes...
 Route::get('targets', 'TargetsController@index');
@@ -33,8 +29,15 @@ Route::get('targets/assign/{id?}', 'TargetsController@assign_index');
 Route::post('targets/assign/set', 'TargetsController@assignToLists');
 
 
+// SettingsController Routes...
+Route::get('settings/users', 'SettingsController@index');
+Route::post('settings/users/add', 'SettingsController@addUser');
+Route::get('settings/profile/{id?}', 'SettingsController@get_editprofile');
+Route::post('settings/profile', 'SettingsController@post_editprofile');
+
+
 // Dashboard Routes...
-Route::get('/home', 'DashboardController@index');
+Route::get('home', 'DashboardController@index');
 Route::get('/', 'DashboardController@index');
 
 
