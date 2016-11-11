@@ -12,7 +12,7 @@
 
 <div class="row">
   <div class="col-md-12 col-sm-12 col-xs-12">
-    <div class="x_panel">
+    <div class="x_panel" style="overflow: auto;">
       <div class="x_content">
           <table class="table table-striped table-bordered datatable">
               <thead>
@@ -28,9 +28,9 @@
                   @if (count($targetUsers) > 0)
                       @foreach ($targetUsers as $user)
                           <tr>
-                              <td>{{ $user->first_name }}</td>
-                              <td>{{ $user->last_name }}</td>
-                              <td>{{ $user->email }}</td>
+                              <td>{{ str_limit($user->first_name,50) }}</td>
+                              <td>{{ str_limit($user->last_name,50) }}</td>
+                              <td>{{ str_limit($user->email,50) }}</td>
                               <td>
                                   @if (count($user->lists) > 0)
                                       <ul>

@@ -29,7 +29,8 @@ Route::post('targets/add', 'TargetsController@addTarget');
 Route::post('targets/import', 'TargetsController@importTargets');
 Route::get('targets/lists', 'TargetsController@targetlists_index');
 Route::post('targets/lists/add', 'TargetsController@addList');
-Route::get('targets/assign', 'TargetsController@assign_index');
+Route::get('targets/assign/{id?}', 'TargetsController@assign_index');
+Route::post('targets/assign/set', 'TargetsController@assignToLists');
 
 
 // Dashboard Routes...

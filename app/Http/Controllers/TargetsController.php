@@ -124,9 +124,38 @@ class TargetsController extends Controller
         }
     }
     
-    public function assign_index()
+    public function assign_index($id=null)
     {
         $targetUsers = TargetUser::with('lists')->orderBy('first_name')->get();
-        return view('targets.assign')->with('targetUsers', $targetUsers);
+        $targetLists = TargetList::with('users')->orderBy('name')->get();
+        $selectedList = new TargetList();
+        if ($id !== null)
+            $selectedList = TargetList::findOrFail($id);
+        return view('targets.assign')->with('targetUsers', $targetUsers)->with('targetLists', $targetLists)->with('selectedList', $selectedList);
+    }
+    
+    public function assignToLists(Request $request)
+    {
+        $this->validate($request, [
+            'listSelection' => 'required',
+            'type' => 'required'
+            ]);
+        if ($request->input('rowsToAdd') == "")
+            return back()->withErrors('You need to select some rows to add to the list');
+        $ids = explode(',',$request->input('rowsToAdd'));
+        foreach ($ids as $id)
+            if (!is_numeric($id))
+                return back()->withErrors('Invalid selection');
+        $list = TargetList::findOrFail($request->input('listSelection'));
+        if ($request->input('type') == 'edit')
+        {
+            $list->users()->sync($ids);
+            return back()->with('success', 'List has been edited and now has ' . count($list->users));
+        }
+        else
+        {
+            $list->users()->syncWithoutDetaching($ids);
+            return back()->with('success', 'Users successfully added');
+        }
     }
 }
