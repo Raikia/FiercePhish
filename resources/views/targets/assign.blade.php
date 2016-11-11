@@ -4,7 +4,11 @@
 
 <div class="page-title">
   <div class="title_left">
-    <h3>List of Targets</h3>
+    @if ($selectedList->id === null)
+      <h3>Assign Targets to Lists</h3>
+    @else 
+      <h3>Edit "{{ $selectedList->name }}"</h3>
+    @endif
   </div>
 </div>
 
@@ -12,7 +16,7 @@
 
 <div class="row">
   <div class="col-md-12 col-sm-12 col-xs-12">
-    <div class="x_panel">
+    <div class="x_panel" style="overflow: auto;">
       <div class="x_content">
           <table class="table table-striped table-bordered datatable">
               <thead>
@@ -27,10 +31,10 @@
               <tbody>
                   @if (count($targetUsers) > 0)
                       @foreach ($targetUsers as $user)
-                          <tr>
-                              <td>{{ $user->first_name }}</td>
-                              <td>{{ $user->last_name }}</td>
-                              <td>{{ $user->email }}</td>
+                          <tr id="row_{{ $user->id }}">
+                              <td>{{ str_limit($user->first_name,50) }}</td>
+                              <td>{{ str_limit($user->last_name,50) }}</td>
+                              <td>{{ str_limit($user->email,50) }}</td>
                               <td>
                                   @if (count($user->lists) > 0)
                                       <ul>
@@ -68,48 +72,30 @@
 
 
 <!----------------- -->
-<!--
+
 <div class="row">
   <div class="col-md-6 col-sm-6 col-xs-12">
-    <div class="x_panel">
+    <div class="x_panel" style="overflow: auto;">
       <div class="x_title">
-        <h2><i class="fa fa-plus"></i> Add a Target</h2>
+        <h2><i class="fa fa-plus"></i> Selected Targets</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
-
-        <form class="form-horizontal form-label-left" method="post" action="{{ action('TargetsController@addTarget') }}">
-          {{ csrf_field() }}
-          <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first_name">First Name <span class="required">*</span>
-            </label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="text" id="first_name" name="first_name" required="required" class="form-control col-md-7 col-xs-12">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last_name">Last Name <span class="required">*</span>
-            </label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="text" id="last_name" name="last_name" required="required" class="form-control col-md-7 col-xs-12">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Email <span class="required">*</span></label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <input id="email" class="form-control col-md-7 col-xs-12" required="required" type="text" name="email">
-            </div>
-          </div>
-
-          <div class="ln_solid"></div>
-          <div class="form-group">
-            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-              <button type="button" id="add_target_clear_btn" class="btn btn-primary">Clear</button>
-              <button type="submit" class="btn btn-success">Create Target</button>
-            </div>
-          </div>
-
-        </form>
+        <table class="table" id="selectedTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4" style="text-align: center;">None Selected</td>
+              </tr>
+            </tbody>
+        </table>
 
       </div>
     </div>
@@ -119,49 +105,50 @@
   <div class="col-md-6 col-sm-6 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2><i class="fa fa-download"></i> Import Targets</h2>
+        <h2><i class="fa fa-download"></i> 
+        @if ($selectedList->id === null)
+          Add Selection To List
+        @else 
+          Edit List 
+        @endif
+        </h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
 
-        <form class="form-horizontal form-label-left" enctype="multipart/form-data" method="post" action="{{ action('TargetsController@importTargets') }}">
+        <form class="form-horizontal form-label-left" id="addToListForm" method="post" action="{{ action('TargetsController@assignToLists') }}">
           {{ csrf_field() }}
           <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="import_file">Import File  <span class="required">*</span>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="listSelection">Select List  <span class="required">*</span>
             </label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <label class="btn btn-primary"><i class="fa fa-file-o"></i><input type="file" name="import_file" id="import_file" style="visibility: hidden; position:absolute;" /></label>
-                    </span>
-                    <input type="text" id="selectedFile" class="form-control" readonly />
-                </div>
-                
-              <!--<label class="btn btn-default btn-file">
-                  Browse <input type="file" style="display: none;" />
-              </label>-->
-              <!--<input type="file" id="first_name" name="first_name" required="required" class="form-control col-md-7 col-xs-12">--
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first_name">CSV Format 
-            </label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="input-group">
-                    <p style="margin-top: 8px;">First Name, Last Name, Email, [Notes]</p>
-                </div>
-              <!--<label class="btn btn-default btn-file">
-                  Browse <input type="file" style="display: none;" />
-              </label>-->
-              <!--<input type="file" id="first_name" name="first_name" required="required" class="form-control col-md-7 col-xs-12">--
+            <div class="col-md-9 col-sm-9 col-xs-12">
+              @if ($selectedList->id === null)
+                      <select id="listSelection" name="listSelection" class="select2_single form-control" style="width: 300px;">
+                        <option></option>
+                        @foreach ($targetLists as $list)
+                          <option value="{{ $list->id }}">{{ $list->name }} - {{ count($list->users) }} users</option>
+                        @endforeach
+                      </select>
+                      <input type="hidden" name="type" value="add" />
+              @else
+                <input type="hidden" name="listSelection" value="{{ $selectedList->id }}" />
+                <input type="hidden" name="type" value="edit" />
+                <input type="text" class="form-control" id="listSelection" value="{{ $selectedList->name}} - {{ count($selectedList->users) }} users" readonly />
+              @endif
             </div>
           </div>
           
+          
+          
+          <input type="hidden" id="rowsToAdd" name="rowsToAdd" value="" />
           <div class="ln_solid"></div>
           <div class="form-group">
             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-              <button type="button" id="import_file_clear_btn" class="btn btn-primary">Clear</button>
-              <button type="submit" class="btn btn-success">Create Target</button>
+              @if ($selectedList->id === null)
+                <button type="submit" class="btn btn-success">Add Selection To List</button>
+              @else 
+                <button type="submit" class="btn btn-success">Edit List</button>
+              @endif
             </div>
           </div>
 
@@ -171,7 +158,7 @@
     </div>
   </div>
 </div>
--->
+
 @endsection
 
 @section('footer')
@@ -238,8 +225,54 @@
             }
         }
     });
+    
+    function selectionHandler( e, dt, type,indexes) {
+      var total_add = "";
+      var data = dt.rows({selected: true}).data();
+      var num = 1;
+      for (var x=0; x < data.length; ++x)
+      {
+        total_add += '<tr><td>'+num+'</td><td>'+data[x][0]+'</td><td>'+data[x][1]+'</td><td>'+data[x][2]+'</td></tr>';
+        ++num;
+      }
+      if (data.length == 0)
+        total_add += '<tr><td colspan="4" style="text-align: center;">None Selected</td></tr>';
+      $("#selectedTable tbody").html(total_add);
+    }
+    
+    dt.on('select', selectionHandler);
+    dt.on('deselect', selectionHandler);
+    
     function setError(str) {
         $("#randomSelectError").html(str);
     }
+    
+    @if ($selectedList->id === null)
+      $(".select2_single").select2({
+        placeholder: "Select a list",
+        allowClear: true
+      });
+    @endif
+
+    
+    
+    $("#addToListForm").submit(function(event) {
+      var ids = dt.rows({selected: true}).ids();
+      var input_ids = [];
+      for (var x=0; x< ids.length; ++x)
+      {
+        input_ids.push(ids[x].replace("row_",""));
+      }
+      $("#rowsToAdd").val(input_ids.join());
+      return true;
+    });
+    
+    
+    $(document).ready(function() {
+      @foreach ($selectedList->users as $u)
+        dt.row('#row_{{ $u->id }}').select();
+      @endforeach
+      
+    });
 </script>
 @endsection

@@ -12,7 +12,7 @@
 
 <div class="row">
   <div class="col-md-12 col-sm-12 col-xs-12">
-    <div class="x_panel">
+    <div class="x_panel" style="overflow: auto;">
       <div class="x_content">
           <table class="table table-striped table-bordered datatable">
               <thead>
@@ -26,7 +26,7 @@
                   @if (count($targetLists) > 0)
                       @foreach ($targetLists as $list)
                           <tr>
-                              <td>{{ $list->name }}</td>
+                              <td><a href="{{ action('TargetsController@assign_index', ['id' => $list->id]) }}">{{ str_limit($list->name,200) }}</a></td>
                               <td>{{ count($list->users) }}</td>
                               <td><a href="#" class="editnotes" data-type="text" data-pk="{{ $list->id }}" data-url="{{ action('AjaxController@edit_targetlist_notes') }}" data-title="Enter note">{{ $list->notes }}</a></td>
                           </tr>

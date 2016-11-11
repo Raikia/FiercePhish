@@ -24,6 +24,8 @@
     "bootstrap-progressbar": "^0.9.0",
     "jquery.inputmask": "^3.3.3",
     "datatables": "^1.10.12",
-    "x-editable": "^1.5.1"
+    "x-editable": "^1.5.1",
+    "select2": "select2-ng#^4.0.3",
+    "datatables-select": "^1.2.0"
   }
 }

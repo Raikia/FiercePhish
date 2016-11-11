@@ -20,6 +20,7 @@
     <link href="{{ asset('vendor/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/datatables-select/css/select.bootstrap.scss') }}" rel="stylesheet">
     <link href="{{ asset('vendor/datatables-select/css/select.dataTables.scss') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/select2/dist/css/select2.min.css') }}" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/firephish.css') }}" rel="stylesheet">
@@ -66,7 +67,7 @@
                     <ul class="nav child_menu">
                       <li><a href="{{ action('TargetsController@index') }}">All Targets</a></li>
                       <li><a href="{{ action('TargetsController@targetlists_index') }}">All Lists</a></li>
-                      <li><a href="#">Manage Target Lists</a></li>
+                      <li><a href="{{ action('TargetsController@assign_index') }}">Manage Target Lists</a></li>
                       
                     </ul>
                   </li>
@@ -272,6 +273,7 @@
     <script src="{{ asset('vendor/jquery.inputmask/dist/jquery.inputmask.bundle.js') }}"></script>
     <script src="{{ asset('vendor/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min.js') }}"></script>
     <script src="{{ asset('vendor/datatables-select/js/dataTables.select.js') }}"></script>
+    <script src="{{ asset('vendor/select2/dist/js/select2.full.min.js') }}"></script>
     <!-- Custom Theme Scripts -->
     <script src="{{ asset('js/custom.js') }}"></script>
     @yield('footer')
