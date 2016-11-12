@@ -205,7 +205,7 @@
                 <div class="outlook_from">Bill Smith &lt;bsmith@malicious.com&gt;</div>
                 <div class="outlook_subject" id="outlook_subject">Test Subject</div>
               </div>
-              <div class="outlook_to"><span style="margin-right: 10px;">To:</span>John Doe &lt;john.doe@mandiant.com&gt;</div>
+              <div class="outlook_to"><span style="margin-right: 10px;">To:</span>John Doe &lt;john.doe@domain.com&gt;</div>
               <div class="outlook_message">
                 <span id="outlook_content">
                   <p>Dear Bill</p>
