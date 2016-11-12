@@ -182,6 +182,17 @@ class AjaxController extends Controller
         return $return;
     }
     
+    
+    static function get_SPF_record($domain)
+    {
+        $txt_records = AjaxController::get_TXT_records($domain);
+    }
+    
+    static function parse_SPF($first_record, $target_domain)
+    {
+        
+    }
+    
     static function cidr_match($ip, $cidr)
     {
         list($subnet, $mask) = explode('/', $cidr);
