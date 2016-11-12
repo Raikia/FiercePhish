@@ -37,6 +37,11 @@ Route::get('settings/profile/{id?}', 'SettingsController@get_editprofile');
 Route::post('settings/profile', 'SettingsController@post_editprofile');
 
 
+// EmailController Routes...
+Route::get('emails/templates/{id?}', 'EmailController@template_index');
+Route::post('emails/templates/add', 'EmailController@addTemplate');
+Route::post('emails/templates/edit', 'EmailController@editTemplate');
+
 // Dashboard Routes...
 Route::get('home', 'DashboardController@index');
 Route::get('/', 'DashboardController@index');
@@ -46,3 +51,4 @@ Route::get('/', 'DashboardController@index');
 // Ajax Routes...
 Route::post('ajax/targetuser/note', 'AjaxController@edit_targetuser_notes');
 Route::post('ajax/targetlist/note', 'AjaxController@edit_targetlist_notes');
+Route::get('ajax/emails/template/{id?}', 'AjaxController@get_emailtemplate_info');

@@ -8,6 +8,7 @@ use App\Http\Requests;
 
 use App\TargetUser;
 use App\TargetList;
+use App\EmailTemplate;
 use Response;
 
 class AjaxController extends Controller
@@ -35,5 +36,13 @@ class AjaxController extends Controller
         $t->notes = $request->input('value');
         $t->save();
         return Response::json("Success", 200);
+    }
+    
+    public function get_emailtemplate_info(Request $request, $id='')
+    {
+        if ($id === '')
+            return Response::json("Invalid ID", 400);
+        $template = EmailTemplate::findOrFail($id);
+        return Response::json($template, 200);
     }
 }
