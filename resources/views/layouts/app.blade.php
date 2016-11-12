@@ -82,7 +82,7 @@
                     <ul class="nav child_menu">
                       <li><a href="{{ action('EmailController@template_index') }}">Email Templates</a></li>
                       <li><a href="#">Inbox</a></li>
-                      <li><a href="#">Check Settings</a></li>
+                      <li><a href="{{ action('EmailController@check_settings_index') }}">Check Email DNS</a></li>
                     </ul>
                   </li>
                   <li><a><i class="fa fa-sitemap"></i>Sites <span class="fa fa-chevron-down"></span></a>

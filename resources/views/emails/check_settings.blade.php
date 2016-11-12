@@ -55,11 +55,66 @@
                   @endforeach
               </tbody>
           </table>
+          <span id="searchResults">
+              
+          </span>
       </div>
     </div>
   </div>
 </div>
 
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+        <h2><i class="fa fa-plus"></i> Required DNS Settings</h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+          <p>To properly bypass spam filters, you should buy a domain name similar to your target's domain (or something that looks legitimate) and send emails from that domain name.
+          If you try to spoof an email from a domain owned by someone else, there is a much higher chance of being caught by spam filters. If you actually own the domain you are sending emails 
+          from, you will bypass most spam filters since it is actually a &quot;legitimate&quot; email.</p>
+          <p>The records below show the DNS entries you <i>should</i> set if you own the domain.  For the examples, we will use "domain.com" as the domain you purchased (or input a domain above and it will change).</p>
+          <table class="table" style="width: 950px; margin-left: auto; margin-right: auto;">
+              <thead>
+                  <tr>
+                      <th>Record Type</th>
+                      <th>Host</th>
+                      <th>Target</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>A Record</td>
+                      <td>@</td>
+                      <td>{{ $server_ip }}</td>
+                  </tr>
+                  <tr>
+                      <td>A Record</td>
+                      <td>mail</td>
+                      <td>{{ $server_ip }}</td>
+                  </tr>
+                  <tr>
+                      <td>MX Record (or MXE Record)</td>
+                      <td>N/A</td>
+                      <td>mail.<span style="line-height: normal" class="changeDomain">domain.com</span> (or {{ $server_ip }} if MXE)</td>
+                  </tr>
+                  <tr>
+                      <td>TXT Record</td>
+                      <td>@</td>
+                      <td>v=spf1 a a:mail.<span style="line-height: normal" class="changeDomain">domain.com</span> a:<span style="line-height: normal" class="changeDomain">domain.com</span> ip4:{{ $server_ip }} ~all</td>
+                  </tr>
+                  <tr>
+                      <td>TXT Record</td>
+                      <td>mail._domainkey</td>
+                      <td><b>DKIM key here</b></td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+    </div>
+  </div>
+</div>
 
 @endsection
 
@@ -69,6 +124,7 @@
     
     function checkDomain() {
         $(".ajax_results").html('<i class="fa fa-refresh fa-spin"></i>');
+        $("#searchResults").html('');
         var listOfFunctions = [];
         var tableRows = $("#settingsCheckTable tr td:nth-child(2)");
         for (var x=0; x < tableRows.length; ++x)
@@ -76,6 +132,9 @@
             listOfFunctions.push(tableRows[x].id.replace("_result",""));
         }
         console.log(listOfFunctions);
+        if ($("#domain").val() != '')
+            $(".changeDomain").html($("#domain").val());
+        errors = [];
         startProcess(listOfFunctions);
     }
     var errors = [];
@@ -94,19 +153,41 @@
         $.get("{{ action('AjaxController@email_check_commands') }}/"+first_process+"/"+$("#domain").val(), function(data) {
             console.log(data);
             var k = Object.keys(data)[0];
-            if (data[k] == "Success")
+            if (data[data.command])
             {
+                errors.push(data['message']);
                 $("#"+k+"_result").html('<i style="color: #00DD00;" class="fa fa-check-circle"></i>');
             }
             else
             {
-                errors.push(data[k]);
+                errors.push(data['message']);
                 $("#"+k+"_result").html('<i style="color: #DD0000;" class="fa fa-times-circle"></i>')
             }
+            drawErrors();
             startProcess(listOfFunctions);
           }).fail(function() {
             window.location = "{{ action('DashboardController@index') }}";
         });
+    }
+    
+    function drawErrors()
+    {
+        var errStr = "<pre>Results:<br /><br />";
+        var tableKeys = {!! json_encode(array_values($settingsCheck)) !!};
+        if (errors.length == 0)
+        {
+            errStr = '* All checks passed!';
+        }
+        else
+        {
+            for (var x=0; x<tableKeys.length; ++x)
+            {
+                if (x < errors.length)
+                    errStr += "&nbsp;&nbsp;&nbsp;&nbsp;* " + tableKeys[x] + " - " + errors[x]+"<br />";
+            }
+        }
+        errStr += "</pre>";
+        $("#searchResults").html(errStr);
     }
     
     

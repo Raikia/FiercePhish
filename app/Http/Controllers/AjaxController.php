@@ -48,97 +48,45 @@ class AjaxController extends Controller
         return Response::json($template, 200);
     }
     
+    
+    
+    
     public function email_check_commands (Request $request, $command='', $domain='')
     {
-        $response = [$command => 'Failed'];
+        $response = [$command => false, 'command' => $command, 'message' => ''];
         if (empty($command) || empty($domain)) {
             return Response::json($response, 200);
         }
-        $server_ip = Cache::remember('server_ip', 120, function() {
-            return trim(file_get_contents('http://icanhazip.com/'));
-        });
+        $server_ip = DomainTools::getServerIP();
         
         // TEST CHANGE
-        $server_ip = '70.114.211.123';
+        $server_ip = '162.243.4.171'; // '70.114.211.123';
         // END TEST CHANGE
         
         if ($command == "a_record_primary")
         {
-            $records = AjaxController::get_A_records($domain);
-            if (is_array($records))
-            {
-                $response[$command] = 'An A record for "'.$domain.'" does not exist pointing to the IP '.$server_ip;
-                foreach ($records as $host => $ips)
-                {
-                    if ($host == $domain && in_array($server_ip,$ips))
-                    {
-                        $response[$command] = 'Success';
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                $response[$command] = $records;
-            }
+            $resp = '';
+            $response[$command] = DomainTools::is_IP_an_A_record($domain, $server_ip, $domain, $resp);
+            $response['message'] = $resp;
+            
         }
         elseif ($command == 'a_record_mail')
         {
-            $records = DomainTools::get_A_records($domain);
-            if (is_array($records))
-            {
-                $response[$command] = 'An A record for "mail.'.$domain.'" does not exist pointing to the IP '.$server_ip;
-                foreach ($records as $host => $ips)
-                {
-                    if ($host == 'mail.'.$domain && in_array($server_ip, $ips))
-                    {
-                        $response[$command] = 'Success';
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                $response[$command] = $records;
-            }
-            
+            $resp = '';
+            $response[$command] = DomainTools::is_IP_an_A_record('mail.'.$domain, $server_ip, 'mail.'.$domain, $resp);
+            $response['message'] = $resp;
         }
         elseif ($command == 'mx_record')
         {
-            $results = dns_get_record($domain, DNS_ALL);
-            if (count($results) == 0)
-                $response[$command] = 'Invalid domain';
-            foreach ($results as $record)
-            {
-                if ($record['type'] == 'MX' && $record['host'] == $domain)
-                {
-                    $system = $record['target'];
-                    $mx_lookup = DomainTools::get_A_records($system);
-                    foreach ($mx_lookup as $host => $ips)
-                    {
-                        if ($host == $system && in_array($server_ip,$ips))
-                        {
-                            $response[$command] = 'Success';
-                            break;
-                        }
-                    }
-                    if ($response[$command] == 'Success')
-                        break;
-                }
-            }
-            if ($response[$command] == 'Failed')
-            {
-                $response[$command] = 'An MX record for "'.$domain.'" does not exist pointing to the IP '.$server_ip;
-            }
+            $resp = '';
+            $response[$command] = DomainTools::is_IP_an_MX_record($domain, $server_ip, $resp);
+            $response['message'] = $resp;
         }
         elseif ($command == 'spf_record')
         {
-            $results = DomainTools::get_TXT_records($domain);
-            
-            dd($results);
-        }
-        elseif ($command == 'dkim_record')
-        {
+            $resp = '';
+            $response[$command] = DomainTools::is_IP_in_SPF_record($domain, $server_ip, $resp);
+            $response['message'] = $resp;
         }
         return Response::json($response, 200);
     }
