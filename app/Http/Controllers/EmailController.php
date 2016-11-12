@@ -45,4 +45,8 @@ class EmailController extends Controller
         $template->save();
         return redirect()->action('EmailController@template_index', ['id' => $template->id])->with('success', 'The template was saved successfully!');
     }
+    
+    public function check_settings_index()
+    {
+    }
 }
