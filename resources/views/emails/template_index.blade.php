@@ -353,7 +353,7 @@
         loadAjaxData(data);
       }).fail(function() {
         window.location = "{{ action('DashboardController@index') }}";
-      })
+      });
     })
     
     
