@@ -95,7 +95,31 @@
     </div>
   </div>
 </div>
+<div class="modal fade deletetemplate-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
 
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel2">Are you sure?</h4>
+      </div>
+      <div class="modal-body">
+        <h4>Delete Template?</h4>
+        <p>This action cannot be undone!</p>
+      </div>
+      <div class="modal-footer">
+        <form class="form-horizontal form-label-left" action="{{ action('EmailController@deleteTemplate') }}" method="post">
+          {{ csrf_field() }}
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+          <button type="submit" id="deleteTemplate_btn" class="btn btn-danger" style="margin-bottom: 5px;">Delete Template</button>
+          <input type="hidden" id="deleteId" name="deleteId" value="" />
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 
 
@@ -178,7 +202,7 @@
           <div class="ln_solid"></div>
           <div class="form-group">
             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-              <button type="button" id="delete_template_btn" class="btn btn-danger">Delete Template</button>
+              <button type="button" id="delete_template_btn" class="btn btn-danger" data-toggle="modal" data-target=".deletetemplate-modal-sm">Delete Template</button>
               <button type="submit" style="margin-left: 30px;" class="btn btn-success">Save Template</button>
             </div>
           </div>
@@ -308,6 +332,7 @@
       $("#templateCodeContent").unblock();
       $("#subject").val(data.subject);
       $("#template_id").val(data.id);
+      $("#deleteId").val(data.id);
       CKEDITOR.instances.templateData.setData(data.template);
       $("#loaded_template_name").html("<i class=\"fa fa-download\"></i> Template Code for \""+data.name+"\"");
       $("#loading_modal").modal('hide');
@@ -330,7 +355,6 @@
         window.location = "{{ action('DashboardController@index') }}";
       })
     })
-    
     
     
 </script>

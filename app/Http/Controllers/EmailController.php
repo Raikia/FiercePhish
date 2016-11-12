@@ -46,6 +46,16 @@ class EmailController extends Controller
         return redirect()->action('EmailController@template_index', ['id' => $template->id])->with('success', 'The template was saved successfully!');
     }
     
+    public function deleteTemplate(Request $request)
+    {
+        $this->validate($request, [
+            'deleteId' => 'required|integer'
+        ]);
+        $template = EmailTemplate::findOrFail($request->input('deleteId'));
+        $template->delete();
+        return back()->with('success', 'Template successfully deleted');
+    }
+    
     public function check_settings_index()
     {
     }
