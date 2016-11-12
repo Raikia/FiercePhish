@@ -80,8 +80,7 @@
                   
                   <li><a><i class="fa fa-envelope-o"></i> Emails <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="#">View Emails</a></li>
-                      <li><a href="#">Email Templates</a></li>
+                      <li><a href="{{ action('EmailController@template_index') }}">Email Templates</a></li>
                       <li><a href="#">Inbox</a></li>
                     </ul>
                   </li>
