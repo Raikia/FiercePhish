@@ -258,7 +258,15 @@
         <!-- /footer content -->
       </div>
     </div>
-
+    <div id="loading_modal" class="modal fade loading-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-sm" style="margin-top: 300px;">
+        <div class="modal-content" style="width: 61px; margin-left: auto; margin-right: auto;">
+          <div class="modal-body">
+            <img src="{{ asset('images/ajax-loader.gif') }}" />
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- jQuery -->
     <script src="{{ asset('vendor/jquery/dist/jquery.min.js') }}"></script>
     <!-- Bootstrap -->
@@ -274,6 +282,8 @@
     <script src="{{ asset('vendor/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min.js') }}"></script>
     <script src="{{ asset('vendor/datatables-select/js/dataTables.select.js') }}"></script>
     <script src="{{ asset('vendor/select2/dist/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('vendor/ckeditor/ckeditor.js') }}"></script>
+    <script src="{{ asset('vendor/blockUI/jquery.blockUI.js') }}"></script>
     <!-- Custom Theme Scripts -->
     <script src="{{ asset('js/custom.js') }}"></script>
     @yield('footer')

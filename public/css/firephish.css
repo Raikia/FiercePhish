@@ -35,3 +35,45 @@ body {
 tr.selected {
   background-color: #FFC5CB !important;
 }
+
+.outlook_window {
+  width: 100%;
+  background-color: #DEDEDE;
+  border: 1px solid #838383;
+  font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+.outlook_header {
+  margin-top: 10px;
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-bottom: 10px;
+}
+
+.outlook_from {
+  font-size: 14pt;
+}
+
+.outlook_subject {
+  
+  font-size: 12pt;
+
+}
+
+.outlook_to {
+  margin-top: 10px;
+  font-size: 9pt;
+  padding-bottom: 20px;
+}
+
+.outlook_message {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid #A5ACB5;
+  padding: 12px 12px 12px 12px;
+}
+
+.outlook_message a {
+  color: #0000EE;
+  text-decoration: underline;
+}

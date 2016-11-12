@@ -26,6 +26,8 @@
     "datatables": "^1.10.12",
     "x-editable": "^1.5.1",
     "select2": "select2-ng#^4.0.3",
-    "datatables-select": "^1.2.0"
+    "datatables-select": "^1.2.0",
+    "ckeditor": "^4.5.11",
+    "blockUI": "blockui#*"
   }
 }
