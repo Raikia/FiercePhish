@@ -58,5 +58,14 @@ class EmailController extends Controller
     
     public function check_settings_index()
     {
+        $settingsCheck = [
+            'a_record_primary' => 'Primary A record',
+            'a_record_mail'    => 'A record for mail',
+            'mx_record'        => 'MX record',
+            'spf_record'       => 'SPF record',
+            'dkim_record'      => 'DKIM record'
+        ];
+        
+        return view('emails.check_settings')->with('settingsCheck', $settingsCheck);
     }
 }
