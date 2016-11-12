@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\EmailTemplate;
+use App\Libraries\DomainTools;
 
 class EmailController extends Controller
 {
@@ -63,9 +64,8 @@ class EmailController extends Controller
             'a_record_mail'    => 'A record for mail',
             'mx_record'        => 'MX record',
             'spf_record'       => 'SPF record',
-            'dkim_record'      => 'DKIM record'
         ];
         
-        return view('emails.check_settings')->with('settingsCheck', $settingsCheck);
+        return view('emails.check_settings')->with('settingsCheck', $settingsCheck)->with('server_ip', DomainTools::getServerIP());
     }
 }
