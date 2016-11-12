@@ -41,6 +41,7 @@ Route::post('settings/profile', 'SettingsController@post_editprofile');
 Route::get('emails/templates/{id?}', 'EmailController@template_index');
 Route::post('emails/templates/add', 'EmailController@addTemplate');
 Route::post('emails/templates/edit', 'EmailController@editTemplate');
+Route::get('emails/check', 'EmailController@check_settings_index');
 
 // Dashboard Routes...
 Route::get('home', 'DashboardController@index');

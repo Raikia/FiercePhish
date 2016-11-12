@@ -178,8 +178,8 @@
           <div class="ln_solid"></div>
           <div class="form-group">
             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-              <button type="button" id="import_file_clear_btn" class="btn btn-primary">Clear</button>
-              <button type="submit" class="btn btn-success">Save Template</button>
+              <button type="button" id="delete_template_btn" class="btn btn-danger">Delete Template</button>
+              <button type="submit" style="margin-left: 30px;" class="btn btn-success">Save Template</button>
             </div>
           </div>
 
@@ -326,6 +326,8 @@
       
       $.get("{{ action('AjaxController@get_emailtemplate_info') }}/"+idToFind, function(data) {
         loadAjaxData(data);
+      }).fail(function() {
+        window.location = "{{ action('DashboardController@index') }}";
       })
     })
     
