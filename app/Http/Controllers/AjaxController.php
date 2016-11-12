@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\TargetUser;
 use App\TargetList;
 use App\EmailTemplate;
+use App\Libraries\DomainTools;
 use Response;
 use Cache;
 
@@ -83,7 +84,7 @@ class AjaxController extends Controller
         }
         elseif ($command == 'a_record_mail')
         {
-            $records = AjaxController::get_A_records($domain);
+            $records = DomainTools::get_A_records($domain);
             if (is_array($records))
             {
                 $response[$command] = 'An A record for "mail.'.$domain.'" does not exist pointing to the IP '.$server_ip;
@@ -112,7 +113,7 @@ class AjaxController extends Controller
                 if ($record['type'] == 'MX' && $record['host'] == $domain)
                 {
                     $system = $record['target'];
-                    $mx_lookup = AjaxController::get_A_records($system);
+                    $mx_lookup = DomainTools::get_A_records($system);
                     foreach ($mx_lookup as $host => $ips)
                     {
                         if ($host == $system && in_array($server_ip,$ips))
@@ -132,7 +133,8 @@ class AjaxController extends Controller
         }
         elseif ($command == 'spf_record')
         {
-            $results = AjaxController::get_TXT_records($domain);
+            $results = DomainTools::get_TXT_records($domain);
+            
             dd($results);
         }
         elseif ($command == 'dkim_record')
@@ -147,61 +149,5 @@ class AjaxController extends Controller
     
     
     // THESE FUNCTIONS SHOULD GET MOVED TO A LIBRARY!
-    static function get_A_records($domain)
-    {
-        $results = dns_get_record($domain, DNS_ALL);
-        if (count($results) == 0)
-            return 'Invalid domain';
-        $return = [];
-        foreach ($results as $record)
-        {
-            if ($record['type'] == 'A')
-            {
-                if (!isset($return[$record['host']]))
-                    $return[$record['host']] = [];
-                $return[$record['host']][] = $record['ip'];
-            }
-        }
-        return $return;
-    }
-    static function get_TXT_records($domain)
-    {
-        $results = dns_get_record($domain, DNS_ALL);
-        if (count($results) == 0)
-            return 'Invalid domain';
-        $return = [];
-        foreach ($results as $record)
-        {
-            if ($record['type'] == 'TXT')
-            {
-                if (!isset($return[$record['host']]))
-                    $return[$record['host']] = [];
-                $return[$record['host']][] = $record['txt'];
-            }
-        }
-        return $return;
-    }
     
-    
-    static function get_SPF_record($domain)
-    {
-        $txt_records = AjaxController::get_TXT_records($domain);
-    }
-    
-    static function parse_SPF($first_record, $target_domain)
-    {
-        
-    }
-    
-    static function cidr_match($ip, $cidr)
-    {
-        list($subnet, $mask) = explode('/', $cidr);
-    
-        if ((ip2long($ip) & ~((1 << (32 - $mask)) - 1) ) == ip2long($subnet))
-        { 
-            return true;
-        }
-    
-        return false;
-    }
 }
