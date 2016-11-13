@@ -10,7 +10,7 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
+// Template: https://colorlib.com/polygon/gentelella/icons.html
 
 // Authentication Routes...
 Route::get('login', 'Auth\AuthController@showLoginForm');
