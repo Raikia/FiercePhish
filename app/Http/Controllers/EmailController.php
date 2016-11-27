@@ -68,4 +68,9 @@ class EmailController extends Controller
         
         return view('emails.check_settings')->with('settingsCheck', $settingsCheck)->with('server_ip', DomainTools::getServerIP());
     }
+
+    public function send_simple_index()
+    {
+        return view('emails.send_simple');
+    }
 }
