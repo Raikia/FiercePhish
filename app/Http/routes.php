@@ -29,6 +29,13 @@ Route::get('targets/assign/{id?}', 'TargetsController@assign_index');
 Route::post('targets/assign/set', 'TargetsController@assignToLists');
 
 
+
+// CampaignController Routes...
+Route::get('campaigns', 'CampaignController@index');
+Route::get('campaigns/create', 'CampaignController@create');
+
+
+
 // SettingsController Routes...
 Route::get('settings/users', 'SettingsController@index');
 Route::post('settings/users/add', 'SettingsController@addUser');
