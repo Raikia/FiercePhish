@@ -282,7 +282,7 @@
     <script src="{{ asset('vendor/bootstrap-progressbar/bootstrap-progressbar.min.js') }}"></script>
     <script src="{{ asset('vendor/jquery.inputmask/dist/jquery.inputmask.bundle.js') }}"></script>
     <script src="{{ asset('vendor/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min.js') }}"></script>
-    <script src="{{ asset('vendor/datatables-select/js/dataTables.select.js') }}"></script>
+    <script src="{{ asset('vendor/datatables.net-select/js/dataTables.select.js') }}"></script>
     <script src="{{ asset('vendor/select2/dist/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('vendor/ckeditor/ckeditor.js') }}"></script>
     <script src="{{ asset('vendor/blockUI/jquery.blockUI.js') }}"></script>
