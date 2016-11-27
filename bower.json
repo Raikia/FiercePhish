@@ -23,11 +23,14 @@
     "nprogress": "^0.2.0",
     "bootstrap-progressbar": "^0.9.0",
     "jquery.inputmask": "^3.3.3",
-    "datatables": "^1.10.12",
     "x-editable": "^1.5.1",
     "select2": "select2-ng#^4.0.3",
-    "datatables-select": "^1.2.0",
     "ckeditor": "^4.5.11",
-    "blockUI": "blockui#*"
+    "blockUI": "blockui#*",
+    "bootstrap-datepicker": "^1.6.4",
+    "datatables.net": "^1.10.12",
+    "datatables.net-bs": "^1.10.12",
+    "datatables.net-select-bs": "^1.2.0",
+    "jt.timepicker": "jquery-timepicker-jt#^1.11.8"
   }
 }

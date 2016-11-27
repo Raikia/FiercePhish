@@ -15,12 +15,14 @@
     <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css') }}" rel="stylesheet">
 
-    <link href="{{ asset('vendor/datatables/media/css/dataTables.bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/datatables.net-bs/css/dataTables.bootstrap.min.css') }}" rel="stylesheet">
     
     <link href="{{ asset('vendor/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css') }}" rel="stylesheet">
-    <link href="{{ asset('vendor/datatables-select/css/select.bootstrap.scss') }}" rel="stylesheet">
-    <link href="{{ asset('vendor/datatables-select/css/select.dataTables.scss') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/datatables.net-select-bs/css/select.bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/select2/dist/css/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/jt.timepicker/jquery.timepicker.css') }}" rel="stylesheet">
+    
     <!-- Custom Theme Style -->
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/firephish.css') }}" rel="stylesheet">
@@ -275,8 +277,8 @@
     <script src="{{ asset('vendor/fastclick/lib/fastclick.js') }}"></script>
     <!-- NProgress -->
     <script src="{{ asset('vendor/nprogress/nprogress.js') }}"></script>
-    <script src="{{ asset('vendor/datatables/media/js/jquery.dataTables.js') }}"></script>
-    <script src="{{ asset('vendor/datatables/media/js/dataTables.bootstrap.js') }}"></script>
+    <script src="{{ asset('vendor/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap-progressbar/bootstrap-progressbar.min.js') }}"></script>
     <script src="{{ asset('vendor/jquery.inputmask/dist/jquery.inputmask.bundle.js') }}"></script>
     <script src="{{ asset('vendor/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min.js') }}"></script>
@@ -284,6 +286,8 @@
     <script src="{{ asset('vendor/select2/dist/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('vendor/ckeditor/ckeditor.js') }}"></script>
     <script src="{{ asset('vendor/blockUI/jquery.blockUI.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('vendor/jt.timepicker/jquery.timepicker.min.js') }}"></script>
     <!-- Custom Theme Scripts -->
     <script src="{{ asset('js/custom.js') }}"></script>
     @yield('footer')
