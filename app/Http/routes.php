@@ -50,6 +50,7 @@ Route::post('emails/templates/add', 'EmailController@addTemplate');
 Route::post('emails/templates/edit', 'EmailController@editTemplate');
 Route::post('emails/templates/delete', 'EmailController@deleteTemplate');
 Route::get('emails/check', 'EmailController@check_settings_index');
+Route::get('emails/simple', 'EmailController@send_simple_index');
 
 // Dashboard Routes...
 Route::get('home', 'DashboardController@index');
