@@ -7,3 +7,5 @@ Homestead.json
 .env
 php_errors.log
 php.ini
+/.vagrant
+Vagrantfile
