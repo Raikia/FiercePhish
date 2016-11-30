@@ -75,13 +75,14 @@
                   </li>
                   <li><a><i class="fa fa-play"></i> Campaigns <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="#">View all campaigns</a></li>
-                      <li><a href="#">Create new campaign</a></li>
+                      <li><a href="{{ action('CampaignController@index') }}">View all campaigns</a></li>
+                      <li><a href="{{ action('CampaignController@create') }}">Create new campaign</a></li>
                     </ul>
                   </li>
                   
                   <li><a><i class="fa fa-envelope-o"></i> Emails <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
+                      <li><a href="{{ action('EmailController@send_simple_index') }}">Simple Send</a></li>
                       <li><a href="{{ action('EmailController@template_index') }}">Email Templates</a></li>
                       <li><a href="#">Inbox</a></li>
                       <li><a href="{{ action('EmailController@check_settings_index') }}">Check Email DNS</a></li>
