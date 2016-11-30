@@ -73,4 +73,9 @@ class EmailController extends Controller
     {
         return view('emails.send_simple');
     }
+
+    public function send_simple_post(Request $request)
+    {
+        return redirect()->action('EmailController@send_simple_index')->with('success', 'Email sent!')->with('warn', print_r($request->all(),true));
+    }
 }

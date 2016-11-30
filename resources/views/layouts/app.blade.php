@@ -288,6 +288,7 @@
     <script src="{{ asset('vendor/blockUI/jquery.blockUI.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('vendor/jt.timepicker/jquery.timepicker.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootbox.js/bootbox.js') }}"></script>
     <!-- Custom Theme Scripts -->
     <script src="{{ asset('js/custom.js') }}"></script>
     @yield('footer')
