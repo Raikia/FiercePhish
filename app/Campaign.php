@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Campaign extends Model
 {
-    public const NOT_STARTED = 1;
-    public const STARTED = 2;
-    public const SENDING = 3;
-    public const WAITING = 4;
-    public const FINISHED = 5;
+    const NOT_STARTED = 1;
+    const STARTED = 2;
+    const SENDING = 3;
+    const WAITING = 4;
+    const FINISHED = 5;
     
     protected $fillable = ['name', 'notes'];
     

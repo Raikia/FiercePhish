@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\EmailTemplate;
 use App\Libraries\DomainTools;
+use App\Email; 
+use File;
+
 
 class EmailController extends Controller
 {
@@ -76,6 +79,29 @@ class EmailController extends Controller
 
     public function send_simple_post(Request $request)
     {
+        $this->validate($request, [
+            'sbt_sender_name' => 'required',
+            'sbt_sender_email' => 'required|email',
+            'sbt_receiver_name' => 'required',
+            'sbt_receiver_email' => 'required|email',
+            'sbt_subject' => 'required',
+            'sbt_message' => 'required',
+            ]);
+        $email_obj = new Email();
+        $email_obj->sender_name = $request->input('sbt_sender_name');
+        $email_obj->sender_email = $request->input('sbt_sender_email');
+        $email_obj->receiver_name = $request->input('sbt_receiver_name');
+        $email_obj->receiver_email = $request->input('sbt_receiver_email');
+        $email_obj->subject = $request->input('sbt_subject');
+        $email_obj->message = $request->input('message');
+        $email_obj->tls = ($request->input('sbt_sendTLS') == 'yes');
+        if ($request->input('sbt_attachment') != '')
+        {
+            // This doesnt work because of security issuesssss
+            $content = File::get($request->file('sbt_attachment')->getRealPath());
+            die($content);
+        }
+        $email_obj->status = Email::NOT_SENT;
         return redirect()->action('EmailController@send_simple_index')->with('success', 'Email sent!')->with('warn', print_r($request->all(),true));
     }
 }
