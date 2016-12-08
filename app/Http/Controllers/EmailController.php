@@ -102,6 +102,7 @@ class EmailController extends Controller
             die($content);
         }
         $email_obj->status = Email::NOT_SENT;
-        return redirect()->action('EmailController@send_simple_index')->with('success', 'Email sent!')->with('warn', print_r($request->all(),true));
+        print_r($request->all());
+        //return redirect()->action('EmailController@send_simple_index')->with('success', 'Email sent!')->with('warn', print_r($request->all(),true));
     }
 }

@@ -55,7 +55,7 @@
   <div class="col-md-6 col-sm-6 col-xs-6">
     <div class="x_panel">
       <div class="x_content">
-          <form class="form-horizontal form-label-left input_mask">
+          <form id="real_form" class="form-horizontal form-label-left input_mask" enctype="multipart/form-data" action="{{ action('EmailController@send_simple_post') }}" method="post">
 
               <div class="form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12">Attachment</label>
@@ -82,6 +82,15 @@
                     </div>
                 </div>
               </div>
+              <input type="hidden" name="sbt_sender_name" id="sbt_sender_name">
+          <input type="hidden" name="sbt_sender_email" id="sbt_sender_email">
+          <input type="hidden" name="sbt_receiver_name" id="sbt_receiver_name">
+          <input type="hidden" name="sbt_receiver_email" id="sbt_receiver_email">
+          <input type="hidden" name="sbt_attachment" id="sbt_attachment">
+          <input type="hidden" name="sbt_sendTLS" id="sbt_sendTLS">
+          <input type="hidden" name="sbt_subject" id="sbt_subject">
+          <input type="hidden" name="sbt_message" id="sbt_message">
+          {{ csrf_field() }}
             </form>
       </div>
     </div>
@@ -108,19 +117,11 @@
 <div class="row">
   <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
-      <form id="send_email_form" class="form-horizontal form-label-left input_mask" enctype="multipart/form-data" action="{{ action('EmailController@send_simple_post') }}" method="post">
-        {{ csrf_field() }}
+      <form id="send_email_form" class="form-horizontal form-label-left input_mask">
         <div style="text-align: center;">
           <button class="btn btn-success" style="margin-right: 30px;">Send email</button>
           <a class="btn btn-danger" style="margin-left: 30px;" href="">Cancel</a>
-          <input type="hidden" name="sbt_sender_name" id="sbt_sender_name">
-          <input type="hidden" name="sbt_sender_email" id="sbt_sender_email">
-          <input type="hidden" name="sbt_receiver_name" id="sbt_receiver_name">
-          <input type="hidden" name="sbt_receiver_email" id="sbt_receiver_email">
-          <input type="hidden" name="sbt_attachment" id="sbt_attachment">
-          <input type="hidden" name="sbt_sendTLS" id="sbt_sendTLS">
-          <input type="hidden" name="sbt_subject" id="sbt_subject">
-          <input type="hidden" name="sbt_message" id="sbt_message">
+          
         </div>
       </form>
     </div>
@@ -136,14 +137,14 @@
     CKEDITOR.replace('bodyMsg');
 
     $("#send_email_form").submit(function() {
-      var vars = ['sender_name', 'sender_email', 'receiver_name', 'receiver_email', 'attachment', 'sendTLS', 'subject'];
+      var vars = ['sender_name', 'sender_email', 'receiver_name', 'receiver_email', 'subject'];
       for (var x=0; x< vars.length; ++x)
       {
         $("#sbt_"+vars[x]).val($("#"+vars[x]).val());
       }
       $("#sbt_message").val(CKEDITOR.instances.bodyMsg.getData());
 
-      var check_to_submit = {'sender_name': "Sender Name", 'sender_email': "Sender Email", 'receiver_name': "Receiver Name", 'receiver_email': "Receiver Email", 'sendTLS': 'TLS Option', 'subject': 'Subject', 'message': 'Email Body'};
+      var check_to_submit = {'sender_name': "Sender Name", 'sender_email': "Sender Email", 'receiver_name': "Receiver Name", 'receiver_email': "Receiver Email", 'subject': 'Subject', 'message': 'Email Body'};
       var to_check = Object.keys(check_to_submit);
 
       for (var x=0; x<to_check.length; ++x)
@@ -154,7 +155,8 @@
           return false;
         }
       }
-      return true;
+      $("#real_form").submit();
+      return false;
     });
 </script>
 @endsection
