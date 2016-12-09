@@ -24,4 +24,9 @@ class Campaign extends Model
     {
         return $this->hasOne('App\TargetList');
     }
+    
+    public function emails()
+    {
+        return $this->hasMany('App\Email');
+    }
 }
