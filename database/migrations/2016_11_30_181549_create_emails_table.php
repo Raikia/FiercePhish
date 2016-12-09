@@ -14,6 +14,7 @@ class CreateEmailsTable extends Migration
     {
         Schema::create('emails', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('campaign_id')->nullable();
             $table->string('sender_name');
             $table->string('sender_email');
             $table->string('receiver_name');

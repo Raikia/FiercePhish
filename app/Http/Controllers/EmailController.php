@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Jobs\SendEmail;
 use App\Http\Requests;
 use App\EmailTemplate;
 use App\Libraries\DomainTools;
@@ -106,6 +107,9 @@ class EmailController extends Controller
         }
         $email_obj->status = Email::NOT_SENT;
         $email_obj->save();
-        return redirect()->action('EmailController@send_simple_index')->with('success', 'Email sent!');
+        $email_obj->send();
+        
+        // Maybe this should redirect to the list of the queue?
+        return redirect()->action('EmailController@send_simple_index')->with('success', 'Email queued for immediate sending!');
     }
 }
