@@ -22,7 +22,9 @@ class CreateEmailsTable extends Migration
             $table->text('message');
             $table->boolean('tls');
             $table->boolean('has_attachment');
-            $table->text('attachment');
+            $table->text('attachment')->nullable();
+            $table->string('attachment_name')->nullable();
+            $table->string('attachment_mime')->nullable();
             $table->integer('status');
             $table->timestamps();
         });

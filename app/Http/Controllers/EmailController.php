@@ -86,6 +86,7 @@ class EmailController extends Controller
             'sbt_receiver_email' => 'required|email',
             'sbt_subject' => 'required',
             'sbt_message' => 'required',
+            'sendTLS' =>  'required',
             ]);
         $email_obj = new Email();
         $email_obj->sender_name = $request->input('sbt_sender_name');
@@ -93,16 +94,18 @@ class EmailController extends Controller
         $email_obj->receiver_name = $request->input('sbt_receiver_name');
         $email_obj->receiver_email = $request->input('sbt_receiver_email');
         $email_obj->subject = $request->input('sbt_subject');
-        $email_obj->message = $request->input('message');
-        $email_obj->tls = ($request->input('sbt_sendTLS') == 'yes');
-        if ($request->input('sbt_attachment') != '')
+        $email_obj->message = $request->input('sbt_message');
+        $email_obj->tls = ($request->input('sendTLS') == 'yes');
+        $email_obj->has_attachment = $request->hasFile('attachment');
+        if ($request->hasFile('attachment'))
         {
-            // This doesnt work because of security issuesssss
-            $content = File::get($request->file('sbt_attachment')->getRealPath());
-            die($content);
+            $content = File::get($request->file('attachment')->getRealPath());
+            $email_obj->attachment = base64_encode($content);
+            $email_obj->attachment_mime = $request->file('attachment')->getMimeType();
+            $email_obj->attachment_name = $request->file('attachment')->getClientOriginalName();
         }
         $email_obj->status = Email::NOT_SENT;
-        print_r($request->all());
-        //return redirect()->action('EmailController@send_simple_index')->with('success', 'Email sent!')->with('warn', print_r($request->all(),true));
+        $email_obj->save();
+        return redirect()->action('EmailController@send_simple_index')->with('success', 'Email sent!');
     }
 }
