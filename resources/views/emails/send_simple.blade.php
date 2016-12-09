@@ -83,14 +83,12 @@
                 </div>
               </div>
               <input type="hidden" name="sbt_sender_name" id="sbt_sender_name">
-          <input type="hidden" name="sbt_sender_email" id="sbt_sender_email">
-          <input type="hidden" name="sbt_receiver_name" id="sbt_receiver_name">
-          <input type="hidden" name="sbt_receiver_email" id="sbt_receiver_email">
-          <input type="hidden" name="sbt_attachment" id="sbt_attachment">
-          <input type="hidden" name="sbt_sendTLS" id="sbt_sendTLS">
-          <input type="hidden" name="sbt_subject" id="sbt_subject">
-          <input type="hidden" name="sbt_message" id="sbt_message">
-          {{ csrf_field() }}
+              <input type="hidden" name="sbt_sender_email" id="sbt_sender_email">
+              <input type="hidden" name="sbt_receiver_name" id="sbt_receiver_name">
+              <input type="hidden" name="sbt_receiver_email" id="sbt_receiver_email">
+              <input type="hidden" name="sbt_subject" id="sbt_subject">
+              <input type="hidden" name="sbt_message" id="sbt_message">
+              {{ csrf_field() }}
             </form>
       </div>
     </div>
@@ -134,6 +132,8 @@
 @section('footer')
 <script type="text/javascript">
 /* global $ */
+/* global CKEDITOR */
+/* global bootbox */
     CKEDITOR.replace('bodyMsg');
 
     $("#send_email_form").submit(function() {
