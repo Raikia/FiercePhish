@@ -26,4 +26,10 @@ class CampaignController extends Controller
         $all_lists = TargetList::orderby('name', 'asc')->get();
         return view('campaigns.create')->with('templates', $all_templates)->with('lists', $all_lists);
     }
+    
+    public function create_post(Request $request)
+    {
+        print_r($request->all());
+        die();
+    }
 }

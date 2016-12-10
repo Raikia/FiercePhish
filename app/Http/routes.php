@@ -33,6 +33,7 @@ Route::post('targets/assign/set', 'TargetsController@assignToLists');
 // CampaignController Routes...
 Route::get('campaigns', 'CampaignController@index');
 Route::get('campaigns/create', 'CampaignController@create');
+Route::post('campaigns/create', 'CampaignController@create_post');
 
 
 
