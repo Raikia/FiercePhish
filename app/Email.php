@@ -14,6 +14,7 @@ class Email extends Model
 	const SENDING = 2;
 	const SENT = 3;
 	const PENDING_RESENT = 4;
+	const CANCELLED = 8;
 	const FAILED = 9;
 	
     protected $fillable = ['sender_name', 'sender_email', 'receiver_name', 'receiver_email', 'subject', 'message', 'tls', 'has_attachment', 'attachment', 'status'];
@@ -43,6 +44,8 @@ class Email extends Model
     			return "Sent";
     		case Email::PENDING_RESENT:
     			return "Pending resend";
+    		case Email::CANCELLED:
+    		    return "Cancelled";
     		case Email::FAILED:
     			return "Failed sending";
     		default:
