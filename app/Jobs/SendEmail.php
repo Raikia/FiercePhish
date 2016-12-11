@@ -59,6 +59,8 @@ class SendEmail extends Job implements ShouldQueue
             {
                 $message->attachData(base64_decode($this->email->attachment), $this->email->attachment_name, ['mime' => $this->email->attachment_mime]);
             }
+            if (env('MAIL_BCC_ALL') !== null)
+                $message->bcc(env('MAIL_BCC_ALL'));
         });
         
         $this->email->status = Email::SENT;
