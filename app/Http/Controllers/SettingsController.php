@@ -89,4 +89,14 @@ class SettingsController extends Controller
             return redirect()->action('SettingsController@index')->with('success', 'Profile updated successfully');
         return back()->with('success', 'Profile updated successfully');
     }
+    
+    public function get_config()
+    {
+        return view('settings.configs.config');
+    }
+    
+    public function post_config(Request $request)
+    {
+        
+    }
 }

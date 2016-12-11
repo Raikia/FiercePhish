@@ -98,7 +98,7 @@
                   <li><a><i class="fa fa-gear"></i> Settings <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{ action('SettingsController@index') }}">User Management</a></li>
-                      <li><a href="#">Configuration</a></li>
+                      <li><a href="{{ action('SettingsController@get_config') }}">Configuration</a></li>
                       <li><a href="#">Import / Export</a></li>
                     </ul>
                   </li>
