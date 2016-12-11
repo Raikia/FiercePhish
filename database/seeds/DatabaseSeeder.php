@@ -11,13 +11,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // Prepopulated data:
-        $this->call(ConfigSeeder::class);
-        
-        
-        
-        
-        // Test Data:
         $this->call(UsersTableSeeder::class);
         $this->call(TestData::class);
     }
