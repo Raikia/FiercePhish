@@ -19,6 +19,8 @@ class Email extends Model
 	
     protected $fillable = ['sender_name', 'sender_email', 'receiver_name', 'receiver_email', 'subject', 'message', 'tls', 'has_attachment', 'attachment', 'status'];
     
+    protected $touches = ['campaign'];
+    
     public function campaign()
     {
     	return $this->belongsTo('App\Campaign');

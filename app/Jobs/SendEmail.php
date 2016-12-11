@@ -51,7 +51,7 @@ class SendEmail extends Job implements ShouldQueue
         $this->email->status = Email::SENDING;
         $this->email->save();
         
-        Mail::send('layouts.email', ['data' => $this->email->message], function ($message) {
+       /* Mail::send('layouts.email', ['data' => $this->email->message], function ($message) {
             $message->from($this->email->sender_email, $this->email->sender_name);
             $message->to($this->email->receiver_email, $this->email->receiver_name);
             $message->subject($this->email->subject);
@@ -61,14 +61,21 @@ class SendEmail extends Job implements ShouldQueue
             }
             if (env('MAIL_BCC_ALL') !== null)
                 $message->bcc(env('MAIL_BCC_ALL'));
-        });
+        });*/
         
         $this->email->status = Email::SENT;
         $this->email->save();
         
         if ($this->email->campaign != null)
         {
-            $this->email->campaign->status = Campaign::WAITING;
+            if ($this->email->campaign->emails()->where('status', Email::NOT_SENT)->count() == 0)
+            {
+                $this->email->campaign->status = Campaign::FINISHED;
+            }
+            else
+            {
+                $this->email->campaign->status = Campaign::WAITING;
+            }
             $this->email->campaign->save();
         }
     }

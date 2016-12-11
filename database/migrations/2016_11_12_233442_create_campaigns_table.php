@@ -18,7 +18,7 @@ class CreateCampaignsTable extends Migration
             $table->string('from_name');
             $table->string('from_email');
             $table->text('description');
-            $table->integer('state');
+            $table->integer('status');
             $table->integer('target_list_id');
             $table->integer('email_template_id');
             $table->timestamps();

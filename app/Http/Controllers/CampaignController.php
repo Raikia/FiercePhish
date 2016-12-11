@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\EmailTemplate;
 use App\TargetList;
 use App\Campaign;
+use App\Email;
 
 class CampaignController extends Controller
 {
@@ -18,7 +19,8 @@ class CampaignController extends Controller
     
     public function index()
     {
-        return view('campaigns.index');
+        $all_campaigns = Campaign::with('emails')->get();
+        return view('campaigns.index')->with('all_campaigns', $all_campaigns);
     }
     
     public function create()
@@ -30,7 +32,7 @@ class CampaignController extends Controller
     
     public function create_post(Request $request)
     {
-        // Array ( [campaign_name] => efWEF [campaign_description] => wefWEF [email_template] => 1 [target_list] => 2 [sender_name] => wef [sender_email] => WEF [sending_schedule] => all [send_num] => 231234 [send_every_x_minutes] => 32523 [starting_date] => 12/10/2016 [starting_time] => 12:48am [_token] => a9e7Gf79PBAdkOV30CeViAM0fe9b95OcZGHu9roR )
+        
         $this->validate($request, [
             'campaign_name' => 'required',
             'campaign_description' => 'required',
@@ -47,10 +49,10 @@ class CampaignController extends Controller
         $campaign->from_name = $request->input('sender_name');
         $campaign->from_email = $request->input('sender_email');
         $campaign->description = $request->input('campaign_description');
-        $campaign->state = Campaign::NOT_STARTED;
+        $campaign->status = Campaign::NOT_STARTED;
         $campaign->target_list_id = $request->input('target_list');
-        $campaign->email_template_id = $request->input('email_template_id');
-        //$campaign->save();
+        $campaign->email_template_id = $request->input('email_template');
+        $campaign->save();
         $start_date = $request->input('starting_date') ?: date('m/d/Y');
         $start_time = $request->input('starting_time') ?: date('g:ia');
         $seconds_offset_start = max(strtotime($start_date . " " . $start_time) - time(), 1);
