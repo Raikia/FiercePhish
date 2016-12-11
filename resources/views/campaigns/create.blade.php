@@ -190,11 +190,15 @@
   
   
   $("#campaign_form").submit(function() {
-    var fields = ['campaign_name', 'campaign_description', 'email_template', 'target_list', 'sender_name', 'sender_email', 'sending_schedule', 'send_num', 'send_every_x_minutes', 'starting_date', 'starting_time'];
+    var fields = ['campaign_name', 'campaign_description', 'email_template', 'target_list', 'sender_name', 'sender_email', 'send_num', 'send_every_x_minutes', 'starting_date', 'starting_time'];
     for (var x=0; x < fields.length; ++x)
     {
       $("input[name="+fields[x]+"]").val($("#"+fields[x]+"_raw").val());
     }
+    
+    if ($("#sending_schedule").prop('checked'))
+      $("input[name=sending_schedule]").val('all');
+    
     var required_fields = { 'campaign_name': 'Campaign Name', 'campaign_description': 'Campaign Description', 'email_template': 'Email Template', 'target_list': 'Target List', 'sender_name': 'Sender Name', 'sender_email': 'Sender Email' };
     var keys_fields = Object.keys(required_fields);
     for (var x=0; x < keys_fields.length; ++x)
