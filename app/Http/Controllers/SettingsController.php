@@ -97,6 +97,35 @@ class SettingsController extends Controller
     
     public function post_config(Request $request)
     {
-        
+        $all_updates = $request->except('_token');
+        //echo nl2br(var_dump($all_updates));
+        $path = base_path('.env');
+        if (file_exists($path) && is_writable($path)) {
+            $file_contents = file_get_contents($path);
+            foreach ($all_updates as $key => $value)
+            {
+                $real_old_value = env($key);
+                if ($real_old_value === true)
+                    $real_old_value = 'true';
+                elseif ($real_old_value === false)
+                    $real_old_value = 'false';
+                elseif ($real_old_value === null)
+                    $real_old_value = 'null';
+                
+                $real_new_value = $value;
+                if ($real_new_value === "")
+                    $real_new_value = 'null';
+               // echo "<br /><br />SEARCHING FOR: '".$key.'='.$real_old_value."', replacing with '".$key.'='.$real_new_value."'<br /><br />";
+                $file_contents = str_replace($key.'='.$real_old_value, $key.'='.$real_new_value, $file_contents);
+            }
+            //echo nl2br(print_r($file_contents, true));
+            file_put_contents($path, $file_contents);
+            //die();
+            return back()->with('success', 'Settings successfully saved!');
+        }
+        else
+        {
+            return back()->withErrors('Settings could not be saved. Check the file permissions on "'.$path.'"!');
+        }
     }
 }
