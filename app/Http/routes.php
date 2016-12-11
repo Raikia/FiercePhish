@@ -43,6 +43,8 @@ Route::post('settings/users/add', 'SettingsController@addUser');
 Route::post('settings/users/delete', 'SettingsController@deleteUser');
 Route::get('settings/profile/{id?}', 'SettingsController@get_editprofile');
 Route::post('settings/profile', 'SettingsController@post_editprofile');
+Route::get('settings/config', 'SettingsController@get_config');
+Route::post('settings/config/save', 'SettingsController@post_config');
 
 
 // EmailController Routes...
