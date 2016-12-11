@@ -248,7 +248,7 @@
       }
       else
       {
-        $("#outlook_subject").html(data);
+        $("#outlook_subject").html(parseVariables(data));
       }
     }
     
