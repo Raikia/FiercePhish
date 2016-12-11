@@ -152,7 +152,7 @@
           <div class="form-group">
             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
               <button type="button" id="import_file_clear_btn" class="btn btn-primary">Clear</button>
-              <button type="submit" class="btn btn-success">Create Target</button>
+              <button type="submit" class="btn btn-success">Import Targets</button>
             </div>
           </div>
 
