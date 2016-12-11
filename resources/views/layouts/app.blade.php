@@ -105,26 +105,19 @@
                 </ul>
               </div>
               <div class="menu_section">
-                <h3>Active Campaigns</h3>
+                <h3>Active Campaigns ({{ $layout_all_active_campaigns->count() }})</h3>
                 <ul class="nav side-menu">
-                  <li><a><i class="fa fa-bullhorn"></i>Microsoft #1 <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="#">Status</a></li>
-                      <li><a href="#">Complete</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-bullhorn"></i>Google #1 <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="#">Status</a></li>
-                      <li><a href="#">Complete</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-bullhorn"></i>Yahoo #1 <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="#">Status</a></li>
-                      <li><a href="#">Complete</a></li>
-                    </ul>
-                  </li>
+                  @foreach ($layout_all_active_campaigns as $camp)
+                    <li><a><i class="fa fa-bullhorn"></i>{{ $camp->name }} <span class="fa fa-chevron-down"></span></a>
+                      <ul class="nav child_menu">
+                        <li><a href="#">View Campaign</a></li>
+                        <li><a>{{ (100-round((($camp->emails()->where('status', \App\Email::NOT_SENT)->count())/($camp->emails()->count())*100))) }}% Complete</a></li>
+                      </ul>
+                    </li>
+                  @endforeach
+                  @if ($layout_all_active_campaigns->count() == 0)
+                    <li><a><i class="fa fa-bullhorn"></i>No active campaigns!</a></li>
+                  @endif
                 </ul>
               </div>
 
