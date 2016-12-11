@@ -162,34 +162,12 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>[name]</td>
-                      <td>The name of the person (example: "John Doe")</td>
-                    </tr>
-                    <tr>
-                      <td>[username]</td>
-                      <td>Username of the person (example: In "john.doe@domain.com", it would be "john.doe")</td>
-                    </tr>
-                    <tr>
-                      <td>[email]</td>
-                      <td>Email of the target person (example: "john.doe@domain.com")</td>
-                    </tr>
-                    <tr>
-                      <td>[uid]</td>
-                      <td>A unique identifier for this user. This is useful in links to identify who clicked on a specific link</td>
-                    </tr>
-                    <tr>
-                      <td>[from_name]</td>
-                      <td>Name of the person sending the email</td>
-                    </tr>
-                    <tr>
-                      <td>[from_email]</td>
-                      <td>Email of the person sending the email</td>
-                    </tr>
-                    <tr>
-                      <td>[extra]</td>
-                      <td>Extra data a campaign might like to customize (such as a signature with titles)</td>
-                    </tr>
+                    @foreach (App\EmailTemplate::$VARS as $var => $desc)
+                      <tr>
+                        <td>{{ $var }}</td>
+                        <td>{{ $desc }}</td>
+                      </tr>
+                    @endforeach
                   </tbody>
                 </table>
                 <p>If you use these variables in your template, the preview below will simulate Bill Smith ("bsmith@malicious.com") emailing John Doe ("john.doe@domain.com").</p>
@@ -305,13 +283,9 @@
     });
     
     function parseVariables(emailTemplate) {
-      emailTemplate = emailTemplate.replace(/\[name\]/ig, "John Doe");
-      emailTemplate = emailTemplate.replace(/\[username\]/ig, "john.doe")
-      emailTemplate = emailTemplate.replace(/\[email\]/ig, "john.doe@domain.com");
-      emailTemplate = emailTemplate.replace(/\[uid\]/ig, "0696f64d67415a89782075f1d990b2deb449d5e5");
-      emailTemplate = emailTemplate.replace(/\[from_name\]/ig, "Bill Smith");
-      emailTemplate = emailTemplate.replace(/\[from_email\]/ig, "bsmith@malicious.com");
-      emailTemplate = emailTemplate.replace(/\[extra\]/ig, "Director of IT Security");
+      @foreach (App\EmailTemplate::$DEFAULTS as $var => $val)
+        emailTemplate = emailTemplate.split("{{ $var }}").join("{{ $val }}")
+      @endforeach
       return emailTemplate;
     }
     
