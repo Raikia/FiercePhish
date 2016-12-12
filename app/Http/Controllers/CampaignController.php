@@ -89,4 +89,18 @@ class CampaignController extends Controller
         // Change this to be redirect to the running campaign once that page is functional
         return back()->with('success', 'Campaign has been launched successfully');
     }
+    
+    
+    public function campaign_details($id)
+    {
+        $campaign = Campaign::with('emails')->findOrFail($id);
+        return view('campaigns.details')->with('campaign', $campaign);
+    }
+    
+    public function campaign_cancel($id)
+    {
+        $campaign = Campaign::with('emails')->findOrFail($id);
+        $campaign->cancel();
+        return back()->with('success', 'Campaign was cancelled successfully');
+    }
 }

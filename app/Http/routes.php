@@ -34,6 +34,8 @@ Route::post('targets/assign/set', 'TargetsController@assignToLists');
 Route::get('campaigns', 'CampaignController@index');
 Route::get('campaigns/create', 'CampaignController@create');
 Route::post('campaigns/create', 'CampaignController@create_post');
+Route::get('campaigns/{id}', 'CampaignController@campaign_details');
+Route::post('campaigns/{id}/cancel', 'CampaignController@campaign_cancel');
 
 
 

@@ -54,4 +54,13 @@ class Email extends Model
     			return "Unknown status";
     	}
     }
+    
+    public function cancel()
+    {
+        if ($this->status != Email::CANCELLED && $this->status != Email::FAILED)
+        {
+            $this->status = Email::CANCELLED;
+            $this->save();
+        }
+    }
 }

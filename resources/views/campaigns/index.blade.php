@@ -31,7 +31,7 @@
             <tbody>
               @foreach ($all_campaigns as $camp)
                 <tr>
-                  <td><a href="">{{ $camp->name }}</a></td>
+                  <td><a href="{{ action('CampaignController@campaign_details', ['id' => $camp->id ]) }}">{{ $camp->name }}</a></td>
                   <td>{{ $camp->description }}</td>
                   <td>{{ $camp->getStatus() }}</td>
                   <td>{{ $camp->emails()->where('status', \App\Email::SENT)->count() }} / {{ $camp->emails()->count() }} sent</td>
