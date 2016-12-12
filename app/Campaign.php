@@ -48,4 +48,15 @@ class Campaign extends Model
     			return "Unknown status";
     	}
     }
+    
+    public function cancel()
+    {
+        if ($this->status != Campaign::FINISHED && $this->status != Campaign::CANCELLED)
+        {
+            $this->status = Campaign::CANCELLED;
+            $this->save();
+        }
+        foreach ($this->emails as $email)
+            $email->cancel();
+    }
 }
