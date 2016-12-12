@@ -17,12 +17,12 @@ class Campaign extends Model
     
     public function email_template()
     {
-        return $this->hasOne('App\EmailTemplate');
+        return $this->belongsTo('App\EmailTemplate');
     }
     
     public function target_list()
     {
-        return $this->hasOne('App\TargetList');
+        return $this->belongsTo('App\TargetList');
     }
     
     public function emails()
