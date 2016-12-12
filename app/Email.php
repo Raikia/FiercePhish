@@ -57,7 +57,7 @@ class Email extends Model
     
     public function cancel()
     {
-        if ($this->status != Email::CANCELLED && $this->status != Email::FAILED)
+        if ($this->status != Email::SENT && $this->status != Email::CANCELLED && $this->status != Email::FAILED)
         {
             $this->status = Email::CANCELLED;
             $this->save();
