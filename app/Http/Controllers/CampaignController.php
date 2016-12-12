@@ -62,7 +62,7 @@ class CampaignController extends Controller
         {
             $send_all_immediately = true;
         }
-        // If this becomes too slow, we can move this to a background job based on the campaign
+        // If this becomes too slow, we can move this to a background job based on the campaign, but we'd need to save the delays
         $send_num_emails = min((int)$request->input('send_num'),1000);
         $send_every_minutes = min((int)$request->input('send_every_x_minutes'), 1000);
         $counter = 0;

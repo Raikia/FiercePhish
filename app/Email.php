@@ -13,7 +13,7 @@ class Email extends Model
 	const NOT_SENT = 1;
 	const SENDING = 2;
 	const SENT = 3;
-	const PENDING_RESENT = 4;
+	const PENDING_RESEND = 4;
 	const CANCELLED = 8;
 	const FAILED = 9;
 	
@@ -44,7 +44,7 @@ class Email extends Model
     			return "Sending";
     		case Email::SENT:
     			return "Sent";
-    		case Email::PENDING_RESENT:
+    		case Email::PENDING_RESEND:
     			return "Pending resend";
     		case Email::CANCELLED:
     		    return "Cancelled";
