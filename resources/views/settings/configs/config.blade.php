@@ -98,7 +98,7 @@
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">SMTP Password
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" name="MAIL_PASSWORD" class="form-control col-md-7 col-xs-12" value="{{ env('MAIL_PASSWORD') }}">
+                                <input type="password" name="MAIL_PASSWORD" class="form-control col-md-7 col-xs-12" value="{{ env('MAIL_PASSWORD') }}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -189,7 +189,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Database Password
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" name="DB_PASSWORD" class="form-control col-md-7 col-xs-12" value="{{ env('DB_PASSWORD') }}">
+                            <input type="password" name="DB_PASSWORD" class="form-control col-md-7 col-xs-12" value="{{ env('DB_PASSWORD') }}">
                         </div>
                     </div>
                     <div class="ln_solid"></div>
