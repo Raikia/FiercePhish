@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\EmailTemplate;
 use App\Libraries\DomainTools;
 use App\Email; 
+use App\ActivityLog;
 use File;
 
 
@@ -36,6 +37,7 @@ class EmailController extends Controller
         $template = new EmailTemplate();
         $template->name = $request->input('templateName');
         $template->save();
+        ActivityLog::log("Added a new email template named \"" . $template->name."\"", "Email Template");
         return back()->with('success', 'Template "'.$request->input('templateName').'" created successfully');
     }
     public function editTemplate(Request $request)
@@ -48,6 +50,7 @@ class EmailController extends Controller
         $template->subject = $request->input('subject');
         $template->template = $request->input('templateData');
         $template->save();
+        ActivityLog::log("Edited the email template named \"" . $template->name ."\"", "Email Template");
         return redirect()->action('EmailController@template_index', ['id' => $template->id])->with('success', 'The template was saved successfully!');
     }
     
@@ -57,6 +60,7 @@ class EmailController extends Controller
             'deleteId' => 'required|integer'
         ]);
         $template = EmailTemplate::findOrFail($request->input('deleteId'));
+        ActivityLog::log("Deleted the email template named \"". $template->name."\"", "Email Template");
         $template->delete();
         return back()->with('success', 'Template successfully deleted');
     }
@@ -108,7 +112,7 @@ class EmailController extends Controller
         $email_obj->status = Email::NOT_SENT;
         $email_obj->save();
         $email_obj->send();
-        
+        ActivityLog::log("Queued to send an email (simple send) to \"" . $email_obj->receiver_email."\"", "Email");
         // Maybe this should redirect to the list of the queue?
         return redirect()->action('EmailController@send_simple_index')->with('success', 'Email queued for immediate sending!');
     }

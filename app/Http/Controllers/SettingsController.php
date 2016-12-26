@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 
 use App\User;
+use App\ActivityLog;
 use Hash;
 
 class SettingsController extends Controller
@@ -35,6 +36,7 @@ class SettingsController extends Controller
         $newUser->phone_number = $request->input('phone_number');
         $newUser->password = Hash::make($request->input('password'));
         $newUser->save();
+        ActivityLog::log("Added a new user named \"".$newUser->name."\"", "Settings");
         return back()->with('success', 'User created successfully');
     }
     
@@ -46,6 +48,7 @@ class SettingsController extends Controller
         $user = User::findOrFail($request->input('user'));
         if ($user->id == auth()->user()->id)
             return back()->withErrors('You cannot delete yourself!');
+        ActivityLog::log("Deleted a user named \"".$user->name."\"", "Settings");
         $user->delete();
         return back()->with('success', 'User has been successfully deleted');
     }
@@ -121,6 +124,7 @@ class SettingsController extends Controller
             //echo nl2br(print_r($file_contents, true));
             file_put_contents($path, $file_contents);
             //die();
+            ActivityLog::log("Application configuration has been edited", "Settings");
             return back()->with('success', 'Settings successfully saved!');
         }
         else

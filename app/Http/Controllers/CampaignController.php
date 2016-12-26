@@ -9,6 +9,7 @@ use App\EmailTemplate;
 use App\TargetList;
 use App\Campaign;
 use App\Email;
+use App\ActivityLog;
 
 class CampaignController extends Controller
 {
@@ -56,7 +57,7 @@ class CampaignController extends Controller
         $start_date = $request->input('starting_date') ?: date('m/d/Y');
         $start_time = $request->input('starting_time') ?: date('g:ia');
         $seconds_offset_start = max(strtotime($start_date . " " . $start_time) - time(), 1);
-        echo "STARTING OFFSET: " . $seconds_offset_start . "<br />";
+        //echo "STARTING OFFSET: " . $seconds_offset_start . "<br />";
         $send_all_immediately = false;
         if ($request->input('sending_schedule') == 'all' || empty($request->input('send_num')) || empty($request->input('send_every_x_minutes')))
         {
@@ -86,8 +87,10 @@ class CampaignController extends Controller
                 }
             }
         }
+        ActivityLog::log("Created a new campaign named \"".$campaign->name."\" and queued ".count($list->users)." emails for sending", "Campaign");
         // Change this to be redirect to the running campaign once that page is functional
-        return back()->with('success', 'Campaign has been launched successfully');
+        return redirect()->action('CampaignController@campaign_details', ['id' => $campaign->id]);
+        //return back()->with('success', 'Campaign has been launched successfully');
     }
     
     
@@ -101,6 +104,7 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::with('emails')->findOrFail($id);
         $campaign->cancel();
+        ActivityLog::log("Cancelled the \"".$campaign->name."\" campaign", "Campaign");
         return back()->with('success', 'Campaign was cancelled successfully');
     }
 }
