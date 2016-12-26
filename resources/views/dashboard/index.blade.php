@@ -144,8 +144,11 @@
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
-          <pre style="height: 300px; overflow: auto;">
-          </pre>
+<pre style="height: 300px; overflow: auto;" id="activityLog">
+@foreach ($activitylog as $act)
+{{ $act->read() }}
+@endforeach
+</pre>
       </div>
     </div>
   </div>
@@ -302,5 +305,24 @@
         });
 
 */
+
+
+  var latestActivityLog = {{ ($activitylog->count() > 0)?$activitylog[0]->id:-1 }};
+  $(document).ready(function() {
+    window.setInterval(grabActivityLog, 2000);
+  });
+
+
+
+  function grabActivityLog()
+  {
+    $.get("{{ action('AjaxController@get_activitylog') }}/"+latestActivityLog, function(results) {
+      for (var x = 0; x < results.data.length; ++x)
+      {
+        $("#activityLog").prepend(results.data[x] + "<br />");
+      }
+      latestActivityLog = results.latest_id;
+    });
+  }
 </script>
 @endsection

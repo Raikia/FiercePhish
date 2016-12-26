@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\ActivityLog;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -15,6 +16,6 @@ class DashboardController extends Controller
     }
     public function index()
     {
-        return view('dashboard.index');
+        return view('dashboard.index')->with('activitylog', ActivityLog::fetch());
     }
 }

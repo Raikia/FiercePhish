@@ -102,7 +102,10 @@ class AjaxController extends Controller
         {
             $strings[] = $log->read();
         }
-        return Response::json($strings, 200);
+        $ret = ['latest_id' => $id, 'data' => $strings];
+        if ($logs->count() > 0)
+            $ret['latest_id'] = $logs[0]->id;
+        return Response::json($ret, 200);
     }
     
 
