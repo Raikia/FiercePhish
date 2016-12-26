@@ -35,7 +35,7 @@ class EmailTemplate extends Model
         $text = str_replace('[name]', $targetUser->first_name . ' ' . $targetUser->last_name, $text);
         $text = str_replace('[username]', explode("@",$targetUser->email)[0], $text);
         $text = str_replace('[email]', $targetUser->email, $text);
-        $text = str_replace('[uid]', $targetUser->uuid(), $text);
+        $text = str_replace('[uid]', $targetUser->uuid($campaign), $text);
         $text = str_replace('[from_name]', $campaign->from_name, $text);
         $text = str_replace('[from_email]', $campaign->from_email, $text);
         $text = str_replace('[extra]', '', $text);

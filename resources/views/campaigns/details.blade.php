@@ -82,7 +82,7 @@
                             <tr>
                                 <td>{{ $email->receiver_name }}</td>
                                 <td>{{ $email->receiver_email }}</td>
-                                <td>{{ \App\TargetUser::where('first_name', explode(' ',$email->receiver_name)[0])->where('email', $email->receiver_email)->first()->uuid() }}</td>
+                                <td>{{ $email->campaign->target_list->users->where('first_name', explode(' ', $email->receiver_name)[0])->where('email', $email->receiver_email)->first()->uuid($campaign) }}
                                 <td>{{ $email->getStatus() }}</td>
                             </tr>
                         @endforeach
