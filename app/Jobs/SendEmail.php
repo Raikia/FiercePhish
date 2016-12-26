@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Jobs\Job;
 use App\Email;
 use App\Campaign;
+use App\ActivityLog;
 use Mail;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -64,6 +65,15 @@ class SendEmail extends Job implements ShouldQueue
         });*/
         
         $this->email->status = Email::SENT;
+        if ($this->email->campaign != null)
+        {
+            ActivityLog::log("Sent an email to \"".$this->email->receiver_email."\" for campaign \"".$this->email->campaign->name."\" (email ID ".$this->email->id.")", "SendEmail");
+        }
+        else
+        {
+            ActivityLog::log("Sent an email (simple send) to \"".$this->email->receiver_email."\" (email ID ".$this->email->id.")", "SendEmail");
+        }
+        
         $this->email->save();
         
         if ($this->email->campaign != null)

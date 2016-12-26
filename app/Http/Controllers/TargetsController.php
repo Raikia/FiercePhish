@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\TargetUser;
 use App\TargetList;
+use App\ActivityLog;
 
 use File;
 
@@ -34,6 +35,7 @@ class TargetsController extends Controller
         if (count($checkUser) == 0)
         {
             TargetUser::create($request->all());
+            ActivityLog::log('Added new Target User ("'.$request->input('email').'")', "Target User");
             return back()->with('success', 'Target added successfully');
         }
         else
@@ -92,9 +94,14 @@ class TargetsController extends Controller
         }
         $ret_obj = back();
         if ($success != 0)
+        {
+            ActivityLog::log("Imported a list of " . $success . " target users", "Target User");
             $ret_obj = $ret_obj->with('success', 'Successfully added ' . $success . ' target'.(($success==1)?'':'s'));
+        }
         if ($warn != 0)
+        {
             $ret_obj = $ret_obj->with('warn', 'Did not add '.$warn.' duplicate entr'.(($warn==1)?'y':'ies'));
+        }
         if (count($errors) > 0)
             $ret_obj = $ret_obj->withErrors('Unable to add targets from line'.((count($errors)==1)?'':'s').' ' . implode(', ', $errors));
         return $ret_obj;
@@ -116,6 +123,7 @@ class TargetsController extends Controller
         if (count($checkList) == 0)
         {
             TargetList::create($request->all());
+            ActivityLog::log("Added new Target List named \"" . $request->input('name') . "\"", "Target List");
             return back()->with('success', 'List added successfully');
         }
         else
@@ -158,11 +166,13 @@ class TargetsController extends Controller
         if ($request->input('type') == 'edit')
         {
             $list->users()->sync($ids);
+            ActivityLog::log("Modified the users for the list \"" . $list->name ."\", it now has " . count($list->users) ." users", "Target List");
             return back()->with('success', 'List has been edited and now has ' . count($list->users) . ' users');
         }
         else
         {
             $list->users()->syncWithoutDetaching($ids);
+            ActivityLog::log("Added users to the list \"".$list->name."\", it now has " . count($list->users) ." users");
             return back()->with('success', 'Users successfully added');
         }
     }

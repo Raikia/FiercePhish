@@ -28,6 +28,7 @@ class AjaxController extends Controller
         $t = TargetUser::findOrFail($request->input('pk'));
         $t->notes = $request->input('value');
         $t->save();
+        ActivityLog::log('Edited the note of "'.$t->email.'"', 'Target User');
         return Response::json("Success", 200);
     }
     
@@ -38,6 +39,7 @@ class AjaxController extends Controller
         $t = TargetList::findOrFail($request->input('pk'));
         $t->notes = $request->input('value');
         $t->save();
+        ActivityLog::log('Edited the note of "'.$t->name.'"', 'Target List');
         return Response::json("Success", 200);
     }
     
