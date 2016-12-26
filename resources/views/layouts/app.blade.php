@@ -61,7 +61,7 @@
                   <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="/">Dashboard</a></li>
-                      <li><a href="#">Statistics</a></li>
+                      <!--<li><a href="#">Statistics</a></li>-->
 
                     </ul>
                   </li>
