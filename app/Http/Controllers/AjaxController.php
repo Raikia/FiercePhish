@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\TargetUser;
 use App\TargetList;
 use App\EmailTemplate;
+use App\ActivityLog;
 use App\Libraries\DomainTools;
 use Response;
 use Cache;
@@ -93,9 +94,16 @@ class AjaxController extends Controller
     
     
     
+    public function get_activitylog($id="-1")
+    {
+        $logs = ActivityLog::orderby('id', 'desc')->where('id', '>', $id)->get();
+        $strings = [];
+        foreach ($logs as $log)
+        {
+            $strings[] = $log->read();
+        }
+        return Response::json($strings, 200);
+    }
     
-    
-    
-    // THESE FUNCTIONS SHOULD GET MOVED TO A LIBRARY!
-    
+
 }
