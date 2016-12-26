@@ -28,7 +28,10 @@ class Email extends Model
     
     public function send($delay=1, $queue="high")
     {
-    	$this->status = Email::NOT_SENT;
+        if ($this->status == Email::SENT)
+            $this->status = Email::PENDING_RESEND;
+        else
+    	   $this->status = Email::NOT_SENT;
     	$this->save();
     	$job = (new SendEmail($this))->onQueue($queue)->delay($delay);
     	dispatch($job);
