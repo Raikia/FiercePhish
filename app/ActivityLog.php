@@ -16,11 +16,16 @@ class ActivityLog extends Model
     	$a->type = $type;
     	$a->is_error = false;
     	if (Auth::check())
-    		$a->user_id = auth()->id;
+    		$a->user_id = Auth::user()->id;
     	else
     		$a->user_id = null;
     	$a->save();
     	return $a;
+    }
+
+    public static function fetch()
+    {
+        return ActivityLog::orderby('id', 'desc')->get();
     }
 
     public function set_ref_id($id)
