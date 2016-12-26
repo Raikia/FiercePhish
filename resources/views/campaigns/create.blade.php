@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Create Campaign'])
 
 @section('content')
 <div class="page-title">
