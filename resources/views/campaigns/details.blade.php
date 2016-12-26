@@ -79,7 +79,7 @@
                     </thead>
                     <tbody>
                         @foreach ($campaign->emails as $email)
-                            <tr>
+                            <tr id="{{ $email->id }}">
                                 <td>{{ $email->receiver_name }}</td>
                                 <td>{{ $email->receiver_email }}</td>
                                 <td>{{ $email->campaign->target_list->users->where('first_name', explode(' ', $email->receiver_name)[0])->where('email', $email->receiver_email)->first()->uuid($campaign) }}
@@ -108,6 +108,11 @@
         });
     });
     
+    $("#emailLogTable tbody>tr").css('cursor', 'pointer');
+    $("#emailLogTable tbody>tr").click(function(item) {
+        window.location="{{ action('EmailController@email_log_details') }}/"+item.currentTarget.id;
+    });
+
     $("#emailLogTable").dataTable();
 </script>
 @endsection
