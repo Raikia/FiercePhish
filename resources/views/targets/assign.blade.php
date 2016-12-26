@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Assign Targets to List'])
 
 @section('content')
 
