@@ -57,6 +57,8 @@ Route::post('emails/templates/delete', 'EmailController@deleteTemplate');
 Route::get('emails/check', 'EmailController@check_settings_index');
 Route::get('emails/simple', 'EmailController@send_simple_index');
 Route::post('emails/simple/send', 'EmailController@send_simple_post');
+Route::get('emails/log', 'EmailController@email_log');
+Route::get('emails/log/{id?}', 'EmailController@email_log_details');
 
 // Dashboard Routes...
 Route::get('home', 'DashboardController@index');

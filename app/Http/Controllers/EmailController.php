@@ -112,4 +112,14 @@ class EmailController extends Controller
         // Maybe this should redirect to the list of the queue?
         return redirect()->action('EmailController@send_simple_index')->with('success', 'Email queued for immediate sending!');
     }
+
+    public function email_log()
+    {
+        return view('emails.email_log')->with('all_emails', Email::orderby('created_at', 'DESC')->get());
+    }
+    public function email_log_details($id)
+    {
+        $email = Email::findorFail($id);
+        return view('emails.email_log_details')->with('email', $email);
+    }
 }
