@@ -110,7 +110,7 @@
                   @foreach ($layout_all_active_campaigns as $camp)
                     <li><a><i class="fa fa-bullhorn"></i>{{ $camp->name }} <span class="fa fa-chevron-down"></span></a>
                       <ul class="nav child_menu">
-                        <li><a href="#">View Campaign</a></li>
+                        <li><a href="{{ action('CampaignController@campaign_details', ['id' => $camp->id ]) }}">View Campaign</a></li>
                         <li><a>{{ (100-round((($camp->emails()->where('status', \App\Email::NOT_SENT)->count())/($camp->emails()->count())*100))) }}% Complete</a></li>
                       </ul>
                     </li>
