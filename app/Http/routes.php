@@ -71,3 +71,4 @@ Route::post('ajax/targetuser/note', 'AjaxController@edit_targetuser_notes');
 Route::post('ajax/targetlist/note', 'AjaxController@edit_targetlist_notes');
 Route::get('ajax/emails/template/{id?}', 'AjaxController@get_emailtemplate_info');
 Route::get('ajax/emails/check/{command?}/{domain?}', 'AjaxController@email_check_commands');
+Route::get('ajax/log/{id?}', 'AjaxController@get_activitylog');
