@@ -18,7 +18,7 @@ class CreateActivityLogsTable extends Migration
             $table->string('ref_text')->nullable();
             $table->string('type');
             $table->boolean('is_error');
-            $table->integer('user_id')->nullable();
+            $table->string('user')->nullable();
             $table->text('log');
             $table->timestamps();
         });

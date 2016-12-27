@@ -16,9 +16,9 @@ class ActivityLog extends Model
     	$a->type = $type;
     	$a->is_error = false;
     	if (Auth::check())
-    		$a->user_id = Auth::user()->id;
+    		$a->user = Auth::user()->name;
     	else
-    		$a->user_id = null;
+    		$a->user = null;
     	$a->save();
     	return $a;
     }
@@ -57,14 +57,10 @@ class ActivityLog extends Model
     		$ret_text .= '!!!! ERROR !!!! - ';
     	$ret_text .= '{'.$this->type.'} ';
     	$ret_text .= $this->log;
-    	$username = '  (Unknown User)';
-    	if ($this->user_id == null)
-    		$username = '';
-    	else
+    	$username = '';
+    	if ($this->user != null)
     	{
-    		$usr = User::find($this->user_id);
-    		if ($usr != null)
-    			$username = '  ('.$usr->name.')';
+            $username = '  ('.$this->user.')';
     	}
     	$ret_text .= $username;
     	return $ret_text;
