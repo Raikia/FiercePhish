@@ -52,7 +52,7 @@ class ActivityLog extends Model
     public function read()
     {
     	$ret_text = '';
-        $ret_text = '['.$this->created_at->format('m/d/Y - H:i').'] ';
+        $ret_text = '['.$this->created_at->format('m/d/Y - H:i:s').'] ';
     	if ($this->is_error)
     		$ret_text .= '!!!! ERROR !!!! - ';
     	$ret_text .= '{'.$this->type.'} ';
