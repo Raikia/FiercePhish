@@ -8,6 +8,7 @@ class DomainTools
     public static function getServerIP()
     {
         return Cache::remember('server_ip', 120, function() {
+            // This doesnt work when offline.  TODO: fix that
             return trim(file_get_contents('http://icanhazip.com/'));
         });
     }
