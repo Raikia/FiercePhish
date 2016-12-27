@@ -248,7 +248,7 @@
         <!-- footer content -->
         <footer>
           <div class="pull-right">
-            FirePhish - &copy; 2016
+            FirePhish v{{ config('app.version') }} - &copy; 2016
           </div>
           <div class="clearfix"></div>
         </footer>
