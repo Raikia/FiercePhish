@@ -14,7 +14,7 @@
   <div class="col-md-3 col-sm-3 col-xs-6">
     <div class="x_panel">
       <div class="x_title">
-        <h2><i class="fa fa-plus"></i> List of Email Templates</h2>
+        <h2>List of Email Templates</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
@@ -126,7 +126,7 @@
   <div class="col-md-9 col-sm-9 col-xs-18">
     <div class="x_panel" id="templateCodeContent">
       <div class="x_title">
-        <h2 id="loaded_template_name"><i class="fa fa-download"></i> Template Code</h2>
+        <h2 id="loaded_template_name"><i class="fa fa-file-code-o"></i> Template Code</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
@@ -195,7 +195,7 @@
   <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2><i class="fa fa-download"></i> Template Preview</h2>
+        <h2><i class="fa fa-eye"></i> Template Preview</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">

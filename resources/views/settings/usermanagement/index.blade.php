@@ -106,7 +106,7 @@
   <div class="col-md-6 col-sm-6 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2><i class="fa fa-download"></i> Delete User</h2>
+        <h2><i class="fa fa-trash"></i> Delete User</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">

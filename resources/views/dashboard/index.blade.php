@@ -33,7 +33,7 @@
   </div>
   <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div class="tile-stats">
-      <div class="icon"><i class="fa fa-comments-o"></i></div>
+      <div class="icon"><i class="fa fa-envelope-o"></i></div>
       <div class="count">{{ App\Email::where('status', App\Email::SENT)->count() }}/{{ App\Email::all()->count() }}</div>
       <h3>Total Emails</h3>
       <p>Number of sent emails over total emails</p>
@@ -41,7 +41,7 @@
   </div>
   <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div class="tile-stats">
-      <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
+      <div class="icon"><i class="fa fa-list"></i></div>
       <div class="count">{{ App\TargetList::all()->count() }}</div>
       <h3>Total Lists</h3>
       <p>Number of target lists</p>
@@ -49,7 +49,7 @@
   </div>
   <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div class="tile-stats">
-      <div class="icon"><i class="fa fa-check-square-o"></i></div>
+      <div class="icon"><i class="fa fa-user-o"></i></div>
       <div class="count">{{ App\TargetUser::all()->count() }}</div>
       <h3>Total Users</h3>
       <p>Number of target users</p>
