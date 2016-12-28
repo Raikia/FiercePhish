@@ -37,6 +37,16 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Testing mode (no email sending)
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select name="TEST_EMAIL_JOB" class="form-control col-md-7 col-xs-12">
+                                <option>true</option>
+                                <option{{ (env('TEST_EMAIL_JOB')?'':' selected') }}>false</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="ln_solid"></div>
                     <div class="form-group">
                         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
