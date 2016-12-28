@@ -264,6 +264,7 @@
         </div>
       </div>
     </div>
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="{{ asset('vendor/Flot/excanvas.min.js') }}"></script><![endif]-->
     <!-- jQuery -->
     <script src="{{ asset('vendor/jquery/dist/jquery.min.js') }}"></script>
     <!-- Bootstrap -->
@@ -284,6 +285,11 @@
     <script src="{{ asset('vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('vendor/jt.timepicker/jquery.timepicker.min.js') }}"></script>
     <script src="{{ asset('vendor/bootbox.js/bootbox.js') }}"></script>
+    <script src="{{ asset('vendor/Flot/jquery.flot.js') }}"></script>
+    <script src="{{ asset('vendor/Flot/jquery.flot.pie.js') }}"></script>
+    <script src="{{ asset('vendor/Flot/jquery.flot.time.js') }}"></script>
+    <script src="{{ asset('vendor/Flot/jquery.flot.stack.js') }}"></script>
+    <script src="{{ asset('vendor/Flot/jquery.flot.resize.js') }}"></script>
     <!-- Custom Theme Scripts -->
     <script src="{{ asset('js/custom.js') }}"></script>
     @yield('footer')
