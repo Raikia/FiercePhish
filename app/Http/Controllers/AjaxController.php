@@ -63,7 +63,7 @@ class AjaxController extends Controller
         $server_ip = DomainTools::getServerIP();
         
         // TEST CHANGE
-        $server_ip = '162.243.4.171'; // '70.114.211.123';
+        //$server_ip = '162.243.4.171'; // '70.114.211.123';
         // END TEST CHANGE
         
         if ($command == "a_record_primary")
