@@ -135,6 +135,18 @@
               <div class="col-md-12">
                 <h2>No Active Campaigns</h2>
               </div>
+            @else
+            </div>
+            <div class="row" style="text-align: center;">
+              <div class="col-md-12">
+                <table style="margin-left: auto; margin-right: auto; border: 1px solid #bfbfbf; text-align: left;">
+                  <tr>
+                  <td style="padding: 10px 10px 10px 10px; padding-right: 20px; vertical-align: top;">Legend:</td>
+                  <td style="padding: 10px 10px 10px 10px;"><div style="width: 10px; height: 10px; float: left; margin-top: 4px; margin-right: 7px; background-color: #00FF00; border: 1px solid #bfbfbf;"></div>Emails Sent<br />
+                  <div style="width: 10px; height: 10px; float: left; margin-top: 4px; margin-right: 7px; background-color: #FF0000; border: 1px solid #bfbfbf;"></div>Emails Cancelled<br />
+                  <div style="width: 10px; height: 10px; float: left; margin-top: 4px; margin-right: 7px; background-color: #0000FF; border: 1px solid #bfbfbf;"></div>Emails Pending</td>
+                  </tr>
+                </table>
             @endif
             </div>
           </div>
