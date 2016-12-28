@@ -51,18 +51,20 @@ class SendEmail extends Job implements ShouldQueue
         }
         $this->email->status = Email::SENDING;
         $this->email->save();
-        
-       /* Mail::send('layouts.email', ['data' => $this->email->message], function ($message) {
-            $message->from($this->email->sender_email, $this->email->sender_name);
-            $message->to($this->email->receiver_email, $this->email->receiver_name);
-            $message->subject($this->email->subject);
-            if ($this->email->has_attachment)
-            {
-                $message->attachData(base64_decode($this->email->attachment), $this->email->attachment_name, ['mime' => $this->email->attachment_mime]);
-            }
-            if (env('MAIL_BCC_ALL') !== null)
-                $message->bcc(env('MAIL_BCC_ALL'));
-        });*/
+        if (env('TEST_EMAIL_JOB') === false)
+        {
+             Mail::send('layouts.email', ['data' => $this->email->message], function ($message) {
+                $message->from($this->email->sender_email, $this->email->sender_name);
+                $message->to($this->email->receiver_email, $this->email->receiver_name);
+                $message->subject($this->email->subject);
+                if ($this->email->has_attachment)
+                {
+                    $message->attachData(base64_decode($this->email->attachment), $this->email->attachment_name, ['mime' => $this->email->attachment_mime]);
+                }
+                if (env('MAIL_BCC_ALL') !== null)
+                    $message->bcc(env('MAIL_BCC_ALL'));
+            });
+        }
         
         $this->email->status = Email::SENT;
         if ($this->email->campaign != null)
