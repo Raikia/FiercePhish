@@ -32,6 +32,7 @@
     "datatables.net-bs": "^1.10.12",
     "datatables.net-select-bs": "^1.2.0",
     "jt.timepicker": "jquery-timepicker-jt#^1.11.8",
-    "bootbox.js": "bootbox#^4.4.0"
+    "bootbox.js": "bootbox#^4.4.0",
+    "Flot": "flot#^0.8.3"
   }
 }
