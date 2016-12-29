@@ -8,10 +8,21 @@ use App\Http\Requests;
 
 use App\User;
 use App\ActivityLog;
+use File;
 use Hash;
+use DB;
 
 class SettingsController extends Controller
 {
+
+    private $backup_parts = ['activitylogs' => '\App\ActivityLog', 
+                            'campaigns' => '\App\Campaign', 
+                            'emails' => '\App\Email', 
+                            'emailtemplates' => '\App\EmailTemplate', 
+                            'targetlists' => '\App\TargetList', 
+                            'targetusers' => '\App\TargetUser', 
+                            'users' => '\App\User'];
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -131,5 +142,64 @@ class SettingsController extends Controller
         {
             return back()->withErrors('Settings could not be saved. Check the file permissions on "'.$path.'"!');
         }
+    }
+
+    public function get_import_export()
+    {
+        return view('settings.configs.import_export');
+    }
+    public function post_export_data()
+    {
+        ActivityLog::log('FirePhish Settings exported', 'Settings');
+        $storage_class = new \stdClass();
+        foreach ($this->backup_parts as $attr => $class)
+        {
+            $storage_class->$attr = serialize($class::all());
+        }
+        $storage_class->env = file_get_contents(base_path('.env'));
+        return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition','attachment; filename="backup.firephish.dat"');
+    }
+    public function post_import_data(Request $request)
+    {
+        $this->validate($request, [
+            'attachment' => 'required|file',
+        ]);
+        $content = File::get($request->file('attachment')->getRealPath());
+        $storage_class = false;
+        try
+        {
+            $storage_class = @unserialize($content);
+            if ($storage_class === false)
+                return back()->withErrors('Data import failed!  This is not a proper FirePhish backup file!');
+        }
+        catch (Exception $e)
+        {
+            return back()->withErrors('Data import failed!  This is not a proper FirePhish backup file!');
+        }
+        foreach ($this->backup_parts as $attr => $class)
+        {
+            $data = false;
+            try
+            {
+                $data = @unserialize($storage_class->$attr);
+                if ($data === false)
+                    return back()->withErrors('Data import failed!  Data import is incomplete');
+            }
+            catch (Exception $e)
+            {
+                return back()->withErrors('Data import failed!  Data import is incomplete');
+            }
+            $class::truncate();
+            foreach ($data as $d)
+            {
+                $new_d = $d->replicate();
+                $new_d->updated_at = $d->updated_at;
+                $new_d->created_at = $d->created_at;
+                $new_d->save();
+            }
+        }
+        file_put_contents(base_path('.env'), $storage_class->env);
+        ActivityLog::log('Imported settings from a previous FirePhish install', 'Settings');
+        return back()->with('success', 'Successfully imported settings');
     }
 }

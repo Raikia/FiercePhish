@@ -48,6 +48,9 @@ Route::group(['prefix' => env('URI_PREFIX')], function() {
 	Route::post('settings/profile', 'SettingsController@post_editprofile');
 	Route::get('settings/config', 'SettingsController@get_config');
 	Route::post('settings/config/save', 'SettingsController@post_config');
+	Route::get('settings/export', 'SettingsController@get_import_export');
+	Route::post('settings/export/download', 'SettingsController@post_export_data');
+	Route::post('settings/export/import', 'SettingsController@post_import_data');
 
 
 	// EmailController Routes...
