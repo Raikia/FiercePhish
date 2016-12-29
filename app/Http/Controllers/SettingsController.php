@@ -15,13 +15,13 @@ use DB;
 class SettingsController extends Controller
 {
 
-    private $backup_parts = ['activitylogs' => '\App\ActivityLog', 
-                            'campaigns' => '\App\Campaign', 
-                            'emails' => '\App\Email', 
-                            'emailtemplates' => '\App\EmailTemplate', 
-                            'targetlists' => '\App\TargetList', 
-                            'targetusers' => '\App\TargetUser', 
-                            'users' => '\App\User'];
+    private $backup_parts = ['activitylogs' => ['\App\ActivityLog', ''], 
+                            'campaigns' => ['\App\Campaign', ''], 
+                            'emails' => ['\App\Email', ''], 
+                            'emailtemplates' => ['\App\EmailTemplate', ''], 
+                            'targetlists' => ['\App\TargetList', 'users'], 
+                            'targetusers' => ['\App\TargetUser', 'lists'], 
+                            'users' => ['\App\User', '']];
 
     public function __construct()
     {
@@ -154,7 +154,10 @@ class SettingsController extends Controller
         $storage_class = new \stdClass();
         foreach ($this->backup_parts as $attr => $class)
         {
-            $storage_class->$attr = serialize($class::all());
+            if ($class[1] == '')
+                $storage_class->$attr = serialize($class[0]::all());
+            else
+                $storage_class->$attr = serialize($class[0]::with($class[1])->get());
         }
         $storage_class->env = file_get_contents(base_path('.env'));
         return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition','attachment; filename="backup.firephish.dat"');
@@ -189,13 +192,13 @@ class SettingsController extends Controller
             {
                 return back()->withErrors('Data import failed!  Data import is incomplete');
             }
-            $class::truncate();
+            $class[0]::truncate();
             foreach ($data as $d)
             {
                 $new_d = $d->replicate();
                 $new_d->updated_at = $d->updated_at;
                 $new_d->created_at = $d->created_at;
-                $new_d->save();
+                $new_d->push();
             }
         }
         file_put_contents(base_path('.env'), $storage_class->env);
