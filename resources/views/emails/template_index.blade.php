@@ -308,7 +308,7 @@
       $("#template_id").val(data.id);
       $("#deleteId").val(data.id);
       CKEDITOR.instances.templateData.setData(data.template);
-      $("#loaded_template_name").html("<i class=\"fa fa-download\"></i> Template Code for \""+data.name+"\"");
+      $("#loaded_template_name").html("<i class=\"fa fa-file-code-o\"></i> Template Code for \""+data.name+"\"");
       $("#loading_modal").modal('hide');
       redraw_message();
       redraw_subject();
