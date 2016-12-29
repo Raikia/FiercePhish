@@ -100,7 +100,7 @@
                     <ul class="nav child_menu">
                       <li><a href="{{ action('SettingsController@index') }}">User Management</a></li>
                       <li><a href="{{ action('SettingsController@get_config') }}">Configuration</a></li>
-                      <li><a href="#">Import / Export</a></li>
+                      <li><a href="{{ action('SettingsController@get_import_export') }}">Import / Export</a></li>
                     </ul>
                   </li>
                 </ul>
