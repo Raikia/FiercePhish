@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Configuration'])
+@extends('layouts.app', ['title' => 'Import/Export Configurations'])
 
 @section('content')
 
