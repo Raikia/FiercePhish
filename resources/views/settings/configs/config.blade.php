@@ -38,6 +38,17 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Application Timezone
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select name="APP_TIMEZONE" class="form-control col-md-7 col-xs-12">
+                            @foreach (timezone_identifiers_list() as $timezone)
+                                <option{{ (env('APP_TIMEZONE')==$timezone)?' selected':''}}>{{ $timezone }}</option>
+                            @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Testing mode (no email sending)
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
