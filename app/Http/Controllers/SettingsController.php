@@ -161,7 +161,7 @@ class SettingsController extends Controller
         $storage_class->version = config('app.version');
         $storage_class->sql_dump = implode("\n", $sql_dump);
         $storage_class->env = file_get_contents(base_path('.env'));
-        return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition','attachment; filename="backup.firephish.dat"');
+        return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition','attachment; filename="firephish_backup_'.date('Ymd_Gi').'.dat"');
     }
     public function post_import_data(Request $request)
     {
