@@ -41,7 +41,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Application Timezone
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <select name="APP_TIMEZONE" class="form-control col-md-7 col-xs-12">
+                            <select name="APP_TIMEZONE" class="form-control col-md-7 col-xs-12" id="applcation_timezone">
                             @foreach (timezone_identifiers_list() as $timezone)
                                 <option{{ (env('APP_TIMEZONE')==$timezone)?' selected':''}}>{{ $timezone }}</option>
                             @endforeach
@@ -249,6 +249,10 @@
     
     $(document).ready(function() {
         select_mail_settings();
+        $("#applcation_timezone").select2({
+            placeholder: "Select a Timezone",
+            allowClear: false
+          });
     });
 </script>
 @endsection
