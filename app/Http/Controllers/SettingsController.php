@@ -15,14 +15,6 @@ use DB;
 class SettingsController extends Controller
 {
 
-    private $backup_parts = ['activitylogs' => ['\App\ActivityLog', ''], 
-                            'campaigns' => ['\App\Campaign', ''], 
-                            'emails' => ['\App\Email', ''], 
-                            'emailtemplates' => ['\App\EmailTemplate', ''], 
-                            'targetlists' => ['\App\TargetList', 'users'], 
-                            'targetusers' => ['\App\TargetUser', 'lists'], 
-                            'users' => ['\App\User', '']];
-
     public function __construct()
     {
         $this->middleware('auth');
@@ -112,10 +104,10 @@ class SettingsController extends Controller
     public function post_config(Request $request)
     {
         $all_updates = $request->except('_token');
-        //echo nl2br(var_dump($all_updates));
         $path = base_path('.env');
         if (file_exists($path) && is_writable($path)) {
             $file_contents = file_get_contents($path);
+            $new_uri = env('URI_PREFIX');
             foreach ($all_updates as $key => $value)
             {
                 $real_old_value = env($key);
@@ -129,14 +121,22 @@ class SettingsController extends Controller
                 $real_new_value = $value;
                 if ($real_new_value === "")
                     $real_new_value = 'null';
-               // echo "<br /><br />SEARCHING FOR: '".$key.'='.$real_old_value."', replacing with '".$key.'='.$real_new_value."'<br /><br />";
+                if ($key == 'URI_PREFIX')
+                {
+                    if (!preg_match('/^[a-zA-Z0-9\/]*$/', $value))
+                        return back()->withErrors('Settings could not be saved. "Prefix of FirePhish" must be alphanumeric and can only contain slashes (example: "hidden/link")');
+                    $value = trim($value, '/');
+                    $real_new_value = trim($real_new_value, '/');
+                    $new_uri = $value;
+                }
                 $file_contents = str_replace($key.'='.$real_old_value, $key.'='.$real_new_value, $file_contents);
             }
-            //echo nl2br(print_r($file_contents, true));
             file_put_contents($path, $file_contents);
-            //die();
             ActivityLog::log("Application configuration has been edited", "Settings");
-            return back()->with('success', 'Settings successfully saved!');
+
+            $new_redir = '/'.$new_uri.'/settings/config';
+            $new_redir = str_replace('//','/', $new_redir);
+            return redirect(env('APP_URL').$new_redir)->with('success', 'Settings successfully saved!');
         }
         else
         {
@@ -150,15 +150,16 @@ class SettingsController extends Controller
     }
     public function post_export_data()
     {
+        if (env('DB_CONNECTION') != 'mysql')
+        {
+            return back()->withErrors('Data export is only supported for mysql databases right now. If you would like another to be supported, make an "Issue" on GitHub');
+        }
         ActivityLog::log('FirePhish Settings exported', 'Settings');
         $storage_class = new \stdClass();
-        foreach ($this->backup_parts as $attr => $class)
-        {
-            if ($class[1] == '')
-                $storage_class->$attr = serialize($class[0]::all());
-            else
-                $storage_class->$attr = serialize($class[0]::with($class[1])->get());
-        }
+        $sql_dump = [];
+        exec("mysqldump -h " .env('DB_HOST')." -P ".env('DB_PORT')." -u ".env('DB_USERNAME')." -p".env("DB_PASSWORD")." ".env('DB_DATABASE'), $sql_dump);
+        $storage_class->version = config('app.version');
+        $storage_class->sql_dump = implode("\n", $sql_dump);
         $storage_class->env = file_get_contents(base_path('.env'));
         return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition','attachment; filename="backup.firephish.dat"');
     }
@@ -167,6 +168,10 @@ class SettingsController extends Controller
         $this->validate($request, [
             'attachment' => 'required|file',
         ]);
+        if (env('DB_CONNECTION') != 'mysql')
+        {
+            return back()->withErrors('Data import is only supported for mysql databases right now. If you would like another to be supported, make an "Issue" on GitHub');
+        }
         $content = File::get($request->file('attachment')->getRealPath());
         $storage_class = false;
         try
@@ -179,30 +184,31 @@ class SettingsController extends Controller
         {
             return back()->withErrors('Data import failed!  This is not a proper FirePhish backup file!');
         }
-        foreach ($this->backup_parts as $attr => $class)
+        if ($storage_class->version != config('app.version'))
         {
-            $data = false;
-            try
-            {
-                $data = @unserialize($storage_class->$attr);
-                if ($data === false)
-                    return back()->withErrors('Data import failed!  Data import is incomplete');
-            }
-            catch (Exception $e)
-            {
-                return back()->withErrors('Data import failed!  Data import is incomplete');
-            }
-            $class[0]::truncate();
-            foreach ($data as $d)
-            {
-                $new_d = $d->replicate();
-                $new_d->updated_at = $d->updated_at;
-                $new_d->created_at = $d->created_at;
-                $new_d->push();
-            }
+            return back()->withErrors("Data import failed!  This is a data export of FirePhish version " . $storage_class->version ." and you are running version " . config('app.version'));
         }
+        \Artisan::call('migrate:reset');
+        \Artisan::call('migrate');
+        $temp_file = '/tmp/firephish_import_'.rand().'.dat';
+        file_put_contents($temp_file, $storage_class->sql_dump);
+        exec("mysql -h " .env('DB_HOST')." -P ".env('DB_PORT')." -u ".env('DB_USERNAME')." -p".env("DB_PASSWORD")." ".env('DB_DATABASE'). ' < '.$temp_file);
+        unlink($temp_file);
+        $replace_new_with_old = ['APP_KEY', 'APP_URL', 'DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD'];
+        $new_env = $storage_class->env;
+        foreach ($replace_new_with_old as $tag)
+            $new_env = preg_replace('/'.$tag.'=.*$/m', $tag.'='.env($tag), $new_env);
+        $new_uri = '';
+        preg_match('/URI_PREFIX=(.*)\s*$/m', $new_env, $matches);
+        if (count($matches) == 2 && $matches[1] != '' && $matches[1] != 'null')
+            $new_uri = trim($matches[1]);
+        if ($new_uri == 'null')
+            $new_uri = '';
+        $new_redir = '/'.$new_uri.'/settings/export';
+        $new_redir = str_replace('//','/', $new_redir);
+
         file_put_contents(base_path('.env'), $storage_class->env);
         ActivityLog::log('Imported settings from a previous FirePhish install', 'Settings');
-        return back()->with('success', 'Successfully imported settings');
+        return redirect(env('APP_URL').$new_redir)->with('success', 'Successfully imported settings');
     }
 }
