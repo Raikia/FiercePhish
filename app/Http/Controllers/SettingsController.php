@@ -133,10 +133,10 @@ class SettingsController extends Controller
             }
             file_put_contents($path, $file_contents);
             ActivityLog::log("Application configuration has been edited", "Settings");
-
-            $new_redir = '/'.$new_uri.'/settings/config';
-            $new_redir = str_replace('//','/', $new_redir);
-            return redirect(env('APP_URL').$new_redir)->with('success', 'Settings successfully saved!');
+            $new_redir = '/'.$new_uri.str_replace(env('URI_PREFIX'), '',action('SettingsController@get_config', [], false));
+            while (strstr($new_redir, '//') !== false)
+                $new_redir = str_replace('//','/', $new_redir);
+            return redirect($new_redir)->with('success', 'Settings successfully saved!');
         }
         else
         {
@@ -204,9 +204,9 @@ class SettingsController extends Controller
             $new_uri = trim($matches[1]);
         if ($new_uri == 'null')
             $new_uri = '';
-        $new_redir = '/'.$new_uri.'/settings/export';
-        $new_redir = str_replace('//','/', $new_redir);
-
+        $new_redir = '/'.$new_uri.str_replace(env('URI_PREFIX'), '',action('SettingsController@get_import_export', [], false));
+        while (strstr($new_redir, '//') !== false)
+            $new_redir = str_replace('//','/', $new_redir);
         file_put_contents(base_path('.env'), $storage_class->env);
         ActivityLog::log('Imported settings from a previous FirePhish install', 'Settings');
         return redirect(env('APP_URL').$new_redir)->with('success', 'Successfully imported settings');
