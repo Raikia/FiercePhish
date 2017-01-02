@@ -24,7 +24,7 @@
     <link href="{{ asset('vendor/jt.timepicker/jquery.timepicker.css') }}" rel="stylesheet">
     
     <!-- Custom Theme Style -->
-    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/gentelella/build/css/custom.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/firephish.css') }}" rel="stylesheet">
   </head>
 
@@ -38,18 +38,6 @@
             </div>
 
             <div class="clearfix"></div>
-
-            <!-- menu profile quick info --><!--
-            <div class="profile">
-              <div class="profile_pic">
-                <img src="images/img.jpg" alt="..." class="img-circle profile_img">
-              </div>
-              <div class="profile_info">
-                <span>Welcome,</span>
-                <h2>John Doe</h2>
-              </div>
-            </div>-->
-            <!-- /menu profile quick info -->
 
             <br />
 
@@ -126,21 +114,7 @@
             <!-- /sidebar menu -->
 
             <!-- /menu footer buttons -->
-            <!--
-            <div class="sidebar-footer hidden-small">
-              <a data-toggle="tooltip" data-placement="top" title="Settings">
-                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-              </a>
-              <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-              </a>
-              <a data-toggle="tooltip" data-placement="top" title="Lock">
-                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-              </a>
-              <a data-toggle="tooltip" data-placement="top" title="Logout">
-                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-              </a>
-            </div>-->
+            
             <!-- /menu footer buttons -->
           </div>
         </div>
@@ -259,7 +233,7 @@
       <div class="modal-dialog modal-sm" style="margin-top: 300px;">
         <div class="modal-content" style="width: 61px; margin-left: auto; margin-right: auto;">
           <div class="modal-body">
-            <img src="{{ asset('images/ajax-loader.gif') }}" />
+            <img src="{{ asset('images/ajax-loader.gif') }}" alt="Loading..." />
           </div>
         </div>
       </div>
@@ -291,7 +265,7 @@
     <script src="{{ asset('vendor/Flot/jquery.flot.stack.js') }}"></script>
     <script src="{{ asset('vendor/Flot/jquery.flot.resize.js') }}"></script>
     <!-- Custom Theme Scripts -->
-    <script src="{{ asset('js/custom.js') }}"></script>
+    <script src="{{ asset('vendor/gentelella/build/js/custom.min.js') }}"></script>
     @yield('footer')
     <script type="text/javascript">
     /* global $ */
