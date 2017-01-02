@@ -222,7 +222,7 @@
         <!-- footer content -->
         <footer>
           <div class="pull-right">
-            FirePhish v{{ config('app.version') }} - &copy; 2016
+            FirePhish v{{ config('app.version') }}
           </div>
           <div class="clearfix"></div>
         </footer>
