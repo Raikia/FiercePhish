@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActivityLog extends Model
 {
-    public static function log($msg, $type="General")
+    public static function log($msg, $type="General", $error=false)
     {
     	if (empty($msg))
     		return;
     	$a = new ActivityLog();
     	$a->log = $msg;
     	$a->type = $type;
-    	$a->is_error = false;
+    	$a->is_error = $error;
     	if (Auth::check())
     		$a->user = Auth::user()->name;
     	else
