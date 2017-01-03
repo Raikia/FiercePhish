@@ -53,7 +53,7 @@ class SendEmail extends Job implements ShouldQueue
         $this->email->save();
         if (config('firephish.TEST_EMAIL_JOB') === false)
         {
-             Mail::send('layouts.email', ['data' => $this->email->message], function ($message) {
+             Mail::send(['layouts.email_html', 'layouts.email_plaintext'], ['data' => $this->email->message], function ($message) {
                 $message->from($this->email->sender_email, $this->email->sender_name);
                 $message->to($this->email->receiver_email, $this->email->receiver_name);
                 $message->subject($this->email->subject);

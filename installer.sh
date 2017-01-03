@@ -205,6 +205,7 @@ main()
 		do 
 			echo -e "     $((i+1)). ${FP_INSTRUCTIONS[$i]}"
 		done
+		echo -e ""
 	fi
 	if [[ ${#MAIL_INSTRUCTIONS[@]} -ne 0 ]]
 		then
@@ -213,6 +214,7 @@ main()
 		do 
 			echo -e "     $((i+1)). ${MAIL_INSTRUCTIONS[$i]}"
 		done
+		echo -e ""
 	fi
 	if [[ ${#DNS_INSTRUCTIONS[@]} -ne 0 ]]
 		then
@@ -221,6 +223,7 @@ main()
 		do 
 			echo -e "     $((i+1)). ${DNS_INSTRUCTIONS[$i]}"
 		done
+		echo -e ""
 	fi
 }
 
@@ -569,6 +572,7 @@ EOM
 	DNS_INSTRUCTIONS+=("A record for 'mail' point to '${SERVER_IP}'")
 	DNS_INSTRUCTIONS+=("MX record point to 'mail' subdomain (or MXE record pointing to ${SERVER_IP})")
 	DNS_INSTRUCTIONS+=("TXT record for '@' with text: v=spf1 a mx a:mail.${EMAIL_DOMAIN} a:${EMAIL_DOMAIN} ip4:${SERVER_IP} ~all")
+	DNS_INSTRUCTIONS+=("TXT record for '_dmarc' with text: v=DMARC1; p=none");
 	notice "Done installing SMTP and IMAP!"
 }
 
