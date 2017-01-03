@@ -353,6 +353,8 @@ EOM
 	else
 		sys_cmd "php artisan fp:createuser -c ${ADMIN_USERNAME} ${ADMIN_EMAIL} ${ADMIN_PASSWORD}"
 	fi
+	sys_cmd "php artisan config:cache"
+	sleep 5
 	sys_cmd "popd"
 
 	info "Configuring Supervisor to process jobs"
@@ -374,6 +376,9 @@ EOM
 		sys_cmd "service supervisor start"
 		sleep 5
 		sys_cmd "supervisorctl reload"
+		sleep 10
+		sys_cmd "service supervisor restart"
+		sleep 5
 	fi
 	
 	if [[ -z ${SSL_ENABLE} ]]
@@ -390,7 +395,7 @@ EOM
 		then
 		error "You want to enable HTTPS but this isn't implemented yet.  You can do this yourself though until its implemented :-("
 	fi
-	FP_INSTRUCTIONS+=("Go to http://${WEBSITE_DOMAIN}/ to use FirePhish!")
+	FP_INSTRUCTIONS+=("Go to http://${SERVER_IP}/ to use FirePhish! (or http://${WEBSITE_DOMAIN}/ if you used a domain name)")
 	DNS_INSTRUCTIONS+=("A record for '@' point to '${SERVER_IP}'")
 	DNS_INSTRUCTIONS+=("A record for 'www' point to '${SERVER_IP}'")
 	notice "Done installing FirePhish!"
@@ -420,7 +425,7 @@ install_smtp_imap()
 	fi
 	if [[ $OS = "Ubuntu" ]]
 		then
-		sys_cmd "debconf-set-selections <<< \$'postfix postfix/mailname string ${EMAIL_DOMAIN}\''"
+		sys_cmd "debconf-set-selections <<< \$'postfix postfix/mailname string \'${EMAIL_DOMAIN}\'"
 		sys_cmd "debconf-set-selections <<< \$'postfix postfix/main_mailer_type string \'Internet Site\''"
 		sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install postfix curl dovecot-imapd opendkim opendkim-tools"
 	fi
@@ -448,6 +453,7 @@ install_smtp_imap()
 		sys_cmd "sed -i 's/luser_relay = .*$/luser_relay = firephish/' /etc/postfix/main.cf"
 		grep -q -F 'local_recipient_maps' /etc/postfix/main.cf || echo 'local_recipient_maps = ' >> /etc/postfix/main.cf
 		sys_cmd "sed -i 's/local_recipient_maps = .*$/local_recipient_maps = /' /etc/postfix/main.cf"
+		echo ${EMAIL_DOMAIN} > /etc/mailname
 		sys_cmd "service postfix restart"
 	fi
 	
@@ -543,6 +549,9 @@ EOM
 		sys_cmd "sed -i 's/MAIL_ENCRYPTION=.*$/MAIL_ENCRYPTION=null/' /var/www/firephish/.env"
 		sys_cmd "sed -i 's/IMAP_USERNAME=.*$/IMAP_USERNAME=firephish/' /var/www/firephish/.env"
 		sys_cmd "sed -i 's/IMAP_PASSWORD=.*$/IMAP_PASSWORD=${IMAP_PASSWORD}/' /var/www/firephish/.env"
+		sys_cmd "pushd /var/www/firephish"
+		sys_cmd "php artisan config:cache"
+		sys_cmd "popd"
 	else
 		error "Unable to find the .env file for FirePhish.  You'll have to update it manually at the end"
 		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_DRIVER=smtp')
@@ -553,11 +562,13 @@ EOM
 		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_ENCRYPTION=null')
 		FP_INSTRUCTIONS+=('Edit the following in .env:  IMAP_USERNAME=firephish')
 		FP_INSTRUCTIONS+=("Edit the following in .env:  IMAP_PASSWORD=${IMAP_PASSWORD}")
+		FP_INSTRUCTIONS+=("Run: php artisan config:cache")
+		sleep 5
 	fi
 	
 	DNS_INSTRUCTIONS+=("A record for 'mail' point to '${SERVER_IP}'")
 	DNS_INSTRUCTIONS+=("MX record point to 'mail' subdomain (or MXE record pointing to ${SERVER_IP})")
-	DNS_INSTRUCTIONS+=("TXT record with text: v=spf1 a mx a:mail.${EMAIL_DOMAIN} a:${EMAIL_DOMAIN} ip4:${SERVER_IP} ~all")
+	DNS_INSTRUCTIONS+=("TXT record for '@' with text: v=spf1 a mx a:mail.${EMAIL_DOMAIN} a:${EMAIL_DOMAIN} ip4:${SERVER_IP} ~all")
 	notice "Done installing SMTP and IMAP!"
 }
 
@@ -590,9 +601,9 @@ SSL_ENABLE=false
 MYSQL_ROOT_PASSWD=root_passwd
 
 # Set this to what the website domain is (ie: example.com). No "http://"
-# If you don't have a domain, use the publicly facing IP address
+# If you don't have a domain, use the publicly facing IP address (or 127.0.0.1)
 # This will be what you use to browse to FirePhish in your browser
-WEBSITE_DOMAIN=localhost
+WEBSITE_DOMAIN=127.0.0.1
 
 # Set this to the domain that you will be sending email from
 # If you don't have a domain, use "localhost"
@@ -615,7 +626,7 @@ elif [[ $0 = "bash" && -f ~/firephish.config ]]
 	source ~/firephish.config
 	if [[ $CONFIGURED = true ]]
 		then
-		if [[ -z $CONFIGURED || -z $MYSQL_ROOT_PASSWD || -z $WEBSITE_DOMAIN || -z $ADMIN_USERNAME || -z $ADMIN_EMAIL || -z $ADMIN_PASSWORD ]]
+		if [[ -z $CONFIGURED || -z $VERBOSE || -z $SSL_ENABLE || -z $MYSQL_ROOT_PASSWD || -z $WEBSITE_DOMAIN || -z $EMAIL_DOMAIN || -z $ADMIN_USERNAME || -z $ADMIN_EMAIL || -z $ADMIN_PASSWORD ]]
 			then
 			error "Found the configuration file, but it is missing some variables!"
 			exit 1

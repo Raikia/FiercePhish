@@ -53,7 +53,7 @@
                     <div class="ln_solid"></div>
                     <div class="form-group">
                         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                            <button type="submit" class="btn btn-success">Import Configurations</button>
+                            <button type="submit" id="importBtn" class="btn btn-success">Import Configurations</button>
                         </div>
                     </div>
                     <p>You can import a previous FirePhish instance here.  It will overwrite the current data and configurations, so its suggested to only do this on a new FirePhish install.</p>
@@ -69,16 +69,15 @@
 @section('footer')
 <script type="text/javascript">
     /* global $ */
-    function select_mail_settings()
-    {
-        $(".conditional_settings").css('display', 'none');
-        $("#"+$("#MAIL_DRIVER").val()+"_settings").css('display', 'block');
-    }
-
-    $("#MAIL_DRIVER").change(select_mail_settings);
     
     $(document).ready(function() {
-        select_mail_settings();
+        $("#importBtn").click(function() {
+           $("#loading_modal").modal({
+                show: true,
+                keyboard: false,
+                backdrop: 'static'
+              }); 
+        });
     });
 </script>
 @endsection
