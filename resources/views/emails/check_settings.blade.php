@@ -91,13 +91,18 @@
                   </tr>
                   <tr>
                       <td>A Record</td>
+                      <td>www</td>
+                      <td>{{ $server_ip }}</td>
+                  </tr>
+                  <tr>
+                      <td>A Record</td>
                       <td>mail</td>
                       <td>{{ $server_ip }}</td>
                   </tr>
                   <tr>
                       <td>MX Record (or MXE Record)</td>
                       <td>N/A</td>
-                      <td>mail.<span style="line-height: normal" class="changeDomain">domain.com</span> (or {{ $server_ip }} if MXE)</td>
+                      <td>mail.<span style="line-height: normal" class="changeDomain">domain.com.</span> (or {{ $server_ip }} if MXE)</td>
                   </tr>
                   <tr>
                       <td>TXT Record</td>
@@ -106,8 +111,13 @@
                   </tr>
                   <tr>
                       <td>TXT Record</td>
+                      <td>_dmarc</td>
+                      <td>v=DMARC1; p=none</td>
+                  </tr>
+                  <tr>
+                      <td>TXT Record</td>
                       <td>mail._domainkey</td>
-                      <td><b>DKIM key here</b></td>
+                      <td><b>DKIM is generated, look it up</b></td>
                   </tr>
               </tbody>
           </table>
