@@ -59,8 +59,11 @@ class SendEmail extends Job implements ShouldQueue
                     $message->from($this->email->sender_email, $this->email->sender_name);
                     $message->to($this->email->receiver_email, $this->email->receiver_name);
                     $message->subject($this->email->subject);
-                    $id = explode('@',$message->getSwiftMessage()->getId());
-                    $message->getSwiftMessage()->setId($id[0].'@'.str_replace(['http://','https://'],'', config('firephish.APP_URL')));
+                    if (strstr(config('firephish.APP_URL'), '.') !== false)
+                    {
+                        $id = explode('@',$message->getSwiftMessage()->getId());
+                        $message->getSwiftMessage()->setId($id[0].'@'.str_replace(['http://','https://'],'', config('firephish.APP_URL')));
+                    }
                     if ($this->email->has_attachment)
                     {
                         $message->attachData(base64_decode($this->email->attachment), $this->email->attachment_name, ['mime' => $this->email->attachment_mime]);
