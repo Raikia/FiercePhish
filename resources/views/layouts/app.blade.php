@@ -222,7 +222,7 @@
         <!-- footer content -->
         <footer>
           <div class="pull-right">
-            FirePhish v{{ config('app.version') }}
+            <a href="https://github.com/Raikia/FirePhish">FirePhish</a> v{{ config('app.version') }}. Made by <a href="https://github.com/Raikia/">Chris King</a> (<a href="https://twitter.com/raikiasec">@raikiasec</a>). See <a href="https://github.com/Raikia/FirePhish/issues">GitHub Issues</a> for bug reports or feature requests!
           </div>
           <div class="clearfix"></div>
         </footer>
