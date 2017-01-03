@@ -53,17 +53,40 @@ class SendEmail extends Job implements ShouldQueue
         $this->email->save();
         if (config('firephish.TEST_EMAIL_JOB') === false)
         {
-             Mail::send(['layouts.email_html', 'layouts.email_plaintext'], ['data' => $this->email->message], function ($message) {
-                $message->from($this->email->sender_email, $this->email->sender_name);
-                $message->to($this->email->receiver_email, $this->email->receiver_name);
-                $message->subject($this->email->subject);
-                if ($this->email->has_attachment)
+            try
+            {
+                Mail::send(['layouts.email_html', 'layouts.email_plaintext'], ['data' => $this->email->message], function ($message) {
+                    $message->from($this->email->sender_email, $this->email->sender_name);
+                    $message->to($this->email->receiver_email, $this->email->receiver_name);
+                    $message->subject($this->email->subject);
+                    if ($this->email->has_attachment)
+                    {
+                        $message->attachData(base64_decode($this->email->attachment), $this->email->attachment_name, ['mime' => $this->email->attachment_mime]);
+                    }
+                    if (config('firephish.MAIL_BCC_ALL') !== null)
+                        $message->bcc(config('firephish.MAIL_BCC_ALL'));
+                });
+            }
+            catch (\Exception $e)
+            {
+                $this->email->status = Email::FAILED;
+                $this->email->save();
+                echo 'Error: '.$e->getMessage()."\n";
+                if ($this->email->campaign != null)
                 {
-                    $message->attachData(base64_decode($this->email->attachment), $this->email->attachment_name, ['mime' => $this->email->attachment_mime]);
+                    ActivityLog::log("Failed to send an email to \"".$this->email->receiver_email."\" for campaign \"".$this->email->campaign->name."\" (email ID ".$this->email->id.") (try #".$this->attempts().')', "SendEmail")->setError(true);
                 }
-                if (config('firephish.MAIL_BCC_ALL') !== null)
-                    $message->bcc(config('firephish.MAIL_BCC_ALL'));
-            });
+                else
+                {
+                    ActivityLog::log("Failed to send an email (simple send) to \"".$this->email->receiver_email."\" (email ID ".$this->email->id.") (try #".$this->attempts().')', "SendEmail")->setError(true);
+                }
+                if ($this->attempts() > 5)
+                {
+                    ActivityLog::log("Cancelling email due to too many failed attempts.  Check the log for the errors!");
+                    $this->delete();
+                }
+                throw $e;
+            }
         }
         
         $this->email->status = Email::SENT;

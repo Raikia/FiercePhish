@@ -31,28 +31,6 @@ MAIL_INSTRUCTIONS=()
 DNS_INSTRUCTIONS=()
 
 ### Functions ###
-confirm()
-{
-	local prompt=$1
-	while [ true ]
-	do
-		echo -e -n "${LYELLOW}[?]  ${prompt} [y/n]: ${RESTORE}"
-		answer=$(get_input "y")
-		case $answer in
-			[yY])
-				echo true
-				break
-				;;
-			[nN])
-				echo false
-				break
-				;;
-			*)
-				echo "Invalid answer"
-				;;
-		esac
-	done
-}
 
 random_str()
 {
@@ -75,7 +53,10 @@ get_input()
 prompt()
 {
 	local prompt=$1
-	echo -ne "   ${LYELLOW}[>] ${prompt} > ${RESTORE}"
+	if [[ $0 != "bash" ]]
+		then
+		echo -ne "   ${LYELLOW}[>] ${prompt} > ${RESTORE}"
+	fi
 }
 
 sys_cmd()
@@ -86,6 +67,7 @@ sys_cmd()
 		notice "Running ${com}..."
 		eval "${com}"
 	else
+		#notice "Running ${com} > /dev/null 2>&1"
 		eval "${com} > /dev/null 2>&1"
 	fi
 }
@@ -144,15 +126,18 @@ menu()
 	echo -e "|                                                    |"
 	echo -e "|  This installer automatically install FirePhish    |"
 	echo -e "|  and all the other services needed. It is designed |"
-	echo -e "|  designed to work with Ubuntu, but it will attempt |"
-	echo -e "|  to detect what distro you are running.            |"
+	echo -e "|  to work with Ubuntu, but it will attempt to       |"
+	echo -e "|  detect what distro you are running.               |"
 	echo -e "|                                                    |"
 	echo -e "------------------------------------------------------${RESTORE}"
 	echo -e ""
-	echo -e "    ${LYELLOW}Options:${RESTORE} "
-	echo -e "        1. ${WHITE}Install FirePhish + SMTP + IMAP (${LRED}recommended${WHITE})${RESTORE}"
-	echo -e "        2. ${WHITE}Install FirePhish only${RESTORE}"
-	echo -e "        3. ${WHITE}Install SMTP + IMAP only${RESTORE}"
+	if [[ $0 != "bash" ]]
+		then
+		echo -e "    ${LYELLOW}Options:${RESTORE} "
+		echo -e "        1. ${WHITE}Install FirePhish + SMTP + IMAP (${LRED}recommended${WHITE})${RESTORE}"
+		echo -e "        2. ${WHITE}Install FirePhish only${RESTORE}"
+		echo -e "        3. ${WHITE}Install SMTP + IMAP only${RESTORE}"
+	fi
 	echo -e ""
 	selection=""
 	while [ true ]
@@ -336,6 +321,7 @@ EOM
 	info "Configuring FirePhish"
 	sys_cmd "pushd /var/www/firephish"
 	sys_cmd "cp .env.example .env"
+	sys_cmd "touch storage/logs/laravel.log"
 	if [[ $OS = "Ubuntu" ]]
 		then
 		sys_cmd "chown -R www-data:www-data ."
@@ -428,7 +414,7 @@ install_smtp_imap()
 	fi
 	if [[ $OS = "Ubuntu" ]]
 		then
-		sys_cmd "debconf-set-selections <<< \$'postfix postfix/mailname string \'${EMAIL_DOMAIN}\'"
+		sys_cmd "debconf-set-selections <<< \$'postfix postfix/mailname string \'${EMAIL_DOMAIN}\''"
 		sys_cmd "debconf-set-selections <<< \$'postfix postfix/main_mailer_type string \'Internet Site\''"
 		sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install postfix curl dovecot-imapd opendkim opendkim-tools"
 	fi
