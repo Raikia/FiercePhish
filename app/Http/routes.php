@@ -12,7 +12,7 @@
 */
 // Template: https://colorlib.com/polygon/gentelella/icons.html
 
-Route::group(['prefix' => env('URI_PREFIX')], function() {
+Route::group(['prefix' => config('firephish.URI_PREFIX')], function() {
 	// Authentication Routes...
 	Route::get('login', 'Auth\AuthController@showLoginForm');
 	Route::post('login', 'Auth\AuthController@login');

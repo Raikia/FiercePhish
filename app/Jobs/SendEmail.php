@@ -51,7 +51,7 @@ class SendEmail extends Job implements ShouldQueue
         }
         $this->email->status = Email::SENDING;
         $this->email->save();
-        if (env('TEST_EMAIL_JOB') === false)
+        if (config('firephish.TEST_EMAIL_JOB') === false)
         {
              Mail::send('layouts.email', ['data' => $this->email->message], function ($message) {
                 $message->from($this->email->sender_email, $this->email->sender_name);
@@ -61,8 +61,8 @@ class SendEmail extends Job implements ShouldQueue
                 {
                     $message->attachData(base64_decode($this->email->attachment), $this->email->attachment_name, ['mime' => $this->email->attachment_mime]);
                 }
-                if (env('MAIL_BCC_ALL') !== null)
-                    $message->bcc(env('MAIL_BCC_ALL'));
+                if (config('firephish.MAIL_BCC_ALL') !== null)
+                    $message->bcc(config('firephish.MAIL_BCC_ALL'));
             });
         }
         

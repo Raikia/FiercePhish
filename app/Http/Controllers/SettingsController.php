@@ -107,10 +107,10 @@ class SettingsController extends Controller
         $path = base_path('.env');
         if (file_exists($path) && is_writable($path)) {
             $file_contents = file_get_contents($path);
-            $new_uri = env('URI_PREFIX');
+            $new_uri = config('firephish.URI_PREFIX');
             foreach ($all_updates as $key => $value)
             {
-                $real_old_value = env($key);
+                $real_old_value = config('firephish.'.$key);
                 if ($real_old_value === true)
                     $real_old_value = 'true';
                 elseif ($real_old_value === false)
@@ -132,8 +132,11 @@ class SettingsController extends Controller
                 $file_contents = str_replace($key.'='.$real_old_value, $key.'='.$real_new_value, $file_contents);
             }
             file_put_contents($path, $file_contents);
+            $new_redir = '/'.$new_uri.str_replace(config('firephish.URI_PREFIX'), '',action('SettingsController@get_config', [], false));
             ActivityLog::log("Application configuration has been edited", "Settings");
-            $new_redir = '/'.$new_uri.str_replace(env('URI_PREFIX'), '',action('SettingsController@get_config', [], false));
+            \Artisan::call('config:cache');
+            
+            sleep(5); // I know this is terrible, but we have to wait for the config to cache properly...
             while (strstr($new_redir, '//') !== false)
                 $new_redir = str_replace('//','/', $new_redir);
             return redirect($new_redir)->with('success', 'Settings successfully saved!');
@@ -150,14 +153,14 @@ class SettingsController extends Controller
     }
     public function post_export_data()
     {
-        if (env('DB_CONNECTION') != 'mysql')
+        if (config('firephish.DB_CONNECTION') != 'mysql')
         {
             return back()->withErrors('Data export is only supported for mysql databases right now. If you would like another to be supported, make an "Issue" on GitHub');
         }
         ActivityLog::log('FirePhish Settings exported', 'Settings');
         $storage_class = new \stdClass();
         $sql_dump = [];
-        exec("mysqldump -h " .env('DB_HOST')." -P ".env('DB_PORT')." -u ".env('DB_USERNAME')." -p".env("DB_PASSWORD")." ".env('DB_DATABASE'), $sql_dump);
+        exec("mysqldump -h " .config('firephish.DB_HOST')." -P ".config('firephish.DB_PORT')." -u ".config('firephish.DB_USERNAME')." -p".config("firephish.DB_PASSWORD")." ".config('firephish.DB_DATABASE'), $sql_dump);
         $storage_class->version = config('app.version');
         $storage_class->sql_dump = implode("\n", $sql_dump);
         $storage_class->env = file_get_contents(base_path('.env'));
@@ -168,7 +171,7 @@ class SettingsController extends Controller
         $this->validate($request, [
             'attachment' => 'required|file',
         ]);
-        if (env('DB_CONNECTION') != 'mysql')
+        if (config('firephish.DB_CONNECTION') != 'mysql')
         {
             return back()->withErrors('Data import is only supported for mysql databases right now. If you would like another to be supported, make an "Issue" on GitHub');
         }
@@ -192,23 +195,25 @@ class SettingsController extends Controller
         \Artisan::call('migrate');
         $temp_file = '/tmp/firephish_import_'.rand().'.dat';
         file_put_contents($temp_file, $storage_class->sql_dump);
-        exec("mysql -h " .env('DB_HOST')." -P ".env('DB_PORT')." -u ".env('DB_USERNAME')." -p".env("DB_PASSWORD")." ".env('DB_DATABASE'). ' < '.$temp_file);
+        exec("mysql -h " .config('firephish.DB_HOST')." -P ".config('firephish.DB_PORT')." -u ".config('firephish.DB_USERNAME')." -p".config("firephish.DB_PASSWORD")." ".config('firephish.DB_DATABASE'). ' < '.$temp_file);
         unlink($temp_file);
         $replace_new_with_old = ['APP_KEY', 'APP_URL', 'DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD'];
         $new_env = $storage_class->env;
         foreach ($replace_new_with_old as $tag)
-            $new_env = preg_replace('/'.$tag.'=.*$/m', $tag.'='.env($tag), $new_env);
+            $new_env = preg_replace('/'.$tag.'=.*$/m', $tag.'='.config('firephish.'.$tag), $new_env);
         $new_uri = '';
         preg_match('/URI_PREFIX=(.*)\s*$/m', $new_env, $matches);
         if (count($matches) == 2 && $matches[1] != '' && $matches[1] != 'null')
             $new_uri = trim($matches[1]);
         if ($new_uri == 'null')
             $new_uri = '';
-        $new_redir = '/'.$new_uri.str_replace(env('URI_PREFIX'), '',action('SettingsController@get_import_export', [], false));
+        $new_redir = '/'.$new_uri.str_replace(config('firephish.URI_PREFIX'), '',action('SettingsController@get_import_export', [], false));
         while (strstr($new_redir, '//') !== false)
             $new_redir = str_replace('//','/', $new_redir);
         file_put_contents(base_path('.env'), $storage_class->env);
+        \Artisan::call('config:cache');
+        sleep(5); // I know this is terrible, but we have to wait for the config to cache properly...
         ActivityLog::log('Imported settings from a previous FirePhish install', 'Settings');
-        return redirect(env('APP_URL').$new_redir)->with('success', 'Successfully imported settings');
+        return redirect(config('firephish.APP_URL').$new_redir)->with('success', 'Successfully imported settings');
     }
 }
