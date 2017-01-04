@@ -64,7 +64,7 @@ class SendEmail extends Job implements ShouldQueue
                         $id = explode('@',$message->getSwiftMessage()->getId());
                         $domain = str_replace(['http://','https://'],'', config('firephish.APP_URL'));
                         $message->getSwiftMessage()->setId($id[0].'@'.$domain);
-                        $message->getSwiftMessage()->getHeaders()->addTextHeader('List-Unsubscribe', '<mailto:admin@'.$domain.'>');
+                       // $message->getSwiftMessage()->getHeaders()->addTextHeader('List-Unsubscribe', '<mailto:admin@'.$domain.'>');
                     }
                     if ($this->email->has_attachment)
                     {
