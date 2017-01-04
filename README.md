@@ -47,7 +47,7 @@ This method is probably the easiest way to install/configure everything. It is a
 
  2. Generate the configuration file:
 
-   ```curl https://github.com/Raikia/FirePhish/blob/master/installer.sh | bash```
+   ```curl https://raw.githubusercontent.com/Raikia/FirePhish/master/installer.sh | bash```
 
  3. This will create a configuration file located at "~/firephish.config".  You must edit this file before moving on!
 
@@ -55,7 +55,7 @@ This method is probably the easiest way to install/configure everything. It is a
 
  4. Once "CONFIGURED=true" is set in the configuration file, re-run the install script:
 
-   ```curl https://github.com/Raikia/FirePhish/blob/master/installer.sh | bash```
+   ```curl https://raw.githubusercontent.com/Raikia/FirePhish/master/installer.sh | bash```
 
  5. Sit and wait.  The installation could take anywhere from 5-15 minutes depending on your server's download speed.
 
