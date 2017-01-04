@@ -72,7 +72,7 @@ This method is just as easy as method #1, but the install will prompt you as it 
  
  2. Download the configuration file:
 
-   ```wget https://github.com/Raikia/FirePhish/blob/master/installer.sh```
+   ```wget https://raw.githubusercontent.com/Raikia/FirePhish/master/installer.sh```
 
  3. Set the installer as executable:
 
