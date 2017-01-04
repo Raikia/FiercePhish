@@ -1,3 +1,5 @@
+![FirePhish](https://camo.githubusercontent.com/b14281b4d64b34eaad19062e26264fbdc95ce4ff/687474703a2f2f692e696d6775722e636f6d2f4d6f76374b52672e706e67)
+
 # FirePhish
 
 
@@ -7,6 +9,12 @@ FirePhish is a full-fledged phishing framework to manage all phishing engagement
 
 [Click here to go to the Wiki Pages](https://github.com/Raikia/FirePhish/wiki)
 
+
+# Screenshot
+
+![Screenshot](http://i.imgur.com/v852BbM.png)
+
+More screenshots are available in the ["Features" wiki pages](https://github.com/Raikia/FirePhish/wiki/Features-Overview)
 
 # Quick Automated Install
 
