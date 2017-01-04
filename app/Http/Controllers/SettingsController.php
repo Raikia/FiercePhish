@@ -187,7 +187,10 @@ class SettingsController extends Controller
         {
             return back()->withErrors('Data import failed!  This is not a proper FirePhish backup file!');
         }
-        if ($storage_class->version != config('app.version'))
+        
+        $imported_version = explode('.', $storage_class->version);
+        $app_version = explode('.', config('app.version'));
+        if ($imported_version[0] != $app_version[0] || $imported_version[1] != $app_version[1])
         {
             return back()->withErrors("Data import failed!  This is a data export of FirePhish version " . $storage_class->version ." and you are running version " . config('app.version'));
         }
