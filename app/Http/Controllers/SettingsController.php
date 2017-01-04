@@ -139,7 +139,14 @@ class SettingsController extends Controller
             sleep(5); // I know this is terrible, but we have to wait for the config to cache properly...
             while (strstr($new_redir, '//') !== false)
                 $new_redir = str_replace('//','/', $new_redir);
-            return redirect($new_redir)->with('success', 'Settings successfully saved!');
+            $base = config('firephish.APP_URL');
+            if (isset($_SERVER['SERVER_NAME']))
+            {
+                $base = 'http://'.$_SERVER['SERVER_NAME'];
+                if (!empty($_SERVER['HTTPS']))
+                    $base = 'https://'.$_SERVER['SERVER_NAME'];
+            }
+            return redirect($base.$new_redir)->with('success', 'Settings successfully saved!');
         }
         else
         {
@@ -217,6 +224,12 @@ class SettingsController extends Controller
         \Artisan::call('config:cache');
         sleep(5); // I know this is terrible, but we have to wait for the config to cache properly...
         ActivityLog::log('Imported settings from a previous FirePhish install', 'Settings');
-        return redirect(config('firephish.APP_URL').$new_redir)->with('success', 'Successfully imported settings');
+        if (isset($_SERVER['SERVER_NAME']))
+        {
+            $base = 'http://'.$_SERVER['SERVER_NAME'];
+            if (!empty($_SERVER['HTTPS']))
+                $base = 'https://'.$_SERVER['SERVER_NAME'];
+        }
+        return redirect($base.$new_redir)->with('success', 'Successfully imported settings');
     }
 }
