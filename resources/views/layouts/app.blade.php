@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>FirePhish{{ (isset($title))?' &raquo; '.$title:'' }}</title>
+    <title>FiercePhish{{ (isset($title))?' &raquo; '.$title:'' }}</title>
 
     <!-- Bootstrap -->
     <link href="{{ asset('vendor/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -25,7 +25,7 @@
     
     <!-- Custom Theme Style -->
     <link href="{{ asset('vendor/gentelella/build/css/custom.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/firephish.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/fiercephish.css') }}" rel="stylesheet">
   </head>
 
   <body class="nav-md">
@@ -34,7 +34,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-envelope-o"></i> <span><span style="color: #BB2125">Fire</span>Phish</span></a>
+              <a href="index.html" class="site_title"><i class="fa fa-envelope-o"></i> <span><span style="color: #FF4800">Fierce</span>Phish</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -135,7 +135,7 @@
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
                     <li><a href="{{ action('SettingsController@get_editprofile') }}"> Profile</a></li>
-                    <li><a href="https://github.com/Raikia/FirePhish/wiki" target="_blank">Help</a></li>
+                    <li><a href="https://github.com/Raikia/FiercePhish/wiki" target="_blank">Help</a></li>
                     <li><a href="{{ action('Auth\AuthController@logout') }}"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                   </ul>
                 </li>
@@ -222,7 +222,7 @@
         <!-- footer content -->
         <footer>
           <div class="pull-right">
-            <a href="https://github.com/Raikia/FirePhish">FirePhish</a> v{{ config('app.version') }}. Made by <a href="https://github.com/Raikia/">Chris King</a> (<a href="https://twitter.com/raikiasec">@raikiasec</a>). See <a href="https://github.com/Raikia/FirePhish/issues">GitHub Issues</a> for bug reports or feature requests!
+            <a href="https://github.com/Raikia/FiercePhish">FiercePhish</a> v{{ config('app.version') }}. Made by <a href="https://github.com/Raikia/">Chris King</a> (<a href="https://twitter.com/raikiasec">@raikiasec</a>). See <a href="https://github.com/Raikia/FiercePhish/issues">GitHub Issues</a> for bug reports or feature requests!
           </div>
           <div class="clearfix"></div>
         </footer>

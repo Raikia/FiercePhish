@@ -24,7 +24,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Application URL
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" name="APP_URL" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.APP_URL') }}">
+                            <input type="text" name="APP_URL" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.APP_URL') }}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -33,7 +33,7 @@
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <select name="APP_DEBUG" class="form-control col-md-7 col-xs-12">
                                 <option>true</option>
-                                <option{{ (config('firephish.APP_DEBUG')?'':' selected') }}>false</option>
+                                <option{{ (config('fiercephish.APP_DEBUG')?'':' selected') }}>false</option>
                             </select>
                         </div>
                     </div>
@@ -43,7 +43,7 @@
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <select name="APP_TIMEZONE" class="form-control col-md-7 col-xs-12" id="applcation_timezone">
                             @foreach (timezone_identifiers_list() as $timezone)
-                                <option{{ (config('firephish.APP_TIMEZONE')==$timezone)?' selected':''}}>{{ $timezone }}</option>
+                                <option{{ (config('fiercephish.APP_TIMEZONE')==$timezone)?' selected':''}}>{{ $timezone }}</option>
                             @endforeach
                             </select>
                         </div>
@@ -54,15 +54,15 @@
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <select name="TEST_EMAIL_JOB" class="form-control col-md-7 col-xs-12">
                                 <option>true</option>
-                                <option{{ (config('firephish.TEST_EMAIL_JOB')?'':' selected') }}>false</option>
+                                <option{{ (config('fiercephish.TEST_EMAIL_JOB')?'':' selected') }}>false</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Prefix of FirePhish
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">FiercePhish Prefix
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" name="URI_PREFIX" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.URI_PREFIX') }}">
+                            <input type="text" name="URI_PREFIX" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.URI_PREFIX') }}">
                         </div>
                     </div>
                     <div class="ln_solid"></div>
@@ -87,7 +87,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">BCC All Emails
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" name="MAIL_BCC_ALL" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.MAIL_BCC_ALL') }}">
+                            <input type="text" name="MAIL_BCC_ALL" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.MAIL_BCC_ALL') }}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -95,8 +95,8 @@
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <select name="MAIL_DRIVER" id="MAIL_DRIVER" class="form-control col-md-7 col-xs-12">
-                                <option value="smtp"{{ (config('firephish.MAIL_DRIVER')=='smtp'?' selected':'') }}>SMTP</option>
-                                <option value="mailgun"{{ (config('firephish.MAIL_DRIVER')=='mailgun'?' selected':'') }}>Mailgun</option>
+                                <option value="smtp"{{ (config('fiercephish.MAIL_DRIVER')=='smtp'?' selected':'') }}>SMTP</option>
+                                <option value="mailgun"{{ (config('fiercephish.MAIL_DRIVER')=='mailgun'?' selected':'') }}>Mailgun</option>
                             </select>
                         </div>
                     </div>
@@ -105,28 +105,28 @@
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">SMTP Host
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" name="MAIL_HOST" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.MAIL_HOST') }}">
+                                <input type="text" name="MAIL_HOST" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.MAIL_HOST') }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">SMTP Port
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" name="MAIL_PORT" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.MAIL_PORT') }}">
+                                <input type="text" name="MAIL_PORT" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.MAIL_PORT') }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">SMTP Username
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" name="MAIL_USERNAME" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.MAIL_USERNAME') }}">
+                                <input type="text" name="MAIL_USERNAME" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.MAIL_USERNAME') }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">SMTP Password
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="password" name="MAIL_PASSWORD" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.MAIL_PASSWORD') }}">
+                                <input type="password" name="MAIL_PASSWORD" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.MAIL_PASSWORD') }}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -134,8 +134,8 @@
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <select name="MAIL_ENCRYPTION" class="form-control col-md-7 col-xs-12">
-                                    <option value=""{{ (config('firephish.MAIL_ENCRYPTION')==''?' selected':'') }}>None</option>
-                                    <option value="tls"{{ (config('firephish.MAIL_ENCRYPTION')=='tls'?' selected':'') }}>TLS</option>
+                                    <option value=""{{ (config('fiercephish.MAIL_ENCRYPTION')==''?' selected':'') }}>None</option>
+                                    <option value="tls"{{ (config('fiercephish.MAIL_ENCRYPTION')=='tls'?' selected':'') }}>TLS</option>
                                 </select>
                             </div>
                         </div>
@@ -145,14 +145,14 @@
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">Mailgun Domain
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" name="MAILGUN_DOMAIN" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.MAILGUN_DOMAIN') }}">
+                                <input type="text" name="MAILGUN_DOMAIN" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.MAILGUN_DOMAIN') }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">Mailgun Secret API
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" name="MAILGUN_SECRET" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.MAILGUN_SECRET') }}">
+                                <input type="text" name="MAILGUN_SECRET" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.MAILGUN_SECRET') }}">
                             </div>
                         </div>
                     </div>
@@ -182,42 +182,42 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Database Type
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" name="DB_CONNECTION" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.DB_CONNECTION') }}" readonly>
+                            <input type="text" name="DB_CONNECTION" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.DB_CONNECTION') }}" readonly>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Database Host
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" name="DB_HOST" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.DB_HOST') }}">
+                            <input type="text" name="DB_HOST" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.DB_HOST') }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Database Port
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" name="DB_PORT" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.DB_PORT') }}">
+                            <input type="text" name="DB_PORT" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.DB_PORT') }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Database Name
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" name="DB_DATABASE" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.DB_DATABASE') }}">
+                            <input type="text" name="DB_DATABASE" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.DB_DATABASE') }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Database Username
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" name="DB_USERNAME" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.DB_USERNAME') }}">
+                            <input type="text" name="DB_USERNAME" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.DB_USERNAME') }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Database Password
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="password" name="DB_PASSWORD" class="form-control col-md-7 col-xs-12" value="{{ config('firephish.DB_PASSWORD') }}">
+                            <input type="password" name="DB_PASSWORD" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.DB_PASSWORD') }}">
                         </div>
                     </div>
                     <div class="ln_solid"></div>

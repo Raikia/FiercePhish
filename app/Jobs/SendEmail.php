@@ -51,7 +51,7 @@ class SendEmail extends Job implements ShouldQueue
         }
         $this->email->status = Email::SENDING;
         $this->email->save();
-        if (config('firephish.TEST_EMAIL_JOB') === false)
+        if (config('fiercephish.TEST_EMAIL_JOB') === false)
         {
             try
             {
@@ -59,10 +59,10 @@ class SendEmail extends Job implements ShouldQueue
                     $message->from($this->email->sender_email, $this->email->sender_name);
                     $message->to($this->email->receiver_email, $this->email->receiver_name);
                     $message->subject($this->email->subject);
-                    if (strstr(config('firephish.APP_URL'), '.') !== false)
+                    if (strstr(config('fiercephish.APP_URL'), '.') !== false)
                     {
                         $id = explode('@',$message->getSwiftMessage()->getId());
-                        $domain = str_replace(['http://','https://'],'', config('firephish.APP_URL'));
+                        $domain = str_replace(['http://','https://'],'', config('fiercephish.APP_URL'));
                         $message->getSwiftMessage()->setId($id[0].'@'.$domain);
                        // $message->getSwiftMessage()->getHeaders()->addTextHeader('List-Unsubscribe', '<mailto:admin@'.$domain.'>');
                     }
@@ -70,8 +70,8 @@ class SendEmail extends Job implements ShouldQueue
                     {
                         $message->attachData(base64_decode($this->email->attachment), $this->email->attachment_name, ['mime' => $this->email->attachment_mime]);
                     }
-                    if (config('firephish.MAIL_BCC_ALL') !== null)
-                        $message->bcc(config('firephish.MAIL_BCC_ALL'));
+                    if (config('fiercephish.MAIL_BCC_ALL') !== null)
+                        $message->bcc(config('fiercephish.MAIL_BCC_ALL'));
                 });
             }
             catch (\Exception $e)

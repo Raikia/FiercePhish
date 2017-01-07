@@ -23,7 +23,7 @@ WHITE='\033[01;37m'
 OS=""
 OS_VERSION=""
 VERBOSE=false
-FIREPHISH_MYSQL_PASSWD=
+FIERCEPHISH_MYSQL_PASSWD=
 SERVER_IP=$(curl -s icanhazip.com)
 
 FP_INSTRUCTIONS=()
@@ -122,9 +122,9 @@ detect_os()
 menu()
 {
 	echo -e ""
-	echo -e "${CYAN}----------------- ${LYELLOW}FirePhish Installer${CYAN} ----------------"
+	echo -e "${CYAN}---------------- ${LYELLOW}FiercePhish Installer${CYAN} ---------------"
 	echo -e "|                                                    |"
-	echo -e "|  This installer automatically install FirePhish    |"
+	echo -e "|  This installer automatically install FiercePhish  |"
 	echo -e "|  and all the other services needed. It is designed |"
 	echo -e "|  to work with Ubuntu, but it will attempt to       |"
 	echo -e "|  detect what distro you are running.               |"
@@ -134,8 +134,8 @@ menu()
 	if [[ $0 != "bash" ]]
 		then
 		echo -e "    ${LYELLOW}Options:${RESTORE} "
-		echo -e "        1. ${WHITE}Install FirePhish + SMTP + IMAP (${LRED}recommended${WHITE})${RESTORE}"
-		echo -e "        2. ${WHITE}Install FirePhish only${RESTORE}"
+		echo -e "        1. ${WHITE}Install FiercePhish + SMTP + IMAP (${LRED}recommended${WHITE})${RESTORE}"
+		echo -e "        2. ${WHITE}Install FiercePhish only${RESTORE}"
 		echo -e "        3. ${WHITE}Install SMTP + IMAP only${RESTORE}"
 	fi
 	echo -e ""
@@ -161,18 +161,18 @@ main()
 	menu
 	if [[ $0 = "bash" ]]
 		then
-		echo -e "${LRED}  !!! This is the quick install method and will install FirePhish + SMTP + IMAP !!!"
+		echo -e "${LRED}  !!! This is the quick install method and will install FiercePhish + SMTP + IMAP !!!"
 		echo -e "  !!!       You have 10 seconds to CTRL+C if you do not want this to happen     !!!${RESTORE}"
 		sleep 10
 	fi
 	detect_os
 	if [[ $selection -eq 1 ]]
 		then
-		install_firephish
+		install_fiercephish
 		install_smtp_imap
 	elif [[ $selection -eq 2 ]]
 		then
-		install_firephish
+		install_fiercephish
 	elif [[ $selection -eq 3 ]]
 		then
 		install_smtp_imap
@@ -185,7 +185,7 @@ main()
 	echo -e ""
 	if [[ ${#FP_INSTRUCTIONS[@]} -ne 0 ]]
 		then
-		echo -e "   FirePhish Follow Up Items:"
+		echo -e "   FiercePhish Follow Up Items:"
 		for i in "${!FP_INSTRUCTIONS[@]}"
 		do 
 			echo -e "     $((i+1)). ${FP_INSTRUCTIONS[$i]}"
@@ -212,9 +212,9 @@ main()
 	fi
 }
 
-install_firephish()
+install_fiercephish()
 {
-	notice "Installing FirePhish!"
+	notice "Installing FiercePhish!"
 
 
 	info "Updating package repositories"
@@ -266,15 +266,15 @@ install_firephish()
 	fi
 
 
-	info "Pulling the latest FirePhish from GitHub to /var/www/firephish"
+	info "Pulling the latest FiercePhish from GitHub to /var/www/fiercephish"
 	if [[ $OS = "Ubuntu" ]]
 		then
-		sys_cmd "git clone https://github.com/Raikia/FirePhish.git /var/www/firephish"
-		sys_cmd "chown -R www-data:www-data /var/www/firephish"
+		sys_cmd "git clone https://github.com/Raikia/FiercePhish.git /var/www/fiercephish"
+		sys_cmd "chown -R www-data:www-data /var/www/fiercephish"
 	fi
 
 
-	info "Installing FirePhish into Apache (this can take a few minutes)"
+	info "Installing FiercePhish into Apache (this can take a few minutes)"
 	if [ -z $WEBSITE_DOMAIN ]
 		then
 		prompt "What is the domain name of the website (ie: example.com) (IP address is ok)"
@@ -287,12 +287,12 @@ install_firephish()
 	fi
 	if [[ $OS = "Ubuntu" ]]
 		then
-		cat > /etc/apache2/sites-available/firephish.conf <<- EOM
+		cat > /etc/apache2/sites-available/fiercephish.conf <<- EOM
 <VirtualHost *:80>
     ServerName $WEBSITE_DOMAIN
     ServerAdmin webmaster@localhost
-    DocumentRoot /var/www/firephish/public
-    <Directory /var/www/firephish>
+    DocumentRoot /var/www/fiercephish/public
+    <Directory /var/www/fiercephish>
         Options FollowSymLinks
         AllowOverride All
         Require all granted
@@ -301,25 +301,25 @@ install_firephish()
     CustomLog \${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 EOM
-		sys_cmd "a2ensite firephish"
+		sys_cmd "a2ensite fiercephish"
 		sys_cmd "a2enmod rewrite"
 		sys_cmd "a2dissite 000-default"
 		sys_cmd "service apache2 restart"
-		sys_cmd "pushd /var/www/firephish"
+		sys_cmd "pushd /var/www/fiercephish"
 		sys_cmd "composer install"
 		sys_cmd "bower install --allow-root"
-		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e 'create database firephish'"
-		FIREPHISH_MYSQL_PASSWD=$(random_str)
-		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e \$'create user firephish@localhost identified by \'${FIREPHISH_MYSQL_PASSWD}\''"
-		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e \$'SET PASSWORD FOR firephish@localhost = PASSWORD(\'${FIREPHISH_MYSQL_PASSWD}\');'"
-		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e 'grant all privileges on firephish.* to firephish@localhost'"
+		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e 'create database fiercephish'"
+		FIERCEPHISH_MYSQL_PASSWD=$(random_str)
+		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e \$'create user fiercephish@localhost identified by \'${FIERCEPHISH_MYSQL_PASSWD}\''"
+		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e \$'SET PASSWORD FOR fiercephish@localhost = PASSWORD(\'${FIERCEPHISH_MYSQL_PASSWD}\');'"
+		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e 'grant all privileges on fiercephish.* to fiercephish@localhost'"
 		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e 'flush privileges'"
 		sys_cmd "popd"
 	fi
 
 
-	info "Configuring FirePhish"
-	sys_cmd "pushd /var/www/firephish"
+	info "Configuring FiercePhish"
+	sys_cmd "pushd /var/www/fiercephish"
 	sys_cmd "cp .env.example .env"
 	sys_cmd "touch storage/logs/laravel.log"
 	if [[ $OS = "Ubuntu" ]]
@@ -328,8 +328,8 @@ EOM
 	fi
 	sys_cmd "sed -i 's/APP_DEBUG=.*$/APP_DEBUG=false/' .env"
 	sys_cmd "sed -i 's/APP_URL=.*$/APP_URL=http:\/\/${WEBSITE_DOMAIN}/' .env"
-	sys_cmd "sed -i 's/DB_USERNAME=.*$/DB_USERNAME=firephish/' .env"
-	sys_cmd "sed -i 's/DB_PASSWORD=.*$/DB_PASSWORD=${FIREPHISH_MYSQL_PASSWD}/' .env"
+	sys_cmd "sed -i 's/DB_USERNAME=.*$/DB_USERNAME=fiercephish/' .env"
+	sys_cmd "sed -i 's/DB_PASSWORD=.*$/DB_PASSWORD=${FIERCEPHISH_MYSQL_PASSWD}/' .env"
 
 	info "Generating database"
 	sys_cmd "php artisan key:generate"
@@ -350,15 +350,15 @@ EOM
 	if [[ $OS = "Ubuntu" ]]
 		then
 		# For some reason if the supervisor runs more than 1 process, emails dont get sent...
-		cat > /etc/supervisor/conf.d/firephish.conf <<- EOM
-[program:firephish]
-command=/usr/bin/php /var/www/firephish/artisan queue:listen --queue=high,medium,low,default
+		cat > /etc/supervisor/conf.d/fiercephish.conf <<- EOM
+[program:fiercephish]
+command=/usr/bin/php /var/www/fiercephish/artisan queue:listen --queue=high,medium,low,default
 process_name = %(program_name)s-80%(process_num)02d
-stdout_logfile = /var/log/firephish-80%(process_num)02d.log
+stdout_logfile = /var/log/fiercephish-80%(process_num)02d.log
 stdout_logfile_maxbytes=100MB
 stdout_logfile_backups=10
 numprocs=1
-directory=/var/www/firephish
+directory=/var/www/fiercephish
 stopwaitsecs=600
 user=www-data
 EOM
@@ -372,7 +372,7 @@ EOM
 	
 	if [[ -z ${SSL_ENABLE} ]]
 		then
-		prompt "Do you want to enable HTTPS for FirePhish using LetsEncrypt (you must have a valid domain name)? [y/n]"
+		prompt "Do you want to enable HTTPS for FiercePhish using LetsEncrypt (you must have a valid domain name)? [y/n]"
 		ssl=$(get_input "n")
 		SSL_ENABLE=false
 		if [[ ${ssl} =~ [yY] ]]
@@ -384,10 +384,10 @@ EOM
 		then
 		error "You want to enable HTTPS but this isn't implemented yet.  You can do this yourself though until its implemented :-("
 	fi
-	FP_INSTRUCTIONS+=("Go to http://${SERVER_IP}/ to use FirePhish! (or http://${WEBSITE_DOMAIN}/ if you used a domain name)")
+	FP_INSTRUCTIONS+=("Go to http://${SERVER_IP}/ to use FiercePhish! (or http://${WEBSITE_DOMAIN}/ if you used a domain name)")
 	DNS_INSTRUCTIONS+=("A record for '@' point to '${SERVER_IP}'")
 	DNS_INSTRUCTIONS+=("A record for 'www' point to '${SERVER_IP}'")
-	notice "Done installing FirePhish!"
+	notice "Done installing FiercePhish!"
 }
 
 install_smtp_imap()
@@ -419,12 +419,12 @@ install_smtp_imap()
 		sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install postfix curl dovecot-imapd opendkim opendkim-tools"
 	fi
 	
-	info "Creating local user firephish for email retrieval"
+	info "Creating local user fiercephish for email retrieval"
 	IMAP_PASSWORD=$(random_str)
 	if [[ $OS = "Ubuntu" ]]
 		then
-		sys_cmd "adduser --disabled-password --gecos '' firephish"
-		sys_cmd "echo 'firephish:${IMAP_PASSWORD}' | chpasswd"
+		sys_cmd "adduser --disabled-password --gecos '' fiercephish"
+		sys_cmd "echo 'fiercephish:${IMAP_PASSWORD}' | chpasswd"
 	fi
 	
 	
@@ -438,8 +438,8 @@ install_smtp_imap()
 		sys_cmd "sed -i 's/smtp_tls_security_level = .*$/smtp_tls_security_level = may/' /etc/postfix/main.cf"
 		grep -q -F 'smtp_tls_loglevel' /etc/postfix/main.cf || echo 'smtp_tls_loglevel = 1' >> /etc/postfix/main.cf
 		sys_cmd "sed -i 's/smtp_tls_loglevel = .*$/smtp_tls_loglevel = 1/' /etc/postfix/main.cf"
-		grep -q -F 'luser_relay' /etc/postfix/main.cf || echo 'luser_relay = firephish' >> /etc/postfix/main.cf
-		sys_cmd "sed -i 's/luser_relay = .*$/luser_relay = firephish/' /etc/postfix/main.cf"
+		grep -q -F 'luser_relay' /etc/postfix/main.cf || echo 'luser_relay = fiercephish' >> /etc/postfix/main.cf
+		sys_cmd "sed -i 's/luser_relay = .*$/luser_relay = fiercephish/' /etc/postfix/main.cf"
 		grep -q -F 'local_recipient_maps' /etc/postfix/main.cf || echo 'local_recipient_maps = ' >> /etc/postfix/main.cf
 		sys_cmd "sed -i 's/local_recipient_maps = .*$/local_recipient_maps = /' /etc/postfix/main.cf"
 		echo ${EMAIL_DOMAIN} > /etc/mailname
@@ -527,29 +527,29 @@ EOM
 		sys_cmd "service opendkim restart"
 	fi
 	
-	info "Updating FirePhish configuration file"
-	if [[ -f /var/www/firephish/.env ]]
+	info "Updating FiercePhish configuration file"
+	if [[ -f /var/www/fiercephish/.env ]]
 		then
-		sys_cmd "sed -i 's/MAIL_DRIVER=.*$/MAIL_DRIVER=smtp/' /var/www/firephish/.env"
-		sys_cmd "sed -i 's/MAIL_HOST=.*$/MAIL_HOST=127.0.0.1/' /var/www/firephish/.env"
-		sys_cmd "sed -i 's/MAIL_PORT=.*$/MAIL_PORT=25/' /var/www/firephish/.env"
-		sys_cmd "sed -i 's/MAIL_USERNAME=.*$/MAIL_USERNAME=null/' /var/www/firephish/.env"
-		sys_cmd "sed -i 's/MAIL_PASSWORD=.*$/MAIL_PASSWORD=null/' /var/www/firephish/.env"
-		sys_cmd "sed -i 's/MAIL_ENCRYPTION=.*$/MAIL_ENCRYPTION=null/' /var/www/firephish/.env"
-		sys_cmd "sed -i 's/IMAP_USERNAME=.*$/IMAP_USERNAME=firephish/' /var/www/firephish/.env"
-		sys_cmd "sed -i 's/IMAP_PASSWORD=.*$/IMAP_PASSWORD=${IMAP_PASSWORD}/' /var/www/firephish/.env"
-		sys_cmd "pushd /var/www/firephish"
+		sys_cmd "sed -i 's/MAIL_DRIVER=.*$/MAIL_DRIVER=smtp/' /var/www/fiercephish/.env"
+		sys_cmd "sed -i 's/MAIL_HOST=.*$/MAIL_HOST=127.0.0.1/' /var/www/fiercephish/.env"
+		sys_cmd "sed -i 's/MAIL_PORT=.*$/MAIL_PORT=25/' /var/www/fiercephish/.env"
+		sys_cmd "sed -i 's/MAIL_USERNAME=.*$/MAIL_USERNAME=null/' /var/www/fiercephish/.env"
+		sys_cmd "sed -i 's/MAIL_PASSWORD=.*$/MAIL_PASSWORD=null/' /var/www/fiercephish/.env"
+		sys_cmd "sed -i 's/MAIL_ENCRYPTION=.*$/MAIL_ENCRYPTION=null/' /var/www/fiercephish/.env"
+		sys_cmd "sed -i 's/IMAP_USERNAME=.*$/IMAP_USERNAME=fiercephish/' /var/www/fiercephish/.env"
+		sys_cmd "sed -i 's/IMAP_PASSWORD=.*$/IMAP_PASSWORD=${IMAP_PASSWORD}/' /var/www/fiercephish/.env"
+		sys_cmd "pushd /var/www/fiercephish"
 		sys_cmd "php artisan config:cache"
 		sys_cmd "popd"
 	else
-		error "Unable to find the .env file for FirePhish.  You'll have to update it manually at the end"
+		error "Unable to find the .env file for FiercePhish.  You'll have to update it manually at the end"
 		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_DRIVER=smtp')
 		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_HOST=127.0.0.1')
 		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_PORT=25')
 		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_USERNAME=null')
 		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_PASSWORD=null')
 		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_ENCRYPTION=null')
-		FP_INSTRUCTIONS+=('Edit the following in .env:  IMAP_USERNAME=firephish')
+		FP_INSTRUCTIONS+=('Edit the following in .env:  IMAP_USERNAME=fiercephish')
 		FP_INSTRUCTIONS+=("Edit the following in .env:  IMAP_PASSWORD=${IMAP_PASSWORD}")
 		FP_INSTRUCTIONS+=("Run: php artisan config:cache")
 		sleep 5
@@ -570,12 +570,12 @@ if [ $EUID != 0 ]; then
 	exit 1
 fi
 
-if [[ $0 = "bash" && ! -f ~/firephish.config ]]
+if [[ $0 = "bash" && ! -f ~/fiercephish.config ]]
 	then
 	error "Because you are running this as a remote pipe execution, you need to create a configuration file for all the information that is required."
-	notice "Please edit ~/firephish.config with the necessary information and rerun this command"
-	cat > ~/firephish.config <<- EOM
-#### FirePhish Installation Configuration File ####
+	notice "Please edit ~/fiercephish.config with the necessary information and rerun this command"
+	cat > ~/fiercephish.config <<- EOM
+#### FiercePhish Installation Configuration File ####
 
 # Set this to true once you are done configuring everything
 CONFIGURED=false
@@ -592,7 +592,7 @@ MYSQL_ROOT_PASSWD=root_passwd
 
 # Set this to what the website domain is (ie: example.com). No "http://"
 # If you don't have a domain, use the publicly facing IP address (or 127.0.0.1)
-# This will be what you use to browse to FirePhish in your browser
+# This will be what you use to browse to FiercePhish in your browser
 WEBSITE_DOMAIN=127.0.0.1
 
 # Set this to the domain that you will be sending email from
@@ -600,20 +600,20 @@ WEBSITE_DOMAIN=127.0.0.1
 EMAIL_DOMAIN=localhost
 
 
-# Firet FirePhish user's Username
+# Firet FiercePhish user's Username
 ADMIN_USERNAME=admin
 
-# First FirePhish user's Email
+# First FiercePhish user's Email
 ADMIN_EMAIL=root@localhost
 
-# First FirePhish user's Password
+# First FiercePhish user's Password
 ADMIN_PASSWORD=test
 
 EOM
 	exit 1
-elif [[ $0 = "bash" && -f ~/firephish.config ]]
+elif [[ $0 = "bash" && -f ~/fiercephish.config ]]
 	then
-	source ~/firephish.config
+	source ~/fiercephish.config
 	if [[ $CONFIGURED = true ]]
 		then
 		if [[ -z $CONFIGURED || -z $VERBOSE || -z $SSL_ENABLE || -z $MYSQL_ROOT_PASSWD || -z $WEBSITE_DOMAIN || -z $EMAIL_DOMAIN || -z $ADMIN_USERNAME || -z $ADMIN_EMAIL || -z $ADMIN_PASSWORD ]]
@@ -621,16 +621,16 @@ elif [[ $0 = "bash" && -f ~/firephish.config ]]
 			error "Found the configuration file, but it is missing some variables!"
 			exit 1
 		fi
-		info "Found the FirePhish configuration file and continuing with installation"
+		info "Found the FiercePhish configuration file and continuing with installation"
 	else
-		error "Edit ~/firephish.config with the proper settings. Once done, make sure CONFIGURED=true at the top"
+		error "Edit ~/fiercephish.config with the proper settings. Once done, make sure CONFIGURED=true at the top"
 		exit 1
 	fi
 fi
 
 main
 
-if [[ $0 = "bash" && -f ~/firephish.config ]]
+if [[ $0 = "bash" && -f ~/fiercephish.config ]]
 	then
-	rm ~/firephish.config
+	rm ~/fiercephish.config
 fi

@@ -5,7 +5,7 @@
 
 
 <link href="{{ asset('css/login_page.css') }}" rel="stylesheet">
-<title>{{ config('firephish.APP_NAME') }} &raquo; Login</title>
+<title>{{ config('fiercephish.APP_NAME') }} &raquo; Login</title>
 </head>
 <body>
 @yield('content')

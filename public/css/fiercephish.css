@@ -22,10 +22,10 @@ body {
 
 .nav-sm .nav.child_menu li.active,
 .nav-sm .nav.side-menu li.active-sm {
-  border-right: 5px solid #BB2125; }
+  border-right: 5px solid #FF4800; }
   
 .nav.side-menu > li.current-page, .nav.side-menu > li.active {
-  border-right: 5px solid #BB2125; }
+  border-right: 5px solid #FF4800; }
   
 
 .select-info {

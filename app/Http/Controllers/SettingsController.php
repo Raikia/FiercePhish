@@ -107,10 +107,10 @@ class SettingsController extends Controller
         $path = base_path('.env');
         if (file_exists($path) && is_writable($path)) {
             $file_contents = file_get_contents($path);
-            $new_uri = config('firephish.URI_PREFIX');
+            $new_uri = config('fiercephish.URI_PREFIX');
             foreach ($all_updates as $key => $value)
             {
-                $real_old_value = config('firephish.'.$key);
+                $real_old_value = config('fiercephish.'.$key);
                 if ($real_old_value === true)
                     $real_old_value = 'true';
                 elseif ($real_old_value === false)
@@ -124,7 +124,7 @@ class SettingsController extends Controller
                 if ($key == 'URI_PREFIX')
                 {
                     if (!preg_match('/^[a-zA-Z0-9\/]*$/', $value))
-                        return back()->withErrors('Settings could not be saved. "Prefix of FirePhish" must be alphanumeric and can only contain slashes (example: "hidden/link")');
+                        return back()->withErrors('Settings could not be saved. "Prefix of FiercePhish" must be alphanumeric and can only contain slashes (example: "hidden/link")');
                     $value = trim($value, '/');
                     $real_new_value = trim($real_new_value, '/');
                     $new_uri = $value;
@@ -132,14 +132,14 @@ class SettingsController extends Controller
                 $file_contents = str_replace($key.'='.$real_old_value, $key.'='.$real_new_value, $file_contents);
             }
             file_put_contents($path, $file_contents);
-            $new_redir = '/'.$new_uri.str_replace(config('firephish.URI_PREFIX'), '',action('SettingsController@get_config', [], false));
+            $new_redir = '/'.$new_uri.str_replace(config('fiercephish.URI_PREFIX'), '',action('SettingsController@get_config', [], false));
             ActivityLog::log("Application configuration has been edited", "Settings");
             \Artisan::call('config:cache');
             
             sleep(5); // I know this is terrible, but we have to wait for the config to cache properly...
             while (strstr($new_redir, '//') !== false)
                 $new_redir = str_replace('//','/', $new_redir);
-            $base = config('firephish.APP_URL');
+            $base = config('fiercephish.APP_URL');
             if (isset($_SERVER['SERVER_NAME']))
             {
                 $base = 'http://'.$_SERVER['SERVER_NAME'];
@@ -160,25 +160,25 @@ class SettingsController extends Controller
     }
     public function post_export_data()
     {
-        if (config('firephish.DB_CONNECTION') != 'mysql')
+        if (config('fiercephish.DB_CONNECTION') != 'mysql')
         {
             return back()->withErrors('Data export is only supported for mysql databases right now. If you would like another to be supported, make an "Issue" on GitHub');
         }
-        ActivityLog::log('FirePhish Settings exported', 'Settings');
+        ActivityLog::log('FiercePhish Settings exported', 'Settings');
         $storage_class = new \stdClass();
         $sql_dump = [];
-        exec("mysqldump -h " .config('firephish.DB_HOST')." -P ".config('firephish.DB_PORT')." -u ".config('firephish.DB_USERNAME')." -p".config("firephish.DB_PASSWORD")." ".config('firephish.DB_DATABASE'), $sql_dump);
+        exec("mysqldump -h " .config('fiercephish.DB_HOST')." -P ".config('fiercephish.DB_PORT')." -u ".config('fiercephish.DB_USERNAME')." -p".config("fiercephish.DB_PASSWORD")." ".config('fiercephish.DB_DATABASE'), $sql_dump);
         $storage_class->version = config('app.version');
         $storage_class->sql_dump = implode("\n", $sql_dump);
         $storage_class->env = file_get_contents(base_path('.env'));
-        return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition','attachment; filename="firephish_backup_'.date('Ymd_Gi').'.dat"');
+        return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition','attachment; filename="fiercephish_backup_'.date('Ymd_Gi').'.dat"');
     }
     public function post_import_data(Request $request)
     {
         $this->validate($request, [
             'attachment' => 'required|file',
         ]);
-        if (config('firephish.DB_CONNECTION') != 'mysql')
+        if (config('fiercephish.DB_CONNECTION') != 'mysql')
         {
             return back()->withErrors('Data import is only supported for mysql databases right now. If you would like another to be supported, make an "Issue" on GitHub');
         }
@@ -188,42 +188,42 @@ class SettingsController extends Controller
         {
             $storage_class = @unserialize($content);
             if ($storage_class === false)
-                return back()->withErrors('Data import failed!  This is not a proper FirePhish backup file!');
+                return back()->withErrors('Data import failed!  This is not a proper FiercePhish backup file!');
         }
         catch (Exception $e)
         {
-            return back()->withErrors('Data import failed!  This is not a proper FirePhish backup file!');
+            return back()->withErrors('Data import failed!  This is not a proper FiercePhish backup file!');
         }
         
         $imported_version = explode('.', $storage_class->version);
         $app_version = explode('.', config('app.version'));
         if ($imported_version[0] != $app_version[0] || $imported_version[1] != $app_version[1])
         {
-            return back()->withErrors("Data import failed!  This is a data export of FirePhish version " . $storage_class->version ." and you are running version " . config('app.version'));
+            return back()->withErrors("Data import failed!  This is a data export of FiercePhish version " . $storage_class->version ." and you are running version " . config('app.version'));
         }
         \Artisan::call('migrate:reset');
         \Artisan::call('migrate');
-        $temp_file = '/tmp/firephish_import_'.rand().'.dat';
+        $temp_file = '/tmp/fiercephish_import_'.rand().'.dat';
         file_put_contents($temp_file, $storage_class->sql_dump);
-        exec("mysql -h " .config('firephish.DB_HOST')." -P ".config('firephish.DB_PORT')." -u ".config('firephish.DB_USERNAME')." -p".config("firephish.DB_PASSWORD")." ".config('firephish.DB_DATABASE'). ' < '.$temp_file);
+        exec("mysql -h " .config('fiercephish.DB_HOST')." -P ".config('fiercephish.DB_PORT')." -u ".config('fiercephish.DB_USERNAME')." -p".config("fiercephish.DB_PASSWORD")." ".config('fiercephish.DB_DATABASE'). ' < '.$temp_file);
         unlink($temp_file);
         $replace_new_with_old = ['APP_KEY', 'APP_URL', 'DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD'];
         $new_env = $storage_class->env;
         foreach ($replace_new_with_old as $tag)
-            $new_env = preg_replace('/'.$tag.'=.*$/m', $tag.'='.config('firephish.'.$tag), $new_env);
+            $new_env = preg_replace('/'.$tag.'=.*$/m', $tag.'='.config('fiercephish.'.$tag), $new_env);
         $new_uri = '';
         preg_match('/URI_PREFIX=(.*)\s*$/m', $new_env, $matches);
         if (count($matches) == 2 && $matches[1] != '' && $matches[1] != 'null')
             $new_uri = trim($matches[1]);
         if ($new_uri == 'null')
             $new_uri = '';
-        $new_redir = '/'.$new_uri.str_replace(config('firephish.URI_PREFIX'), '',action('SettingsController@get_import_export', [], false));
+        $new_redir = '/'.$new_uri.str_replace(config('fiercephish.URI_PREFIX'), '',action('SettingsController@get_import_export', [], false));
         while (strstr($new_redir, '//') !== false)
             $new_redir = str_replace('//','/', $new_redir);
         file_put_contents(base_path('.env'), $storage_class->env);
         \Artisan::call('config:cache');
         sleep(5); // I know this is terrible, but we have to wait for the config to cache properly...
-        ActivityLog::log('Imported settings from a previous FirePhish install', 'Settings');
+        ActivityLog::log('Imported settings from a previous FiercePhish install', 'Settings');
         if (isset($_SERVER['SERVER_NAME']))
         {
             $base = 'http://'.$_SERVER['SERVER_NAME'];

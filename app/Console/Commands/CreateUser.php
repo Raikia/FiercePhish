@@ -24,7 +24,7 @@ class CreateUser extends Command
      *
      * @var string
      */
-    protected $description = 'Creates a user for FirePhish';
+    protected $description = 'Creates a user for FiercePhish';
 
     /**
      * Create a new command instance.

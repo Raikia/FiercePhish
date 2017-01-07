@@ -59,7 +59,7 @@ return [
     | Application Version Number
     |--------------------------------------------------------------------------
     |
-    | This is the version of FirePhish
+    | This is the version of FiercePhish
     |
     */
     

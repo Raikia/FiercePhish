@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="logo">
-    <img src="{{ asset('images/login_logo.png') }}" style="width: 70px;" />
+    <img src="{{ asset('images/fiercephish_logo.png') }}" alt="FiercePhish" />
 </div>
 <div class="login-page">
   <div class="form">

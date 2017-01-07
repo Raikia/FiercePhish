@@ -26,7 +26,7 @@
                           <button type="submit" name="export" class="btn btn-primary">Data Export</button>
                         </div>
                       </div>
-                    <p>You can export the database here for importing into a new FirePhish instance</p>
+                    <p>You can export the database here for importing into a new FiercePhish instance</p>
                 </form>
             </div>
         </div>
@@ -56,7 +56,7 @@
                             <button type="submit" id="importBtn" class="btn btn-success">Import Configurations</button>
                         </div>
                     </div>
-                    <p>You can import a previous FirePhish instance here.  It will overwrite the current data and configurations, so its suggested to only do this on a new FirePhish install.</p>
+                    <p>You can import a previous FiercePhish instance here.  It will overwrite the current data and configurations, so its suggested to only do this on a new FiercePhish install.</p>
                 </form>
             </div>
         </div>
