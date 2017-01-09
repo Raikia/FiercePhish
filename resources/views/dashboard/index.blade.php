@@ -50,7 +50,7 @@
   <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div class="tile-stats">
       <div class="icon"><i class="fa fa-user-o"></i></div>
-      <div class="count">{{ App\TargetUser::all()->count() }}</div>
+      <div class="count">{{ App\TargetUser::count() }}</div>
       <h3>Total Users</h3>
       <p>Number of target users</p>
     </div>
