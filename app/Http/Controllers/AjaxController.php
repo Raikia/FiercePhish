@@ -49,10 +49,15 @@ class AjaxController extends Controller
         $query = $query->with('lists');
         if ($request->input('search')['value'] != '')
         {
-            $sq = $request->input('search')['value'];
-            $query = $query->where('first_name', 'like', '%'.$sq.'%')->orWhere('last_name', 'like', '%'.$sq.'%')->orWhere('email', 'like', '%'.$sq.'%')->orWhere('notes', 'like', '%'.$sq.'%')->orWhereHas('lists', function($q) {
-                $q->where('name', 'like', '%'.request()->search['value'].'%');
-            });
+            $sqa = array_filter(explode(' ', $request->input('search')['value']));
+            foreach ($sqa as $sq)
+            {
+                $query = $query->where(function ($query) use ($sq) {
+                    $query->where('first_name', 'like', '%'.$sq.'%')->orWhere('last_name', 'like', '%'.$sq.'%')->orWhere('email', 'like', '%'.$sq.'%')->orWhere('notes', 'like', '%'.$sq.'%')->orWhereHas('lists', function($q) {
+                        $q->where('name', 'like', '%'.request()->search['value'].'%');
+                    });
+                });
+            }
         }
         $orders = $request->input('order') ?: [];
         foreach ($orders as $sort)
