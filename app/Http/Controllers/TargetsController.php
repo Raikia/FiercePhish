@@ -20,8 +20,7 @@ class TargetsController extends Controller
     
     public function index()
     {
-        $targetUsers = TargetUser::with('lists')->orderBy('first_name')->get();
-        return view('targets.index')->with('targetUsers', $targetUsers);
+        return view('targets.index');
     }
     
     public function addTarget(Request $request)

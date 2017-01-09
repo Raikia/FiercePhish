@@ -20,36 +20,11 @@
                       <th>First name</th>
                       <th>Last name</th>
                       <th>Email</th>
-                      <th>List Membership</th>
+                      <th class="no-sort">List Membership</th>
                       <th>Notes</th>
                   </tr>
               </thead>
               <tbody>
-                  @if (count($targetUsers) > 0)
-                      @foreach ($targetUsers as $user)
-                          <tr>
-                              <td>{{ str_limit($user->first_name,50) }}</td>
-                              <td>{{ str_limit($user->last_name,50) }}</td>
-                              <td>{{ str_limit($user->email,50) }}</td>
-                              <td>
-                                  @if (count($user->lists) > 0)
-                                      <ul>
-                                          @foreach ($user->lists as $l)
-                                              <li>{{ $l->name }}</li>
-                                          @endforeach
-                                      </ul>
-                                  @else
-                                      N/A
-                                  @endif
-                              </td>
-                              <td><a href="#" class="editnotes" data-type="text" data-pk="{{ $user->id }}" data-url="{{ action('AjaxController@edit_targetuser_notes') }}" data-title="Enter note">{{ $user->notes }}</a></td>
-                          </tr>
-                      @endforeach
-                  @else
-                      <tr>
-                          <td colspan="4" style="text-align: center;">No Targets Yet</td>
-                      </tr>
-                  @endif
               </tbody>
           </table>
       </div>
@@ -183,10 +158,22 @@
         $("#selectedFile").val('');
     });
     
-    var dt = $(".datatable").DataTable();
+    var dt = $(".datatable").DataTable({
+      serverSide: true,
+      processing: true,
+      ajax: {
+        url: "{{ action('AjaxController@targetuser_list') }}",
+        type: "POST"
+      },
+      columnDefs: [{ targets: 'no-sort', orderable: false}]
+    });
     
-    $(".editnotes").editable();
+    //$(".editnotes").editable();
     
+    $(".datatable").editable({
+      selector: 'tr td:nth-child(5) a',
+      emptytext: 'Empty'
+    })
     $(".editnotes").on('save', function() {
         setTimeout(function() {
             dt.rows().invalidate();
