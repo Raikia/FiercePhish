@@ -6,7 +6,9 @@ body {
     background: #121314;
     color: #444346;
 }
-
+.dataTables_processing {
+  height: 50px;
+}
 .left_col {
     background: #121314;
 }
