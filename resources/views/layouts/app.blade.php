@@ -213,7 +213,7 @@
                     @endif
                     </span>
                   </a>
-                  <ul id="jobMenu" class="dropdown-menu list-unstyled msg_list" role="menu">
+                  <ul id="jobMenu" class="dropdown-menu list-unstyled msg_list" style="max-height: 400px; overflow-y: auto;" role="menu">
                     @foreach (\App\ProcessingJob::all() as $j)
                       <li>
                         <a>
