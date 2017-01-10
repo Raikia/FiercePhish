@@ -230,6 +230,47 @@
                 </form>
             </div>
         </div>
+        
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Proxy / Load Balancer Settings</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form class="form-horizontal form-label-left" method="post" action="{{ action('SettingsController@post_config') }}">
+                    <div style="text-align: center;" class="form-group">
+                        Set these settings if FiercePhish is located behind a proxy or load balancer.<br />
+                        Careful when editing these settings. If you mess up, you'll have to manually edit "{{ base_path('.env') }}"<br />
+                    </div>
+                    {{ csrf_field() }}
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Proxy URL
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input title="this is a test" type="text" name="PROXY_URL" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.PROXY_URL') }}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Proxy Schema
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select name="PROXY_SCHEMA" class="form-control col-md-7 col-xs-12">
+                                    <option value=""{{ (config('fiercephish.PROXY_SCHEMA')==''?' selected':'') }}>None</option>
+                                    <option value="http"{{ (config('fiercephish.PROXY_SCHEMA')=='tls'?' selected':'') }}>HTTP</option>
+                                    <option value="https"{{ (config('fiercephish.PROXY_SCHEMA')=='tls'?' selected':'') }}>HTTPS</option>
+                                </select>
+                            </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <button type="submit" class="btn btn-success">Save Settings</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 

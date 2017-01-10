@@ -11,6 +11,13 @@
 |
 */
 
+// Force URL if a proxy is present
+if (!empty(config('fiercephish.PROXY_URL')))
+	URL::forceRootUrl(config('fiercephish.PROXY_URL'));
+if (!empty(config('fiercephish.PROXY_SCHEMA')))
+	URL::forceSchema(config('fiercephish.PROXY_SCHEMA'));
+
+
 Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	// Authentication Routes...
 	Route::get('login', 'Auth\AuthController@showLoginForm');
