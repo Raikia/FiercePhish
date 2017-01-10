@@ -10,7 +10,9 @@ class EmailTemplate extends Model
     protected $fillable = ['name', 'subject', 'template'];
     
     public static $VARS = [
-        '[name]' => 'The name of the person (example: "John Doe")', 
+        '[name]' => 'The name of the person (example: "John Doe")',
+        '[first_name]' => 'The first name of the person (example: "John")',
+        '[last_name]' => 'The last name of the person (example: "Doe")',
         '[username]' => 'Username of the person (example: In "john.doe@domain.com", it would be "john.doe")',
         '[email]' => 'Email of the target person (example: "john.doe@domain.com")', 
         '[uid]' => 'A unique identifier for this user. This is useful in links to identify who clicked on a specific link', 
@@ -22,6 +24,8 @@ class EmailTemplate extends Model
     
     public static $DEFAULTS = [
         '[name]' => 'John Doe',
+        '[first_name]' => 'John',
+        '[last_name]' => 'Doe',
         '[username]' => 'john.doe',
         '[email]' => 'john.doe@domain.com',
         '[uid]' => '0696f64d67415a89782075f1d990b2deb449d5e5',
@@ -33,6 +37,8 @@ class EmailTemplate extends Model
     private function parse_variables($text, $campaign, $targetUser)
     {
         $text = str_replace('[name]', $targetUser->first_name . ' ' . $targetUser->last_name, $text);
+        $text = str_replace('[first_name]', $targetUser->first_name);
+        $text = str_replace('[last_name]', $targetUser->last_name);
         $text = str_replace('[username]', explode("@",$targetUser->email)[0], $text);
         $text = str_replace('[email]', $targetUser->email, $text);
         $text = str_replace('[uid]', $targetUser->uuid($campaign), $text);
