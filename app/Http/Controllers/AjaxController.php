@@ -372,6 +372,12 @@ class AjaxController extends Controller
                 case 6:
                     $query = $query->orderby('status', $sort['dir']);
                     break;
+                case 8:
+                    $query = $query->orderby('created_at', $sort['dir']);
+                    break;
+                case 9:
+                    $query = $query->orderby('updated_at', $sort['dir']);
+                    break;
             }
         }
         $filteredLength = $query->count();

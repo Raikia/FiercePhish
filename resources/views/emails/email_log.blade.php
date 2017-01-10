@@ -26,7 +26,7 @@
                 <th>Sender Email</th>
                 <th>Subject</th>
                 <th>UUID</th>
-                <th class="no-sort">Status</th>
+                <th>Status</th>
                 <th class="no-sort">Campaign</th>
                 <th>Created At</th>
                 <th>Updated At</th>
