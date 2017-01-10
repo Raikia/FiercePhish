@@ -54,7 +54,8 @@
             <div class="x_content">
                 <form action="{{ action('TargetsController@addAlltoList', ['id' => $targetList->id]) }}" id="addAlltoList" method="post">
                     {{ csrf_field() }}
-                    <button class="btn btn-success">Add all {{ number_format($numTargetUsers) }} Target Users to List</button><br /><br />
+                    <button class="btn btn-success">Add all Target Users to List</button>
+                    Only unassigned targets: <input type="checkbox" name="unusedOnly" value="unassigned_only" style="margin-right: 10px;" /><br /><br />
                 </form>
                 <form action="{{ action('TargetsController@addRandomtoList', ['id' => $targetList->id]) }}" method="post">
                     {{ csrf_field() }}
@@ -131,7 +132,7 @@
     $("#addAlltoList").submit(function(e) {
         var currentForm = this;
         e.preventDefault();
-        bootbox.confirm("Are you sure you want to add all {{ number_format($numTargetUsers) }} users from the list?", function(result) {
+        bootbox.confirm("Are you sure you want to add all users to the list?", function(result) {
             if (result) {
                 currentForm.submit();
             }

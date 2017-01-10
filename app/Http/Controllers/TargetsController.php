@@ -101,12 +101,12 @@ class TargetsController extends Controller
         return back()->with('success', 'Removed all users from the list');
     }
     
-    public function addAlltoList($id)
+    public function addAlltoList(Request $request, $id)
     {
         $list = TargetList::findOrFail($id);
         $pjob = new ProcessingJob(['name' => 'Add users to list', 'description' => 'Type: All, List: "' . $list->name.'"', 'icon' => 'list']);
         $pjob->save();
-        $job = (new AddToList($pjob, $list, -1, false))->onQueue('high')->delay(1);
+        $job = (new AddToList($pjob, $list, -1, $request->has('unusedOnly')))->onQueue('high')->delay(1);
         $this->dispatch($job);
         return back()->with('success', 'Add users to list job started successfully');
     }

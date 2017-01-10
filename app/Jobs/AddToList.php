@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Jobs\Job;
 use App\TargetList;
 use App\TargetUser;
+use App\ActivityLog;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -42,15 +43,19 @@ class AddToList extends Job implements ShouldQueue
         {
             $pjob = $this->processing_job;
             $list = $this->targetlist;
-            $totalNum = $this->targetlist->availableUsers()->count();
+            $query = $this->targetlist->availableUsers();
+            $totalNum = $query->count();
             $count = 0;
-            TargetUser::chunk(1000, function($u) use($pjob, $list, $totalNum, &$count) {
+            if ($this->only_unassigned)
+                $query = $query->has('lists', '<', 1);
+            $query->chunk(1000, function($u) use($pjob, $list, $totalNum, &$count) {
                 $list->users()->syncWithoutDetaching($u->pluck('id')->toArray());
                 $count += 1000;
                 $pjob->progress = round(($count/$totalNum)*100);
                 $pjob->save();
             });
             $pjob->delete();
+            ActivityLog::log("Added All Target Users to the Target List \"".$list->name."\" job completed", "Target List");
         }
         else
         {
@@ -72,6 +77,7 @@ class AddToList extends Job implements ShouldQueue
                 $pjob->save();
             }
             $pjob->delete();
+            ActivityLog::log("Added Random Target Users to the Target List \"".$list->name."\" job completed", "Target List");
         }
     }
 }
