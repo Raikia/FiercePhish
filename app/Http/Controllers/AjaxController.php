@@ -303,6 +303,12 @@ class AjaxController extends Controller
                 case 1:
                     $query = $query->orderby('receiver_email', $sort['dir']);
                     break;
+                case 2:
+                    $query = $query->orderby('uuid', $sort['dir']);
+                    break;
+                case 3:
+                    $query = $query->orderby('status', $sort['dir']);
+                    break;
             }
         }
         $filteredLength = $query->count();
@@ -360,6 +366,9 @@ class AjaxController extends Controller
                     break;
                 case 5:
                     $query = $query->orderby('uuid', $sort['dir']);
+                    break;
+                case 6:
+                    $query = $query->orderby('status', $sort['dir']);
                     break;
             }
         }
