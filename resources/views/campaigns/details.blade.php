@@ -10,7 +10,7 @@
 <div class="clearfix"></div>
 
 <div class="row">
-    <div class="col-md-5 col-sm-5 col-xs-12">
+    <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="x_panel">
             <div class="x_title">
                 <h2>Campaign Overview</h2>
@@ -30,6 +30,10 @@
                         <tr>
                             <td><b>Status</b></td>
                             <td>{{ $campaign->getStatus() }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Emails Sent</b></td>
+                            <td>{{ number_format($campaign->emails()->where('status', \App\Email::SENT)->count()) }} / {{ number_format($campaign->emails()->count()) }} sent</td>
                         </tr>
                         <tr>
                             <td><b>Email Template</b></td>
@@ -61,7 +65,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-7 col-sm-7 col-xs-12">
+    <div class="col-md-8 col-sm-8 col-xs-12">
         <div class="x_panel">
             <div class="x_title">
                 <h2>Email Log</h2>
@@ -75,6 +79,7 @@
                             <th>Receiver Email</th>
                             <th>UUID</th>
                             <th>Status</th>
+                            <th>Last Updated</th>
                         </tr>
                     </thead>
                     <tbody>
