@@ -44,6 +44,7 @@ class StartCampaign extends Job implements ShouldQueue
     public function handle()
     {
         $list = $this->list;
+        $pjob = $this->process_job;
         $campaign = $this->campaign;
         $template = $this->template;
         $send_num_emails = $this->send_num_emails;
@@ -52,38 +53,38 @@ class StartCampaign extends Job implements ShouldQueue
         $send_all_immediately = false;
         if ($send_num_emails < 0)
             $send_all_immediately = true;
-        
         $counter = 0;
         $original_send_num_emails = $send_num_emails;
         $numUsers = $list->users()->count();
         $numSent = 0;
-        foreach ($list->users as $user)
-        {
-            $new_email = $template->craft_email($campaign, $user);
-            if ($send_all_immediately)
+        $list->users()->chunk(500, function($users) use($send_all_immediately, &$send_num_emails, $original_send_num_emails, &$counter, &$numSent, $pjob, $campaign, $template, $seconds_offset_start, $send_every_minutes, $numUsers) {
+            foreach ($users as $user)
             {
-                $new_email->send($seconds_offset_start, 'medium');
-            }
-            else 
-            {
-                
-                $new_email->send($seconds_offset_start + ($counter * ($send_every_minutes*60)), 'low');
-                --$send_num_emails;
-                if ($send_num_emails == 0)
+                $new_email = $template->craft_email($campaign, $user);
+                if ($send_all_immediately)
                 {
-                    $send_num_emails = $original_send_num_emails;
-                    ++$counter;
+                    $new_email->send($seconds_offset_start, 'medium');
+                }
+                else 
+                {
+                    $new_email->send($seconds_offset_start + ($counter * ($send_every_minutes*60)), 'low');
+                    --$send_num_emails;
+                    if ($send_num_emails == 0)
+                    {
+                        $send_num_emails = $original_send_num_emails;
+                        ++$counter;
+                    }
+                }
+                ++$numSent;
+                $oldProgress = $pjob->progress;
+                $newRate = round(($numSent/$numUsers)*100);
+                if ($oldProgress != $newRate)
+                {
+                    $pjob->progress = $newRate;
+                    $pjob->save();
                 }
             }
-            ++$numSent;
-            $oldProgress = $this->process_job->progress;
-            $newRate = round(($numSent/$numUsers)*100);
-            if ($oldProgress != $newRate)
-            {
-                $this->process_job->progress = $newRate;
-                $this->process_job->save();
-            }
-        }
+        });
         ActivityLog::log("Completed campaign job named \"".$campaign->name."\" to queue ".$list->users()->count()." emails for sending", "Campaign");
         $this->process_job->delete();
     }

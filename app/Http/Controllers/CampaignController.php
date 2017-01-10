@@ -72,9 +72,7 @@ class CampaignController extends Controller
         $job = (new StartCampaign($pjob, $campaign, $list, $template, $send_num_emails, $send_every_minutes, $seconds_offset_start))->onQueue('high')->delay(1);
         $this->dispatch($job);
         ActivityLog::log("Created a create campaign job named \"".$campaign->name."\" to queue ".$list->users()->count()." emails for sending", "Campaign");
-        // Change this to be redirect to the running campaign once that page is functional
-        return redirect()->action('CampaignController@campaign_details', ['id' => $campaign->id]);
-        //return back()->with('success', 'Campaign has been launched successfully');
+        return redirect()->action('CampaignController@campaign_details', ['id' => $campaign->id])->with('success', 'Job to create campaign has been launched successfully');
     }
     
     
