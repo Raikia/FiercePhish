@@ -22,7 +22,7 @@ class CampaignController extends Controller
     
     public function index()
     {
-        $all_campaigns = Campaign::with('emails')->get();
+        $all_campaigns = Campaign::all();
         return view('campaigns.index')->with('all_campaigns', $all_campaigns);
     }
     

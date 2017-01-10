@@ -34,7 +34,7 @@
                   <td><a href="{{ action('CampaignController@campaign_details', ['id' => $camp->id ]) }}">{{ $camp->name }}</a></td>
                   <td>{{ $camp->description }}</td>
                   <td>{{ $camp->getStatus() }}</td>
-                  <td>{{ $camp->emails()->where('status', \App\Email::SENT)->count() }} / {{ $camp->emails()->count() }} sent</td>
+                  <td>{{ number_format($camp->emails()->where('status', \App\Email::SENT)->count()) }} / {{ number_format($camp->emails()->count()) }} sent</td>
                   <td>{{ $camp->created_at->format('M j, Y @ g:i:s a') }}</td>
                   <td>{{ $camp->updated_at->format('M j, Y @ g:i:s a') }}</td>
                 </tr>
