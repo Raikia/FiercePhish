@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         view()->composer('layouts.app', function ($view) {
-            $view->with('layout_all_active_campaigns', \App\Campaign::with('emails')->where('status', \App\Campaign::WAITING)->orWhere('status', \App\Campaign::SENDING)->get());
+            $view->with('layout_all_active_campaigns', \App\Campaign::where('status', \App\Campaign::WAITING)->orWhere('status', \App\Campaign::SENDING)->get());
         });
     }
 
