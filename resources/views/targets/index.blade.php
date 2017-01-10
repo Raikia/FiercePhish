@@ -168,8 +168,6 @@
       columnDefs: [{ targets: 'no-sort', orderable: false}]
     });
     
-    //$(".editnotes").editable();
-    
     $(".datatable").editable({
       selector: 'tr td:nth-child(5) a',
       emptytext: 'Empty'
