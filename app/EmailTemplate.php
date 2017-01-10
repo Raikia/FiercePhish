@@ -37,8 +37,8 @@ class EmailTemplate extends Model
     private function parse_variables($text, $campaign, $targetUser)
     {
         $text = str_replace('[name]', $targetUser->first_name . ' ' . $targetUser->last_name, $text);
-        $text = str_replace('[first_name]', $targetUser->first_name);
-        $text = str_replace('[last_name]', $targetUser->last_name);
+        $text = str_replace('[first_name]', $targetUser->first_name, $text);
+        $text = str_replace('[last_name]', $targetUser->last_name, $text);
         $text = str_replace('[username]', explode("@",$targetUser->email)[0], $text);
         $text = str_replace('[email]', $targetUser->email, $text);
         $text = str_replace('[uid]', $targetUser->uuid($campaign), $text);
