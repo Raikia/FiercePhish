@@ -27,15 +27,6 @@
               <tbody>
               </tbody>
           </table>
-          <input type="button" id="selectAllOnPage_btn" value="Select All on Page" />
-          <input type="button" id="selectAll_btn" value="Select All" style="margin-left: 30px;" />
-          <input type="button" id="deselectAll_btn" value="Deselect All" style="margin-left: 30px;" />
-          <br />
-          <br />
-          <input type="number" placeholder="X amount" min="1" max="{{ $numTargetUsers }}" id="numToSelect" style="padding-left: 5px; width: 80px;" /> 
-          <input type="button" id="numToSelect_btn" value="Select X Amount Randomly" style="margin-left: 10px; margin-right: 10px;" />
-          Only unassigned targets: <input type="checkbox" id="unusedOnly" value="unassigned_only" style="margin-right: 10px;" />
-          <span id="randomSelectError" style="color: #DD0000;"></span>
       </div>
     </div>
   </div>
