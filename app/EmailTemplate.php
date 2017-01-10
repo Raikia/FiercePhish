@@ -55,6 +55,7 @@ class EmailTemplate extends Model
         $email->tls = true; // Maybe change this to be editable in the campaign
         $email->has_attachment = false; // Maybe change this to be editable in the campaign
         $email->status = Email::NOT_SENT;
+        $email->uuid = $targetUser->uuid($campaign);
         $email->save();
         return $email;
     }
