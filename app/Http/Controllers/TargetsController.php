@@ -66,7 +66,7 @@ class TargetsController extends Controller
     
     public function targetlists_index()
     {
-        $targetLists = TargetList::with('users')->orderBy('name')->get();
+        $targetLists = TargetList::orderBy('name')->get();
         return view('targets.lists')->with('targetLists', $targetLists);
     }
     
