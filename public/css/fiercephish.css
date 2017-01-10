@@ -83,3 +83,7 @@ tr.selected {
 .bg-red {
   background-color: #FF4800 !important;
 }
+
+.pointer tbody>tr{
+  cursor: pointer;
+}

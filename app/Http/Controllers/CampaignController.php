@@ -80,7 +80,7 @@ class CampaignController extends Controller
     
     public function campaign_details($id)
     {
-        $campaign = Campaign::with('emails')->findOrFail($id);
+        $campaign = Campaign::findOrFail($id);
         return view('campaigns.details')->with('campaign', $campaign);
     }
     

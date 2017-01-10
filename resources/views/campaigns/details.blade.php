@@ -68,7 +68,7 @@
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-                <table id="emailLogTable" class="table table-striped table-bordered datatable">
+                <table id="emailLogTable" class="table table-striped table-bordered datatable pointer">
                     <thead>
                         <tr>
                             <th>Receiver Name</th>
@@ -78,14 +78,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($campaign->emails as $email)
-                            <tr id="{{ $email->id }}">
-                                <td>{{ $email->receiver_name }}</td>
-                                <td>{{ $email->receiver_email }}</td>
-                                <td>{{ $email->campaign->target_list->users->where('first_name', explode(' ', $email->receiver_name)[0])->where('email', $email->receiver_email)->first()->uuid($campaign) }}
-                                <td>{{ $email->getStatus() }}</td>
-                            </tr>
-                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -108,11 +100,24 @@
         });
     });
     
-    $("#emailLogTable tbody>tr").css('cursor', 'pointer');
-    $("#emailLogTable tbody>tr").click(function(item) {
-        window.location="{{ action('EmailController@email_log_details') }}/"+item.currentTarget.id;
+    $(document).ready(function() {
+        $("#emailLogTable tbody>tr").css('cursor', 'pointer');
+        $(document).on('click',"#emailLogTable tbody>tr", function(item) {
+            window.location="{{ action('EmailController@email_log_details') }}/"+item.currentTarget.id.split('_')[1];
+        }); 
     });
 
-    $("#emailLogTable").dataTable();
+    
+    
+    var dt = $("#emailLogTable").DataTable({
+      serverSide: true,
+      processing: true,
+      ajax: {
+        url: "{{ action('AjaxController@campaign_emails_get', ['id' => $campaign->id]) }}",
+        type: "POST"
+      },
+      columnDefs: [{ targets: 'no-sort', orderable: false}]
+    });
+    
 </script>
 @endsection

@@ -11,6 +11,7 @@ use App\TargetList;
 use App\EmailTemplate;
 use App\ActivityLog;
 use App\Libraries\DomainTools;
+use App\Campaign;
 use Response;
 use Cache;
 
@@ -275,4 +276,49 @@ class AjaxController extends Controller
         $all_strs['num'] = count($all_jobs);
         return Response::json($all_strs, 200);
     }
+    
+    public function campaign_emails_get(Request $request, $id)
+    {
+        $campaign = Campaign::findOrFail($id);
+        $query = $campaign->emails();
+        if ($request->input('search')['value'] != '')
+        {
+            $sqa = array_filter(explode(' ', $request->input('search')['value']));
+            foreach ($sqa as $sq)
+            {
+                $query = $query->where(function ($query) use ($sq) {
+                    $query->where('receiver_name', 'like', '%'.$sq.'%')->orWhere('receiver_email', 'like', '%'.$sq.'%')->orWhere('uuid', 'like', '%'.$sq.'%');
+                });
+            }
+        }
+        $orders = $request->input('order') ?: [];
+        foreach ($orders as $sort)
+        {
+            switch ($sort['column'])
+            {
+                case 0:
+                    $query = $query->orderby('receiver_name', $sort['dir']);
+                    break;
+                case 1:
+                    $query = $query->orderby('receiver_email', $sort['dir']);
+                    break;
+            }
+        }
+        $filteredLength = $query->count();
+        $start = (int)$request->input('start') ?: 0;
+        $length = (int)$request->input('length') ?: 10;
+        $query = $query->skip($start)->take($length);
+        $data = $query->get();
+        $ret = ['draw' => (int)$request->input('draw'),
+                'recordsTotal' => $campaign->emails()->count(),
+                'recordsFiltered' => $filteredLength,
+                'data' => [],
+        ];
+        foreach ($data as $email)
+        {
+            $ret['data'][] = ['0' => $email->receiver_name, '1' => $email->receiver_email, '2' => $email->uuid, '3' => $email->getStatus(), 'DT_RowId' => 'row_'.$email->id];
+        }
+        return Response::json($ret, 200);
+    }
+    
 }
