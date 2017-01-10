@@ -183,5 +183,33 @@ class AjaxController extends Controller
         return Response::json($ret, 200);
     }
     
-
+    
+    public function get_jobs()
+    {
+        $all_jobs = \App\ProcessingJob::all();
+        $all_strs = ['html' => ''];
+        foreach ($all_jobs as $j)
+        {
+            $all_strs['html'] .= '<li>
+                            <a>
+                              <span class="image"><i class="fa fa-'.$j->icon.'"></i></span>
+                              <span>
+                                <span style="margin-left: 5px;">'.$j->name.'</span>
+                                <span class="time">'.\Carbon\Carbon::createFromTimeStamp(strtotime($j->created_at))->diffForHumans().'</span>
+                              </span>
+                              <span class="message">
+                               <div class="progress" style="margin-top: 7px;">
+                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'.$j->progress.'" aria-valuemin="0" aria-valuemax="100" style="background-color: #FF4800; min-width: 2em; width: '.$j->progress.'%;">
+                                  '.$j->progress.'%
+                                </div>
+                              </div>
+                              </span>
+                            </a>
+                     </li>';
+        }
+        if ($all_strs['html'] == '')
+            $all_strs['html'] = '<li>No running jobs</li>';
+        $all_strs['num'] = count($all_jobs);
+        return Response::json($all_strs, 200);
+    }
 }

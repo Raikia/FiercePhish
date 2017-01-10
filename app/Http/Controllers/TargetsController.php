@@ -8,6 +8,8 @@ use App\Http\Requests;
 use App\TargetUser;
 use App\TargetList;
 use App\ActivityLog;
+use App\ProcessingJob;
+use App\Jobs\ImportTargets;
 
 use File;
 
@@ -49,61 +51,14 @@ class TargetsController extends Controller
             'import_file' => 'required|mimes:csv,txt|max:15000'
         ]);
         $content = File::get($request->file('import_file')->getRealPath());
-        $lines = explode("\n", $content);
-        $errors = [];
-        $success = 0;
-        $warn = 0;
-        $lineNum = 0;
-        foreach ($lines as $line)
-        {
-            ++$lineNum;
-            $line = trim($line);
-            if ($line == "")
-                continue;
-            $parts = str_getcsv($line, ",", '"');
-            for ($x=0; $x<count($parts); ++$x)
-            {
-                $parts[$x] = trim(trim($parts[$x]),'"');
-            }
-            if (count($parts) < 3)
-                $errors[] = $lineNum;
-            else
-            {
-                if (strpos($parts[2],'@') === false)
-                    $errors[] = $lineNum;
-                else
-                {
-                    $t = new TargetUser();
-                    $t->first_name = $parts[0];
-                    $t->last_name = $parts[1];
-                    $t->email = $parts[2];
-                    if (count($parts) > 3)
-                        $t->notes = $parts[3];
-                    try
-                    {
-                        $t->save();
-                        ++$success;
-                    }
-                    catch (\Illuminate\Database\QueryException $e)
-                    {
-                        ++$warn;
-                    }
-                }
-            }
-        }
-        $ret_obj = back();
-        if ($success != 0)
-        {
-            ActivityLog::log("Imported a list of " . $success . " target users", "Target User");
-            $ret_obj = $ret_obj->with('success', 'Successfully added ' . $success . ' target'.(($success==1)?'':'s'));
-        }
-        if ($warn != 0)
-        {
-            $ret_obj = $ret_obj->with('warn', 'Did not add '.$warn.' duplicate entr'.(($warn==1)?'y':'ies'));
-        }
-        if (count($errors) > 0)
-            $ret_obj = $ret_obj->withErrors('Unable to add targets from line'.((count($errors)==1)?'':'s').' ' . implode(', ', $errors));
-        return $ret_obj;
+        $temp_path = '/tmp/fiercephish_importusers_'.rand().'.dat';
+        file_put_contents($temp_path, $content);
+        $pj = new ProcessingJob(['name' => 'Import Target Users', 'progress' => 0, 'icon' => 'users']);
+        $pj->save();
+        $job = (new ImportTargets($pj, $temp_path))->onQueue('high')->delay(1);
+        $this->dispatch($job);
+        ActivityLog::log("Started Target User import job", "Target User");
+        return back()->with('success', 'Started Target User import job');
     }
     
     

@@ -94,10 +94,10 @@
                 </ul>
               </div>
               <div class="menu_section">
-                <h3>Active Campaigns ({{ $layout_all_active_campaigns->count() }})</h3>
+                <h3><i class="fa fa-bullhorn"></i> Active Campaigns ({{ $layout_all_active_campaigns->count() }})</h3>
                 <ul class="nav side-menu">
                   @foreach ($layout_all_active_campaigns as $camp)
-                    <li><a><i class="fa fa-bullhorn"></i>{{ $camp->name }} <span class="fa fa-chevron-down"></span></a>
+                    <li><a>{{ $camp->name }} <span class="fa fa-chevron-down"></span></a>
                       <ul class="nav child_menu">
                         <li><a href="{{ action('CampaignController@campaign_details', ['id' => $camp->id ]) }}">View Campaign</a></li>
                         <li><a>{{ (100-round((($camp->emails()->where('status', \App\Email::NOT_SENT)->count())/($camp->emails()->count())*100))) }}% Complete</a></li>
@@ -105,7 +105,7 @@
                     </li>
                   @endforeach
                   @if ($layout_all_active_campaigns->count() == 0)
-                    <li><a><i class="fa fa-bullhorn"></i>No active campaigns!</a></li>
+                    <li><a>No active campaigns!</a></li>
                   @endif
                 </ul>
               </div>
@@ -204,6 +204,39 @@
                     </li>
                   </ul>
                 </li>-->
+                <li role="presentation" class="dropdown">
+                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-tasks"></i>
+                    <span id="hasBadge">
+                    @if (\App\ProcessingJob::count() != 0)
+                      <span class="badge bg-red">{{ \App\ProcessingJob::count() }}</span>
+                    @endif
+                    </span>
+                  </a>
+                  <ul id="jobMenu" class="dropdown-menu list-unstyled msg_list" role="menu">
+                    @foreach (\App\ProcessingJob::all() as $j)
+                      <li>
+                        <a>
+                          <span class="image"><i class="fa fa-{{ $j->icon }}"></i></span>
+                          <span>
+                            <span style="margin-left: 5px;">{{ $j->name }}</span>
+                            <span class="time">{{ \Carbon\Carbon::createFromTimeStamp(strtotime($j->created_at))->diffForHumans() }}</span>
+                          </span>
+                          <span class="message">
+                           <div class="progress" style="margin-top: 7px;">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ $j->progress }}" aria-valuemin="0" aria-valuemax="100" style="background-color: #FF4800; min-width: 2em; width: {{ $j->progress }}%;">
+                              {{ $j->progress }}%
+                            </div>
+                          </div>
+                          </span>
+                        </a>
+                      </li>
+                    @endforeach
+                    @if (\App\ProcessingJob::count() == 0)
+                      <li>No running jobs</li>
+                    @endif
+                  </ul>
+                </li>
               </ul>
             </nav>
           </div>
@@ -272,7 +305,23 @@
       $(document).ready(function() {
         $(".alert").slideDown(1000).delay(10000).slideUp(1000);
         $(":input").inputmask();
+        window.setInterval(grabJobs, 2000);
       });
+      
+      function grabJobs()
+      {
+        $.get("{{ action('AjaxController@get_jobs') }}", function(results) {
+          $("#jobMenu").html(results['html']);
+          if (results['num'] == 0)
+          {
+            $("#hasBadge").html('');
+          }
+          else
+          {
+            $("#hasBadge").html('<span class="badge bg-red">' + results['num'] + '</span>');
+          }
+        });
+      }
     </script>
   </body>
 </html>

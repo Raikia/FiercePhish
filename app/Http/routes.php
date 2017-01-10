@@ -77,4 +77,5 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::get('ajax/emails/template/{id?}', 'AjaxController@get_emailtemplate_info');
 	Route::get('ajax/emails/check/{command?}/{domain?}', 'AjaxController@email_check_commands');
 	Route::get('ajax/log/{id?}', 'AjaxController@get_activitylog');
+	Route::get('ajax/jobs', 'AjaxController@get_jobs');
 });
