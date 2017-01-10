@@ -26,7 +26,7 @@
   <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div class="tile-stats">
       <div class="icon"><i class="fa fa-caret-square-o-right"></i></div>
-      <div class="count">{{ App\Campaign::where('status', App\Campaign::FINISHED)->count() }}/{{ App\Campaign::all()->count() }}</div>
+      <div class="count">{{ number_format(App\Campaign::where('status', App\Campaign::FINISHED)->count()) }}/{{ number_format(App\Campaign::count()) }}</div>
       <h3>Total Campaigns</h3>
       <p>Number of completed over total campaigns</p>
     </div>
@@ -34,7 +34,7 @@
   <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div class="tile-stats">
       <div class="icon"><i class="fa fa-envelope-o"></i></div>
-      <div class="count">{{ App\Email::where('status', App\Email::SENT)->count() }}/{{ App\Email::all()->count() }}</div>
+      <div class="count">{{ number_format(App\Email::where('status', App\Email::SENT)->count()) }}/{{ number_format(App\Email::count()) }}</div>
       <h3>Total Emails</h3>
       <p>Number of sent emails over total emails</p>
     </div>
@@ -42,7 +42,7 @@
   <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div class="tile-stats">
       <div class="icon"><i class="fa fa-list"></i></div>
-      <div class="count">{{ App\TargetList::all()->count() }}</div>
+      <div class="count">{{ number_format(App\TargetList::count()) }}</div>
       <h3>Total Lists</h3>
       <p>Number of target lists</p>
     </div>
@@ -50,7 +50,7 @@
   <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div class="tile-stats">
       <div class="icon"><i class="fa fa-user-o"></i></div>
-      <div class="count">{{ App\TargetUser::count() }}</div>
+      <div class="count">{{ number_format(App\TargetUser::count()) }}</div>
       <h3>Total Users</h3>
       <p>Number of target users</p>
     </div>
@@ -72,15 +72,15 @@
             <div class="tiles">
                         <div class="col-md-4 tile">
                           <span>Emails Sent</span>
-                          <h2>{{ $emailStats['numSent'] }}</h2>
+                          <h2>{{ number_format($emailStats['numSent']) }}</h2>
                         </div>
                         <div class="col-md-4 tile">
                           <span>Emails Cancelled</span>
-                          <h2>{{ $emailStats['numCancelled'] }}</h2>
+                          <h2>{{ number_format($emailStats['numCancelled']) }}</h2>
                         </div>
                         <div class="col-md-4 tile">
                           <span>Emails Awaiting Sending</span>
-                          <h2>{{ $emailStats['numPending'] }}</h2>
+                          <h2>{{ number_format($emailStats['numPending']) }}</h2>
                         </div>
                       </div>
           </div>
