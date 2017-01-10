@@ -91,6 +91,10 @@
               </tr>
             @endif
             <tr>
+              <td>UUID</td>
+              <td>{{ $email->uuid }}</td>
+            </tr>
+            <tr>
               <td>Status</td>
               <td>{{ $email->getStatus() }}</td>
             </tr>
