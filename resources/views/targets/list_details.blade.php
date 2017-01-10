@@ -33,7 +33,7 @@
                         </tr>
                         <tr>
                             <td><b>Notes</b></td>
-                            <td>{{ $targetList->notes }}</td>
+                            <td><a href="#" class="editnotes" data-type="text" data-pk="{{ $targetList->id }}" data-url="{{ action('AjaxController@edit_targetlist_notes') }}" data-title="Enter note">{{ $targetList->notes }}</a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -137,6 +137,14 @@
                 currentForm.submit();
             }
         });
+    });
+    
+    $(".editnotes").editable();
+    
+    $(".editnotes").on('save', function() {
+        setTimeout(function() {
+            dt.rows().invalidate();
+        }, 500);
     });
 </script>
 @endsection

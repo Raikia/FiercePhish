@@ -150,6 +150,6 @@
         setTimeout(function() {
             dt.rows().invalidate();
         }, 500);
-    })
+    });
 </script>
 @endsection
