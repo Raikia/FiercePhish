@@ -233,8 +233,8 @@ install_fiercephish()
 	fi
 	if [[ $OS = "Ubuntu" ]]
 		then
-		sys_cmd "debconf-set-selections <<< 'mysql-server mysql-server/root_password password $MYSQL_ROOT_PASSWD'"
-		sys_cmd "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWD'"
+		sys_cmd "debconf-set-selections <<< \$'mysql-server mysql-server/root_password password \'$MYSQL_ROOT_PASSWD\''"
+		sys_cmd "debconf-set-selections <<< \$'mysql-server mysql-server/root_password_again password \'$MYSQL_ROOT_PASSWD\''"
 		if [[ $OS_VERSION = "14.04" ]]
 			then
 			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php5 php5-cli mysql-server php5-mysql libapache2-mod-php5 php5-mcrypt php5-imap phpunit npm unzip git curl supervisor"
@@ -242,8 +242,19 @@ install_fiercephish()
 			then
 			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php php-cli mysql-server php-mysql libapache2-mod-php php-mcrypt php-mbstring php-imap phpunit npm unzip git curl supervisor"
 		fi
+		sys_cmd "service mysql restart"
 	fi
 
+	info "Validating MySQL root password"
+	if [[ $OS = "Ubuntu" ]]
+		then
+		if [[ ! $(mysql -u root --password="${MYSQL_ROOT_PASSWD}" -e "show databases" 2> /dev/null) ]]
+			then
+			error "Detected an invalid MySQL root password!  Make sure you provide the correct root mysql password to the installer!"
+			exit 1
+		fi
+	fi
+	
 
 	info "Installing Composer"
 	if [[ $OS = "Ubuntu" ]]
@@ -308,12 +319,12 @@ EOM
 		sys_cmd "pushd /var/www/fiercephish"
 		sys_cmd "composer install"
 		sys_cmd "bower install --allow-root"
-		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e 'create database fiercephish'"
+		sys_cmd "mysql -u root --password='${MYSQL_ROOT_PASSWD}' -e 'create database fiercephish'"
 		FIERCEPHISH_MYSQL_PASSWD=$(random_str)
-		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e \$'create user fiercephish@localhost identified by \'${FIERCEPHISH_MYSQL_PASSWD}\''"
-		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e \$'SET PASSWORD FOR fiercephish@localhost = PASSWORD(\'${FIERCEPHISH_MYSQL_PASSWD}\');'"
-		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e 'grant all privileges on fiercephish.* to fiercephish@localhost'"
-		sys_cmd "mysql -u root -p${MYSQL_ROOT_PASSWD} -e 'flush privileges'"
+		sys_cmd "mysql -u root --password='${MYSQL_ROOT_PASSWD}' -e \$'create user fiercephish@localhost identified by \'${FIERCEPHISH_MYSQL_PASSWD}\''"
+		sys_cmd "mysql -u root --password='${MYSQL_ROOT_PASSWD}' -e \$'SET PASSWORD FOR fiercephish@localhost = PASSWORD(\'${FIERCEPHISH_MYSQL_PASSWD}\');'"
+		sys_cmd "mysql -u root --password='${MYSQL_ROOT_PASSWD}' -e 'grant all privileges on fiercephish.* to fiercephish@localhost'"
+		sys_cmd "mysql -u root --password='${MYSQL_ROOT_PASSWD}' -e 'flush privileges'"
 		sys_cmd "popd"
 	fi
 
@@ -586,7 +597,8 @@ VERBOSE=false
 # YOU MUST HAVE A VALID DOMAIN NAME FOR THIS TO WORK!
 SSL_ENABLE=false
 
-# Set this to what you want the mysql root password to be
+# Set this to what you want the mysql root password to be.
+# If MySQL is already installed, make sure this is the valid root password for it
 MYSQL_ROOT_PASSWD=root_passwd
 
 # Set this to what the website domain is (ie: example.com). No "http://"
@@ -633,3 +645,5 @@ if [[ $0 = "bash" && -f ~/fiercephish.config ]]
 	then
 	rm ~/fiercephish.config
 fi
+
+
