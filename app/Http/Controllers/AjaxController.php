@@ -12,6 +12,7 @@ use App\EmailTemplate;
 use App\ActivityLog;
 use App\Libraries\DomainTools;
 use App\Campaign;
+use App\Email;
 use Response;
 use Cache;
 
@@ -317,6 +318,69 @@ class AjaxController extends Controller
         foreach ($data as $email)
         {
             $ret['data'][] = ['0' => $email->receiver_name, '1' => $email->receiver_email, '2' => $email->uuid, '3' => $email->getStatus(), 'DT_RowId' => 'row_'.$email->id];
+        }
+        return Response::json($ret, 200);
+    }
+    
+    
+    public function email_log(Request $request)
+    {
+        $query = Email::with('campaign');
+        if ($request->input('search')['value'] != '')
+        {
+            $sqa = array_filter(explode(' ', $request->input('search')['value']));
+            foreach ($sqa as $sq)
+            {
+                $query = $query->where(function ($query) use ($sq) {
+                    $query->where('receiver_name', 'like', '%'.$sq.'%')->orWhere('receiver_email', 'like', '%'.$sq.'%')->orWhere('sender_name', 'like', '%'.$sq.'%')->orWhere('sender_email', 'like', '%'.$sq.'%')->orWhere('subject', 'like', '%'.$sq.'%')->orWhere('uuid', 'like', '%'.$sq.'%')->orWhereHas('campaign', function($q) {
+                        $q->where('name', 'like', '%'.request()->search['value'].'%');
+                    });
+                });
+            }
+        }
+        $orders = $request->input('order') ?: [];
+        foreach ($orders as $sort)
+        {
+            switch ($sort['column'])
+            {
+                case 0:
+                    $query = $query->orderby('receiver_name', $sort['dir']);
+                    break;
+                case 1:
+                    $query = $query->orderby('receiver_email', $sort['dir']);
+                    break;
+                case 2:
+                    $query = $query->orderby('sender_name', $sort['dir']);
+                    break;
+                case 3:
+                    $query = $query->orderby('sender_email', $sort['dir']);
+                    break;
+                case 4:
+                    $query = $query->orderby('subject', $sort['dir']);
+                    break;
+                case 5:
+                    $query = $query->orderby('uuid', $sort['dir']);
+                    break;
+            }
+        }
+        $filteredLength = $query->count();
+        $start = (int)$request->input('start') ?: 0;
+        $length = (int)$request->input('length') ?: 10;
+        $query = $query->skip($start)->take($length);
+        $data = $query->get();
+        $ret = ['draw' => (int)$request->input('draw'),
+                'recordsTotal' => Email::count(),
+                'recordsFiltered' => $filteredLength,
+                'data' => [],
+        ];
+        foreach ($data as $email)
+        {
+            $camp = 'None';
+            if ($email->campaign != null)
+            {
+                $camp = '<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>';
+            }
+            $ret['data'][] = ['0' => $email->receiver_name, '1' => $email->receiver_email, '2' => $email->sender_name, '3' => $email->sender_email, '4' => $email->subject, '5' => $email->uuid, '6' => $email->getStatus(), '7' => $camp, '8' => $email->created_at.'', '9' => $email->updated_at.'', 'DT_RowId' => 'row_'.$email->id];
         }
         return Response::json($ret, 200);
     }

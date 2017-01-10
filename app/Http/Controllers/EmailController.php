@@ -119,7 +119,7 @@ class EmailController extends Controller
 
     public function email_log()
     {
-        return view('emails.email_log')->with('all_emails', Email::orderby('created_at', 'DESC')->get());
+        return view('emails.email_log');
     }
     public function email_log_details($id)
     {
