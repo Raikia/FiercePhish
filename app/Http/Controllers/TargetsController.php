@@ -78,9 +78,9 @@ class TargetsController extends Controller
         $checkList = TargetList::where('name', $request->input('name'))->get();
         if (count($checkList) == 0)
         {
-            TargetList::create($request->all());
+            $t = TargetList::create($request->all());
             ActivityLog::log("Added new Target List named \"" . $request->input('name') . "\"", "Target List");
-            return back()->with('success', 'List added successfully');
+            return redirect()->action('TargetsController@targetlists_details', ['id' => $t->id])->with('success', 'List added successfully');
         }
         else
         {
@@ -114,6 +114,7 @@ class TargetsController extends Controller
     public function addRandomtoList(Request $request, $id)
     {
         $this->validate($request, ['numToSelect' => 'required|integer']);
+        $list = TargetList::findOrFail($id);
         $pjob = new ProcessingJob(['name' => 'Add users to list', 'description' => 'Type: '.$request->input('numToSelect').', Random, List: "' . $list->name.'"', 'icon' => 'list']);
         $pjob->save();
         $job = (new AddToList($pjob, $list, $request->input('numToSelect'), $request->has('unusedOnly')))->onQueue('high')->delay(1);
@@ -147,6 +148,6 @@ class TargetsController extends Controller
         $list = TargetList::findOrFail($request->input('listSelection'));
         $list->users()->syncWithoutDetaching($ids);
         ActivityLog::log("Added users to the list \"".$list->name."\", it now has " . count($list->users) ." users");
-        return back()->with('success', 'Users successfully added');
+        return redirect()->action('TargetsController@targetlists_details', ['id' => $list->id])->with('success', 'Users successfully added');
     }
 }
