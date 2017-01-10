@@ -50,7 +50,7 @@
                     <select class="form-control select2_single" id="target_list_raw">
                       <option></option>
                       @foreach ($lists as $item)
-                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        <option value="{{ $item->id }}">{{ $item->name }} - {{ number_format($item->users()->count()) }} users</option>
                       @endforeach
                     </select>
                   @else
