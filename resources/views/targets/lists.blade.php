@@ -27,7 +27,7 @@
                       @foreach ($targetLists as $list)
                           <tr>
                               <td><a href="{{ action('TargetsController@targetlists_details', ['id' => $list->id]) }}">{{ str_limit($list->name,200) }}</a></td>
-                              <td>{{ $list->users()->count() }}</td>
+                              <td>{{ number_format($list->users()->count()) }}</td>
                               <td><a href="#" class="editnotes" data-type="text" data-pk="{{ $list->id }}" data-url="{{ action('AjaxController@edit_targetlist_notes') }}" data-title="Enter note">{{ $list->notes }}</a></td>
                           </tr>
                       @endforeach
