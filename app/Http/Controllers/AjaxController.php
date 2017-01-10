@@ -186,10 +186,13 @@ class AjaxController extends Controller
     
     public function get_jobs()
     {
-        $all_jobs = \App\ProcessingJob::all();
+        $all_jobs = \App\ProcessingJob::orderby('created_at', 'asc')->get();
         $all_strs = ['html' => ''];
         foreach ($all_jobs as $j)
         {
+            $desc = '';
+            if ($j->description != '')
+                $desc = '<div style="margin-left: 23px;">'.$j->description.'</div>';
             $all_strs['html'] .= '<li>
                             <a>
                               <span class="image"><i class="fa fa-'.$j->icon.'"></i></span>
@@ -198,6 +201,7 @@ class AjaxController extends Controller
                                 <span class="time">'.\Carbon\Carbon::createFromTimeStamp(strtotime($j->created_at))->diffForHumans().'</span>
                               </span>
                               <span class="message">
+                               '.$desc.'
                                <div class="progress" style="margin-top: 7px;">
                                 <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'.$j->progress.'" aria-valuemin="0" aria-valuemax="100" style="background-color: #FF4800; min-width: 2em; width: '.$j->progress.'%;">
                                   '.$j->progress.'%

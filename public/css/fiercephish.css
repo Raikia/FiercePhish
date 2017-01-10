@@ -79,3 +79,7 @@ tr.selected {
   color: #0000EE;
   text-decoration: underline;
 }
+
+.bg-red {
+  background-color: #FF4800 !important;
+}

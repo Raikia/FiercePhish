@@ -16,6 +16,7 @@ class CreateProcessingJobsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->integer('progress');
+            $table->text('description');
             $table->string('icon');
             $table->timestamps();
         });

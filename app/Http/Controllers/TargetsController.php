@@ -51,13 +51,14 @@ class TargetsController extends Controller
             'import_file' => 'required|mimes:csv,txt|max:15000'
         ]);
         $content = File::get($request->file('import_file')->getRealPath());
+        $name = $request->file('import_file')->getClientOriginalName();
         $temp_path = '/tmp/fiercephish_importusers_'.rand().'.dat';
         file_put_contents($temp_path, $content);
-        $pj = new ProcessingJob(['name' => 'Import Target Users', 'progress' => 0, 'icon' => 'users']);
+        $pj = new ProcessingJob(['name' => 'Import Target Users', 'description' => 'Filename: '.$name, 'progress' => 0, 'icon' => 'users']);
         $pj->save();
         $job = (new ImportTargets($pj, $temp_path))->onQueue('high')->delay(1);
         $this->dispatch($job);
-        ActivityLog::log("Started Target User import job", "Target User");
+        ActivityLog::log("Started Target User import job, (Filename: ".$name.")", "Target User");
         return back()->with('success', 'Started Target User import job');
     }
     

@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Jobs\Job;
 use App\TargetUser;
 use App\ProcessingJobs;
+use App\ActivityLog;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -80,6 +81,7 @@ class ImportTargets extends Job implements ShouldQueue
                 }
             }
         }
+        ActivityLog::log("Target User import job completed (".$this->process_job->description.")", "Target User");
         $this->process_job->delete();
         unlink($this->process_path);
     }

@@ -223,6 +223,9 @@
                             <span class="time">{{ \Carbon\Carbon::createFromTimeStamp(strtotime($j->created_at))->diffForHumans() }}</span>
                           </span>
                           <span class="message">
+                            @if ($j->description != '')
+                              <div style="margin-left: 23px;">{{ $j->description }}</div>
+                            @endif
                            <div class="progress" style="margin-top: 7px;">
                             <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ $j->progress }}" aria-valuemin="0" aria-valuemax="100" style="background-color: #FF4800; min-width: 2em; width: {{ $j->progress }}%;">
                               {{ $j->progress }}%
