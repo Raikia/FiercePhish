@@ -349,10 +349,9 @@ EOM
 	info "Configuring Supervisor to process jobs"
 	if [[ $OS = "Ubuntu" ]]
 		then
-		# For some reason if the supervisor runs more than 1 process, emails dont get sent...
 		cat > /etc/supervisor/conf.d/fiercephish.conf <<- EOM
 [program:fiercephish]
-command=/usr/bin/php /var/www/fiercephish/artisan queue:listen --queue=high,medium,low,default
+command=/usr/bin/php /var/www/fiercephish/artisan queue:listen --queue=high,medium,low,default --timeout=0
 process_name = %(program_name)s-80%(process_num)02d
 stdout_logfile = /var/log/fiercephish-80%(process_num)02d.log
 stdout_logfile_maxbytes=100MB
