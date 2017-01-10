@@ -171,11 +171,11 @@
     $(".datatable").editable({
       selector: 'tr td:nth-child(5) a',
       emptytext: 'Empty'
-    })
+    });
     $(".editnotes").on('save', function() {
         setTimeout(function() {
             dt.rows().invalidate();
         }, 500);
-    })
+    });
 </script>
 @endsection

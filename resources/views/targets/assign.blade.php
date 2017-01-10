@@ -4,11 +4,7 @@
 
 <div class="page-title">
   <div class="title_left">
-    @if ($selectedList->id === null)
       <h3>Assign Targets to Lists</h3>
-    @else 
-      <h3>Edit "{{ $selectedList->name }}"</h3>
-    @endif
   </div>
 </div>
 
@@ -24,36 +20,11 @@
                       <th>First name</th>
                       <th>Last name</th>
                       <th>Email</th>
-                      <th>List Membership</th>
+                      <th class="no-sort">List Membership</th>
                       <th>Notes</th>
                   </tr>
               </thead>
               <tbody>
-                  @if (count($targetUsers) > 0)
-                      @foreach ($targetUsers as $user)
-                          <tr id="row_{{ $user->id }}">
-                              <td>{{ str_limit($user->first_name,50) }}</td>
-                              <td>{{ str_limit($user->last_name,50) }}</td>
-                              <td>{{ str_limit($user->email,50) }}</td>
-                              <td>
-                                  @if (count($user->lists) > 0)
-                                      <ul>
-                                          @foreach ($user->lists as $l)
-                                              <li>{{ $l->name }}</li>
-                                          @endforeach
-                                      </ul>
-                                  @else
-                                      None
-                                  @endif
-                              </td>
-                              <td>{{ $user->notes }}</td>
-                          </tr>
-                      @endforeach
-                  @else
-                      <tr>
-                          <td colspan="4" style="text-align: center;">No Targets Yet</td>
-                      </tr>
-                  @endif
               </tbody>
           </table>
           <input type="button" id="selectAllOnPage_btn" value="Select All on Page" />
@@ -61,7 +32,7 @@
           <input type="button" id="deselectAll_btn" value="Deselect All" style="margin-left: 30px;" />
           <br />
           <br />
-          <input type="number" placeholder="X amount" min="1" max="{{ count($targetUsers) }}" id="numToSelect" style="padding-left: 5px; width: 80px;" /> 
+          <input type="number" placeholder="X amount" min="1" max="{{ $numTargetUsers }}" id="numToSelect" style="padding-left: 5px; width: 80px;" /> 
           <input type="button" id="numToSelect_btn" value="Select X Amount Randomly" style="margin-left: 10px; margin-right: 10px;" />
           Only unassigned targets: <input type="checkbox" id="unusedOnly" value="unassigned_only" style="margin-right: 10px;" />
           <span id="randomSelectError" style="color: #DD0000;"></span>
@@ -106,11 +77,7 @@
     <div class="x_panel">
       <div class="x_title">
         <h2><i class="fa fa-floppy-o"></i> 
-        @if ($selectedList->id === null)
           Add Selection To List
-        @else 
-          Edit List 
-        @endif
         </h2>
         <div class="clearfix"></div>
       </div>
@@ -122,19 +89,9 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="listSelection">Select List  <span class="required">*</span>
             </label>
             <div class="col-md-9 col-sm-9 col-xs-12">
-              @if ($selectedList->id === null)
-                      <select id="listSelection" name="listSelection" class="select2_single form-control" style="width: 300px;">
-                        <option></option>
-                        @foreach ($targetLists as $list)
-                          <option value="{{ $list->id }}">{{ $list->name }} - {{ count($list->users) }} users</option>
-                        @endforeach
-                      </select>
-                      <input type="hidden" name="type" value="add" />
-              @else
                 <input type="hidden" name="listSelection" value="{{ $selectedList->id }}" />
                 <input type="hidden" name="type" value="edit" />
                 <input type="text" class="form-control" id="listSelection" value="{{ $selectedList->name}} - {{ count($selectedList->users) }} users" readonly />
-              @endif
             </div>
           </div>
           
@@ -144,11 +101,7 @@
           <div class="ln_solid"></div>
           <div class="form-group">
             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-              @if ($selectedList->id === null)
-                <button type="submit" class="btn btn-success">Add Selection To List</button>
-              @else 
                 <button type="submit" class="btn btn-success">Edit List</button>
-              @endif
             </div>
           </div>
 
@@ -164,100 +117,55 @@
 @section('footer')
 <script type="text/javascript">
     /* global $ */
-    
+    var selected = [];
+    var selectedData = [];
     var dt = $(".datatable").DataTable({
-        select: 'multi'
-    });
-    
-    $("#selectAllOnPage_btn").click(function() {
-        dt.rows({ page:'current' }).select();
-    });
-    
-    $("#selectAll_btn").click(function() {
-        dt.rows().select();
-    });
-    
-    $("#deselectAll_btn").click(function() {
-        dt.rows().deselect();
-    });
-    
-    $("#numToSelect_btn").click(function() {
-        var max = Math.min($("#numToSelect").val(), dt.rows({selected: false}).count());
-        if (max == 0)
-            setError("No rows to select")
-        else if ($("#numToSelect").val() != max)
-            setError("Too many rows requested, selecting all");
-        else if ($("#numToSelect").val() == dt.rows({selected: false}).count())
-            setError("All rows being selected");
-        else
-            setError("");
-        if (!$.isNumeric(max))
-        {
-            $("#numToSelect").val('');
-            setError("Invalid number");
-            return;
-        }
-        if ($("#unusedOnly").prop('checked'))
-        {
-            var unselected_ones = dt.rows({selected: false}).eq(0).filter( function(rowIdx) {
-                    return dt.cell(rowIdx, 3).data() == "None" ? true : false;
-                });
-            max = Math.min(max, unselected_ones.length);
-            if (max == 0)
-                setError("No unassigned rows remaining");
-            for (var x=0; x<max; ++x)
-            {
-                var unselected_ones = dt.rows({selected: false}).eq(0).filter( function(rowIdx) {
-                    return dt.cell(rowIdx, 3).data() == "None" ? true : false;
-                });
-                var random_row = Math.floor(Math.random() * (unselected_ones.count()));
-                dt.row(unselected_ones[random_row], {selected: false}).select();
-            }
-        }
-        else
-        {
-            
-            for (var x=0; x<max; ++x)
-            {
-                var unselected_ones = dt.rows({selected: false}).indexes();
-                var random_row = Math.floor(Math.random() * (unselected_ones.count()));
-                dt.row(unselected_ones[random_row], {selected: false}).select();
+      serverSide: true,
+      processing: true,
+      ajax: {
+        url: "{{ action('AjaxController@targetuser_list') }}/"+{{ $selectedList->id }},
+        type: "POST"
+      },
+      columnDefs: [{ targets: 'no-sort', orderable: false}],
+      'rowCallback': function( row, data ) {
+            if ( $.inArray(data.DT_RowId, selected) !== -1 ) {
+                $(row).addClass('selected');
             }
         }
     });
     
-    function selectionHandler( e, dt, type,indexes) {
-      var total_add = "";
-      var data = dt.rows({selected: true}).data();
-      var num = 1;
-      for (var x=0; x < data.length; ++x)
-      {
-        total_add += '<tr><td>'+num+'</td><td>'+data[x][0]+'</td><td>'+data[x][1]+'</td><td>'+data[x][2]+'</td></tr>';
-        ++num;
-      }
-      if (data.length == 0)
-        total_add += '<tr><td colspan="4" style="text-align: center;">None Selected</td></tr>';
-      $("#selectedTable tbody").html(total_add);
-    }
     
-    dt.on('select', selectionHandler);
-    dt.on('deselect', selectionHandler);
+    $('.datatable tbody').on('click', 'tr', function (data) {
+        var id = this.id;
+        var index = $.inArray(id, selected);
+ 
+        if ( index === -1 ) {
+            selected.push( id );
+            selectedData[id.split('_')[1]] = [data.currentTarget.cells[0].innerHTML, data.currentTarget.cells[1].innerHTML, data.currentTarget.cells[2].innerHTML];
+            console.log(data.currentTarget);
+            updateSelectedTable();
+        } else {
+            selected.splice( index, 1 );
+            delete selectedData[id.split('_')[1]];
+            updateSelectedTable();
+        }
+ 
+        $(this).toggleClass('selected');
+    });
     
-    function setError(str) {
-        $("#randomSelectError").html(str);
-    }
-    
-    @if ($selectedList->id === null)
-      $(".select2_single").select2({
-        placeholder: "Select a list",
-        allowClear: true
-      });
-    @endif
-
+    $(".datatable").editable({
+      selector: 'tr td:nth-child(5) a',
+      emptytext: 'Empty'
+    });
+    $(".editnotes").on('save', function() {
+        setTimeout(function() {
+            dt.rows().invalidate();
+        }, 500);
+    });
     
     
     $("#addToListForm").submit(function(event) {
-      var ids = dt.rows({selected: true}).ids();
+      var ids = selected;
       var input_ids = [];
       for (var x=0; x< ids.length; ++x)
       {
@@ -268,11 +176,20 @@
     });
     
     
-    $(document).ready(function() {
-      @foreach ($selectedList->users as $u)
-        dt.row('#row_{{ $u->id }}').select();
-      @endforeach
-      
-    });
+    function updateSelectedTable()
+    {
+        var total_add = '';
+        var num = 1;
+        var keys = Object.keys(selectedData);
+        for (var x=0; x < keys.length; ++x)
+        {
+            total_add += '<tr><td>'+num+'</td><td>'+selectedData[keys[x]][0]+'</td><td>'+selectedData[keys[x]][1]+'</td><td>'+selectedData[keys[x]][2]+'</td></tr>';
+            ++num;
+        }
+        if (keys.length == 0)
+            total_add += '<tr><td colspan="4" style="text-align: center;">None Selected</td></tr>';
+        $("#selectedTable tbody").html(total_add);
+        console.log(selectedData);
+    }
 </script>
 @endsection

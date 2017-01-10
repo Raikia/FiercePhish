@@ -24,8 +24,12 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::post('targets/add', 'TargetsController@addTarget');
 	Route::post('targets/import', 'TargetsController@importTargets');
 	Route::get('targets/lists', 'TargetsController@targetlists_index');
+	Route::get('targets/list/{id}', 'TargetsController@targetlists_details');
 	Route::post('targets/lists/add', 'TargetsController@addList');
-	Route::get('targets/assign/{id?}', 'TargetsController@assign_index');
+	Route::post('targets/list/{id}/clear', 'TargetsController@clearList');
+	Route::post('targets/list/{id}/addall', 'TargetsController@addAlltoList');
+	Route::post('targets/list/{id}/addrandom', 'TargetsController@addRandomtoList');
+	Route::get('targets/assign/{id}', 'TargetsController@assign_index');
 	Route::post('targets/assign/set', 'TargetsController@assignToLists');
 
 
@@ -73,7 +77,9 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	// Ajax Routes...
 	Route::post('ajax/targetuser/note', 'AjaxController@edit_targetuser_notes');
 	Route::post('ajax/targetlist/note', 'AjaxController@edit_targetlist_notes');
-	Route::post('ajax/targetuser/list', 'AjaxController@targetuser_list');
+	Route::post('ajax/targetuser/list/{id?}', 'AjaxController@targetuser_list');
+	Route::post('ajax/targetlist/membership/{id}', 'AjaxController@targetuser_membership');
+	Route::get('ajax/targetlist/membership/{id}', 'AjaxController@targetuser_membership');
 	Route::get('ajax/emails/template/{id?}', 'AjaxController@get_emailtemplate_info');
 	Route::get('ajax/emails/check/{command?}/{domain?}', 'AjaxController@email_check_commands');
 	Route::get('ajax/log/{id?}', 'AjaxController@get_activitylog');

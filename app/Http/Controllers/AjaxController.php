@@ -43,9 +43,11 @@ class AjaxController extends Controller
         return Response::json("Success", 200);
     }
     
-    public function targetuser_list(Request $request)
+    public function targetuser_list(Request $request, $id=null)
     {
         $query = TargetUser::query();
+        if ($id != null)
+            $query = TargetList::findOrFail($id)->availableUsers();
         $query = $query->with('lists');
         if ($request->input('search')['value'] != '')
         {
@@ -111,7 +113,64 @@ class AjaxController extends Controller
             {
                 $notes = '<a href="#" class="editnotes" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">'.$user->notes.'</a>';
             }
-            $ret['data'][] = [$user->first_name, $user->last_name, $user->email, $lists, $notes];
+            $ret['data'][] = ['0' => $user->first_name, '1' => $user->last_name, '2' => $user->email, '3' => $lists, '4' => $notes, 'DT_RowId' => 'row_'.$user->id];
+        }
+        return Response::json($ret, 200);
+    }
+    
+    public function targetuser_membership(Request $request, $id)
+    {
+        $query = TargetList::findOrFail($id)->users();
+        if ($request->input('search')['value'] != '')
+        {
+            $sqa = array_filter(explode(' ', $request->input('search')['value']));
+            foreach ($sqa as $sq)
+            {
+                $query = $query->where(function ($query) use ($sq) {
+                    $query->where('first_name', 'like', '%'.$sq.'%')->orWhere('last_name', 'like', '%'.$sq.'%')->orWhere('email', 'like', '%'.$sq.'%')->orWhere('notes', 'like', '%'.$sq.'%');
+                });
+            }
+        }
+        $orders = $request->input('order') ?: [];
+        foreach ($orders as $sort)
+        {
+            switch ($sort['column'])
+            {
+                case 0:
+                    $query = $query->orderby('first_name', $sort['dir']);
+                    break;
+                case 1:
+                    $query = $query->orderby('last_name', $sort['dir']);
+                    break;
+                case 2:
+                    $query = $query->orderby('email', $sort['dir']);
+                    break;
+                case 4:
+                    $query = $query->orderby('notes', $sort['dir']);
+                    break;
+            }
+        }
+        $filteredLength = $query->count();
+        $start = (int)$request->input('start') ?: 0;
+        $length = (int)$request->input('length') ?: 10;
+        $query = $query->skip($start)->take($length);
+        $data = $query->get();
+        $ret = ['draw' => (int)$request->input('draw'),
+                'recordsTotal' => TargetList::findOrFail($id)->users()->count(),
+                'recordsFiltered' => $filteredLength,
+                'data' => [],
+        ];
+        foreach ($data as $user)
+        {
+            if ($user->notes == '')
+            {
+                $notes = '<a href="#" class="editnotes editable-empty" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">Empty</a>';
+            }
+            else
+            {
+                $notes = '<a href="#" class="editnotes" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">'.$user->notes.'</a>';
+            }
+            $ret['data'][] = ['0' => $user->first_name, '1' => $user->last_name, '2' => $user->email, '3' => $notes, 'DT_RowId' => 'row_'.$user->id];
         }
         return Response::json($ret, 200);
     }

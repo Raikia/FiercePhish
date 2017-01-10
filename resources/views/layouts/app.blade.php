@@ -57,7 +57,6 @@
                     <ul class="nav child_menu">
                       <li><a href="{{ action('TargetsController@index') }}">All Targets</a></li>
                       <li><a href="{{ action('TargetsController@targetlists_index') }}">All Lists</a></li>
-                      <li><a href="{{ action('TargetsController@assign_index') }}">Manage Target Lists</a></li>
                       
                     </ul>
                   </li>

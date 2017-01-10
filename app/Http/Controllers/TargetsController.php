@@ -10,6 +10,7 @@ use App\TargetList;
 use App\ActivityLog;
 use App\ProcessingJob;
 use App\Jobs\ImportTargets;
+use App\Jobs\AddToList;
 
 use File;
 
@@ -87,21 +88,47 @@ class TargetsController extends Controller
         }
     }
     
-    public function assign_index($id=null)
+    public function targetlists_details($id)
     {
-        $targetUsers = TargetUser::with('lists')->orderBy('first_name')->get();
-        $targetLists = TargetList::with('users')->orderBy('name')->get();
+        $targetList = TargetList::findOrFail($id);
+        return view('targets.list_details')->with('targetList', $targetList)->with('numTargetUsers', TargetUser::count());
+    }
+    
+    public function clearList($id)
+    {
+        $list = TargetList::findOrFail($id);
+        $list->users()->detach();
+        return back()->with('success', 'Removed all users from the list');
+    }
+    
+    public function addAlltoList($id)
+    {
+        $list = TargetList::findOrFail($id);
+        $pjob = new ProcessingJob(['name' => 'Add users to list', 'description' => 'Type: All, List: "' . $list->name.'"', 'icon' => 'list']);
+        $pjob->save();
+        $job = (new AddToList($pjob, $list, -1, false))->onQueue('high')->delay(1);
+        $this->dispatch($job);
+        return back()->with('success', 'Add users to list job started successfully');
+    }
+    
+    public function addRandomtoList(Request $request, $id)
+    {
+        $this->validate($request, ['numToSelect' => 'required|integer']);
+        $pjob = new ProcessingJob(['name' => 'Add users to list', 'description' => 'Type: '.$request->input('numToSelect').', Random, List: "' . $list->name.'"', 'icon' => 'list']);
+        $pjob->save();
+        $job = (new AddToList($pjob, $list, $request->input('numToSelect'), $request->has('unusedOnly')))->onQueue('high')->delay(1);
+        $this->dispatch($job);
+        return back()->with('success', 'Add random users to list job started successfully');
+    }
+    
+    public function assign_index($id)
+    {
         $selectedList = new TargetList();
         if ($id !== null)
             $selectedList = TargetList::findOrFail($id);
-        $ret_obj =  view('targets.assign')->with('targetUsers', $targetUsers)->with('targetLists', $targetLists)->with('selectedList', $selectedList);
-        $warn = '';
-        if (count($targetUsers) === 0)
-            $warn = 'You must add at least one user first!';
-        elseif (count($targetLists) === 0)
-            $warn = 'You must add at least one list first!';
-        if (!empty($warn))
-            return $ret_obj->with('warn', $warn);
+        $ret_obj = view('targets.assign')->with('selectedList', $selectedList)->with('numTargetUsers', TargetUser::count());
+        if (TargetUser::count() == 0)
+            $ret_obj->with('warn', 'You must add at least one user first!');
         return $ret_obj;
     }
     
@@ -118,17 +145,8 @@ class TargetsController extends Controller
             if (!is_numeric($id))
                 return back()->withErrors('Invalid selection');
         $list = TargetList::findOrFail($request->input('listSelection'));
-        if ($request->input('type') == 'edit')
-        {
-            $list->users()->sync($ids);
-            ActivityLog::log("Modified the users for the list \"" . $list->name ."\", it now has " . count($list->users) ." users", "Target List");
-            return back()->with('success', 'List has been edited and now has ' . count($list->users) . ' users');
-        }
-        else
-        {
-            $list->users()->syncWithoutDetaching($ids);
-            ActivityLog::log("Added users to the list \"".$list->name."\", it now has " . count($list->users) ." users");
-            return back()->with('success', 'Users successfully added');
-        }
+        $list->users()->syncWithoutDetaching($ids);
+        ActivityLog::log("Added users to the list \"".$list->name."\", it now has " . count($list->users) ." users");
+        return back()->with('success', 'Users successfully added');
     }
 }

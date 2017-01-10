@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\TargetUser;
 
 class TargetList extends Model
 {
@@ -12,5 +13,11 @@ class TargetList extends Model
     public function users()
     {
         return $this->belongsToMany('App\TargetUser');
+    }
+    
+    public function availableUsers()
+    {
+        $ids = \DB::table('target_list_target_user')->where('target_list_id', '=', $this->id)->lists('target_user_id');
+        return TargetUser::whereNotIn('id', $ids);
     }
 }
