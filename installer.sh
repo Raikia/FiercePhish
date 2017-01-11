@@ -450,6 +450,7 @@ install_smtp_imap()
 		then
 		sys_cmd "adduser --disabled-password --gecos '' fiercephish"
 		sys_cmd "echo 'fiercephish:${IMAP_PASSWORD}' | chpasswd"
+		sys_cmd "usermod -a -G mail fiercephish"
 	fi
 	
 	
