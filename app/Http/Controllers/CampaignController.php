@@ -84,7 +84,7 @@ class CampaignController extends Controller
     
     public function campaign_cancel($id)
     {
-        $campaign = Campaign::with('emails')->findOrFail($id);
+        $campaign = Campaign::findOrFail($id);
         $campaign->cancel();
         ActivityLog::log("Cancelled the \"".$campaign->name."\" campaign", "Campaign");
         return back()->with('success', 'Campaign was cancelled successfully');

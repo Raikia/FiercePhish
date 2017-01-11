@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Email;
 
 class Campaign extends Model
 {
@@ -56,7 +57,6 @@ class Campaign extends Model
             $this->status = Campaign::CANCELLED;
             $this->save();
         }
-        foreach ($this->emails as $email)
-            $email->cancel();
+        $this->emails()->where('status', '!=', Email::SENT)->where('status', '!=', Email::CANCELLED)->where('status', '!=', Email::FAILED)->update(['status' => Email::CANCELLED]);
     }
 }
