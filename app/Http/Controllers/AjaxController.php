@@ -94,7 +94,7 @@ class AjaxController extends Controller
         ];
         foreach ($data as $user)
         {
-            $lists = '<ul>';
+            $lists = '<ul style="margin-bottom: 0px;">';
             foreach ($user->lists as $list)
             {
                 $lists .= '<li>'.$list->name.'</li>';
