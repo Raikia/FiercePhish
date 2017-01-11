@@ -233,8 +233,8 @@ install_fiercephish()
 	fi
 	if [[ $OS = "Ubuntu" ]]
 		then
-		sys_cmd "debconf-set-selections <<< \$'mysql-server mysql-server/root_password password \'$MYSQL_ROOT_PASSWD\''"
-		sys_cmd "debconf-set-selections <<< \$'mysql-server mysql-server/root_password_again password \'$MYSQL_ROOT_PASSWD\''"
+		sys_cmd "debconf-set-selections <<< 'mysql-server mysql-server/root_password password $MYSQL_ROOT_PASSWD'"
+		sys_cmd "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWD'"
 		if [[ $OS_VERSION = "14.04" ]]
 			then
 			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php5 php5-cli mysql-server php5-mysql libapache2-mod-php5 php5-mcrypt php5-imap phpunit npm unzip git curl supervisor"
@@ -251,6 +251,7 @@ install_fiercephish()
 		if [[ ! $(mysql -u root --password="${MYSQL_ROOT_PASSWD}" -e "show databases" 2> /dev/null) ]]
 			then
 			error "Detected an invalid MySQL root password!  Make sure you provide the correct root mysql password to the installer!"
+			error "If you are sure you are giving the correct password, run in verbose mode and look for errors"
 			exit 1
 		fi
 	fi
@@ -294,13 +295,21 @@ install_fiercephish()
 			then
 			WEBSITE_DOMAIN="localhost"
 		fi
-		info "Installing..."
+	fi
+	if [[ -z $APACHE_PORT ]]
+		then
+		prompt "What port do you want Apache to run on (default: 80)"
+		APACHE_PORT=$(get_input "80")
+		if [[ $APACHE_PORT = "" || ! $APACHE_PORT =~ ^-?[0-9]+$ ]]
+			then
+			APACHE_PORT=80
+		fi
 	fi
 	if [[ $OS = "Ubuntu" ]]
 		then
 		cat > /etc/apache2/sites-available/fiercephish.conf <<- EOM
-<VirtualHost *:80>
-    ServerName $WEBSITE_DOMAIN
+<VirtualHost *:${APACHE_PORT}>
+    ServerName ${WEBSITE_DOMAIN}
     ServerAdmin webmaster@localhost
     DocumentRoot /var/www/fiercephish/public
     <Directory /var/www/fiercephish>
@@ -312,6 +321,12 @@ install_fiercephish()
     CustomLog \${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 EOM
+		if [[ $APACHE_PORT != "80" ]]
+			then
+			grep -q -F 'FiercePhish Listener' /etc/apache2/ports.conf || echo -e "\n# FiercePhish Listener\nListen ${APACHE_PORT}" >> /etc/apache2/ports.conf
+			sys_cmd "cat /etc/apache2/ports.conf | tr '\n' '\f' | sed -e 's/FiercePhish Listener\fListen .*$/FiercePhish Listener\fListen ${APACHE_PORT}\f/'  | tr '\f' '\n' > /etc/apache2/ports.conf.new; mv /etc/apache2/ports.conf.new /etc/apache2/ports.conf"
+		fi
+		
 		sys_cmd "a2ensite fiercephish"
 		sys_cmd "a2enmod rewrite"
 		sys_cmd "a2dissite 000-default"
@@ -338,7 +353,7 @@ EOM
 		sys_cmd "chown -R www-data:www-data ."
 	fi
 	sys_cmd "sed -i 's/APP_DEBUG=.*$/APP_DEBUG=false/' .env"
-	sys_cmd "sed -i 's/APP_URL=.*$/APP_URL=http:\/\/${WEBSITE_DOMAIN}/' .env"
+	sys_cmd "sed -i 's/APP_URL=.*$/APP_URL=http:\/\/${WEBSITE_DOMAIN}:${APACHE_PORT}/' .env"
 	sys_cmd "sed -i 's/DB_USERNAME=.*$/DB_USERNAME=fiercephish/' .env"
 	sys_cmd "sed -i 's/DB_PASSWORD=.*$/DB_PASSWORD=${FIERCEPHISH_MYSQL_PASSWD}/' .env"
 
@@ -394,7 +409,7 @@ EOM
 		then
 		error "You want to enable HTTPS but this isn't implemented yet.  You can do this yourself though until its implemented :-("
 	fi
-	FP_INSTRUCTIONS+=("Go to http://${SERVER_IP}/ to use FiercePhish! (or http://${WEBSITE_DOMAIN}/ if you used a domain name)")
+	FP_INSTRUCTIONS+=("Go to http://${SERVER_IP}:${APACHE_PORT}/ to use FiercePhish! (or http://${WEBSITE_DOMAIN}:${APACHE_PORT}/ if you used a domain name)")
 	DNS_INSTRUCTIONS+=("A record for '@' point to '${SERVER_IP}'")
 	DNS_INSTRUCTIONS+=("A record for 'www' point to '${SERVER_IP}'")
 	notice "Done installing FiercePhish!"
@@ -592,6 +607,9 @@ CONFIGURED=false
 
 # Set this to true if you want to see all output of all installation actions
 VERBOSE=false
+
+# Specify the port you'd like Apache to run on. Default is 80
+APACHE_PORT=80
 
 # Do you want HTTPS to be configured (using LetsEncrypt) for SMTP and Web?
 # YOU MUST HAVE A VALID DOMAIN NAME FOR THIS TO WORK!
