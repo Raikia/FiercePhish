@@ -237,10 +237,10 @@ install_fiercephish()
 		sys_cmd "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWD'"
 		if [[ $OS_VERSION = "14.04" ]]
 			then
-			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php5 php5-cli mysql-server php5-mysql libapache2-mod-php5 php5-mcrypt php5-imap phpunit npm unzip git curl supervisor"
+			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php5 php5-cli mysql-server php5-mysql libapache2-mod-php5 php5-mcrypt php5-imap php5-gd phpunit npm unzip git curl supervisor"
 		elif [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" ]]
 			then
-			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php php-cli mysql-server php-mysql libapache2-mod-php php-mcrypt php-mbstring php-imap phpunit npm unzip git curl supervisor"
+			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php php-cli mysql-server php-mysql libapache2-mod-php php-mcrypt php-mbstring php-imap php-gd phpunit npm unzip git curl supervisor"
 		fi
 		sys_cmd "service mysql restart"
 	fi
