@@ -62,7 +62,7 @@ class SendEmail extends Job implements ShouldQueue
                     if (strstr(config('fiercephish.APP_URL'), '.') !== false)
                     {
                         $id = explode('@',$message->getSwiftMessage()->getId());
-                        $domain = str_replace(['http://','https://'],'', config('fiercephish.APP_URL'));
+                        $domain = explode(':', str_replace(['http://','https://'],'', config('fiercephish.APP_URL')))[0];
                         $message->getSwiftMessage()->setId($id[0].'@'.$domain);
                        // $message->getSwiftMessage()->getHeaders()->addTextHeader('List-Unsubscribe', '<mailto:admin@'.$domain.'>');
                     }
