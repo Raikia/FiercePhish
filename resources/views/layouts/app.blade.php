@@ -15,13 +15,15 @@
     <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css') }}" rel="stylesheet">
 
+    <!-- Other libraries -->
     <link href="{{ asset('vendor/datatables.net-bs/css/dataTables.bootstrap.min.css') }}" rel="stylesheet">
-    
     <link href="{{ asset('vendor/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/datatables.net-select-bs/css/select.bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/select2/dist/css/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/jt.timepicker/jquery.timepicker.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/tooltipster/dist/css/tooltipster.bundle.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/tooltipster/dist/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css') }}" rel="stylesheet">
     
     <!-- Custom Theme Style -->
     <link href="{{ asset('vendor/gentelella/build/css/custom.min.css') }}" rel="stylesheet">
@@ -299,6 +301,8 @@
     <script src="{{ asset('vendor/Flot/jquery.flot.time.js') }}"></script>
     <script src="{{ asset('vendor/Flot/jquery.flot.stack.js') }}"></script>
     <script src="{{ asset('vendor/Flot/jquery.flot.resize.js') }}"></script>
+    <script src="{{ asset('vendor/tooltipster/dist/js/tooltipster.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/tooltipster/dist/js/plugins/tooltipster/SVG/tooltipster-SVG.js') }}"></script>
     <!-- Custom Theme Scripts -->
     <script src="{{ asset('vendor/gentelella/build/js/custom.min.js') }}"></script>
     @yield('footer')
@@ -308,6 +312,9 @@
         $(".alert").slideDown(1000).delay(10000).slideUp(1000);
         $(":input").inputmask();
         window.setInterval(grabJobs, 2000);
+        $(".tt").tooltipster({
+          //theme: 'tooltipster-light',
+        });
       });
       
       function grabJobs()

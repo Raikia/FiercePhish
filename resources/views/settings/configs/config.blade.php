@@ -49,10 +49,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Testing mode (no email sending)
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Email Testing mode 
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <select name="TEST_EMAIL_JOB" class="form-control col-md-7 col-xs-12">
+                            <select title="If this is true, no emails will be sent by FiercePhish" name="TEST_EMAIL_JOB" class="form-control col-md-7 col-xs-12 tt">
                                 <option>true</option>
                                 <option{{ (config('fiercephish.TEST_EMAIL_JOB')?'':' selected') }}>false</option>
                             </select>
@@ -62,7 +62,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">FiercePhish Prefix
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" name="URI_PREFIX" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.URI_PREFIX') }}">
+                            <input title="This is the prefix to each URL path of FiercePhish" type="text" name="URI_PREFIX" class="form-control col-md-7 col-xs-12 tt" value="{{ config('fiercephish.URI_PREFIX') }}">
                         </div>
                     </div>
                     <div class="ln_solid"></div>
@@ -87,7 +87,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">BCC All Emails
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" name="MAIL_BCC_ALL" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.MAIL_BCC_ALL') }}">
+                            <input title="All emails sent by FiercePhish will be BCC'd to this email address" type="text" name="MAIL_BCC_ALL" class="form-control col-md-7 col-xs-12 tt" value="{{ config('fiercephish.MAIL_BCC_ALL') }}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -247,7 +247,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Proxy URL
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input title="this is a test" type="text" name="PROXY_URL" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.PROXY_URL') }}" />
+                            <input title="Example: http://firephish.example.com/" type="text" name="PROXY_URL" class="form-control col-md-7 col-xs-12 tt" value="{{ config('fiercephish.PROXY_URL') }}" />
                         </div>
                     </div>
                     <div class="form-group">
