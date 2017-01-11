@@ -11,6 +11,8 @@ use App\ActivityLog;
 use File;
 use Hash;
 use DB;
+use Crypt;
+use \Google2FA;
 
 class SettingsController extends Controller
 {
@@ -56,12 +58,21 @@ class SettingsController extends Controller
         return back()->with('success', 'User has been successfully deleted');
     }
     
-    public function get_editprofile($id="")
+    public function get_editprofile(Request $request, $id="")
     {
         $user = auth()->user();
         if ($id != "")
             $user = User::findOrFail($id);
-        return view('settings.usermanagement.editprofile')->with('user', $user)->with('self', $id);
+        
+        $imageDataUri = '';
+        $fa_secret = '';
+        if ($id == '' && $user->google2fa_secret != null)
+        {
+            $fa_secret = Crypt::decrypt($user->google2fa_secret);
+            $imageDataUri = Google2FA::getQRCodeInline($request->getHttpHost(), $user->email, $fa_secret, 200);
+        }
+            
+        return view('settings.usermanagement.editprofile')->with('user', $user)->with('self', $id)->with('fa_image', $imageDataUri)->with('fa_secret', $fa_secret);
     }
     
     public function post_editprofile(Request $request)

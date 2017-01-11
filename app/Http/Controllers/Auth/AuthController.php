@@ -7,6 +7,11 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Cache;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Auth\Authenticatable;
+use App\Http\Requests\ValidateSecretRequest;
 
 class AuthController extends Controller
 {
@@ -28,9 +33,11 @@ class AuthController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/home';
 
     protected $username = 'name';
+    
+    protected $redirectAfterLogout = '/login';
     /**
      * Create a new authentication controller instance.
      *
@@ -38,6 +45,8 @@ class AuthController extends Controller
      */
     public function __construct()
     {
+        $this->redirectTo = action('DashboardController@index');
+        $this->redirectAfterLogout = action('Auth\AuthController@showLoginForm');
         $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
     }
 
@@ -69,5 +78,34 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    }
+    
+    private function authenticated(Request $request, Authenticatable $user)
+    {
+        if ($user->google2fa_secret)
+        {
+            Auth::logout();
+            $request->session()->put('2fa:user:id', $user->id);
+            return redirect()->action('Auth\AuthController@getValidateToken');
+        }
+        return redirect()->intended($this->redirectTo);
+    }
+    
+    public function getValidateToken()
+    {
+        if (session('2fa:user:id'))
+        {
+            return view('auth.2fa');
+        }
+        return redirect()->action('Auth\AuthController@showLoginForm');
+    }
+    
+    public function postValidateToken(ValidateSecretRequest $request)
+    {
+        $userId = $request->session()->pull('2fa:user:id');
+        $key = $userId.':'.$request->totp;
+        Cache::add($key, true, 4);
+        Auth::loginUsingId($userId);
+        return redirect()->intended($this->redirectTo);
     }
 }

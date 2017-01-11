@@ -23,6 +23,8 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::get('login', 'Auth\AuthController@showLoginForm');
 	Route::post('login', 'Auth\AuthController@login');
 	Route::get('logout', 'Auth\AuthController@logout');
+	Route::get('2fa/validate', 'Auth\AuthController@getValidateToken');
+	Route::post('2fa/validate', ['middleware' => 'throttle:5', 'uses' => 'Auth\AuthController@postValidateToken']);
 
 
 
@@ -56,6 +58,8 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::post('settings/users/delete', 'SettingsController@deleteUser');
 	Route::get('settings/profile/{id?}', 'SettingsController@get_editprofile');
 	Route::post('settings/profile', 'SettingsController@post_editprofile');
+	Route::post('2fa/enable', 'Google2FAController@enableTwoFactor');
+	Route::post('2fa/disable', 'Google2FAController@disableTwoFactor');
 	Route::get('settings/config', 'SettingsController@get_config');
 	Route::post('settings/config/save', 'SettingsController@post_config');
 	Route::get('settings/export', 'SettingsController@get_import_export');
