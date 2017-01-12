@@ -96,9 +96,9 @@ class EmailController extends Controller
                 {
                     $newSubject = 'Re: ' . $replyMail->subject;
                 }
-                $newMessage = "<br /><br />On ".date("D, M d, Y \a\\t h:i A", strtotime($replyMail->received_date))."<br />";
+                $newMessage = "<br /><br />On ".date("D, M d, Y \a\\t h:i A", strtotime($replyMail->received_date)).", ".$replyMail->sender_name." &lt;".$replyMail->sender_email."&gt; wrote:<br />";
                 foreach ($messageLines as $line)
-                    $newMessage .= "> ".$line."<br />";
+                    $newMessage .= "> ".e($line)."<br />";
             }
             else
             {
@@ -109,10 +109,10 @@ class EmailController extends Controller
                 $replyMail->replyto_name = '';
                 $replyMail->replyto_email = '';
                 $newMessage .= "<br /><br />---------- Forwarded message ----------<br />";
-                $newMessage .= "From: ".$replyMail->sender_name." (".$replyMail->sender_email.")<br />";
+                $newMessage .= "From: ".$replyMail->sender_name." &lt;".$replyMail->sender_email."&gt;<br />";
                 $newMessage .= "Date: ".date("D, M d, Y \a\\t h:i A", strtotime($replyMail->received_date))."<br />";
                 $newMessage .= "Subject: ".$replyMail->subject."<br />";
-                $newMessage .= "To: ".$replyMail->receiver_name." (".$replyMail->receiver_email.")<br /><br />";
+                $newMessage .= "To: ".$replyMail->receiver_name." &lt;".$replyMail->receiver_email."&gt;<br /><br />";
                 foreach ($messageLines as $line)
                     $newMessage .= $line."<br />";
             }

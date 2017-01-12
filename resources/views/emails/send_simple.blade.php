@@ -106,7 +106,7 @@
         </div>
       </div>
 
-      <textarea rows="10" id="bodyMsg" name="bodyMsg" class="bodyMsg">{!! old('sbt_message', $newMessage) !!}</textarea>
+      <textarea rows="10" id="bodyMsg" name="bodyMsg" class="bodyMsg"></textarea>
     </form>
     </div>
   </div>
@@ -134,8 +134,11 @@
 /* global $ */
 /* global CKEDITOR */
 /* global bootbox */
-    CKEDITOR.replace('bodyMsg');
 
+
+
+    CKEDITOR.replace('bodyMsg');
+    CKEDITOR.instances.bodyMsg.setData({!! json_encode(old('sbt_message', $newMessage)) !!});
     $("#send_email_form").submit(function() {
       var vars = ['sender_name', 'sender_email', 'receiver_name', 'receiver_email', 'subject'];
       for (var x=0; x< vars.length; ++x)
