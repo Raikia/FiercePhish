@@ -55,6 +55,11 @@ class CreateUser extends Command
         if (!$this->option('confirm'))
             if (!$this->confirm("Are you sure you want to create this account? "))
                 return;
+        if (User::where('name', $username)->count() != 0)
+        {
+            $this->error("User already exists!");
+            return;
+        }
         $newUser = new User([
             'name' => $username,
             'email' => $email,
