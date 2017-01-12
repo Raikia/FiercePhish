@@ -372,6 +372,12 @@ EOM
 	sleep 5
 	sys_cmd "popd"
 
+	info "Installing cron job"
+	cron_command="/usr/bin/env php /var/www/fiercephish/artisan schedule:run >> /dev/null 2>&1"
+	cron_job="* * * * * $command"
+	cat <(grep -i -F -v "$command" <(crontab -u www-data -l)) <(echo "$job") | crontab -u www-data -
+
+
 	info "Configuring Supervisor to process jobs"
 	if [[ $OS = "Ubuntu" ]]
 		then
@@ -562,6 +568,8 @@ EOM
 		sys_cmd "sed -i 's/MAIL_USERNAME=.*$/MAIL_USERNAME=null/' /var/www/fiercephish/.env"
 		sys_cmd "sed -i 's/MAIL_PASSWORD=.*$/MAIL_PASSWORD=null/' /var/www/fiercephish/.env"
 		sys_cmd "sed -i 's/MAIL_ENCRYPTION=.*$/MAIL_ENCRYPTION=null/' /var/www/fiercephish/.env"
+		sys_cmd "sed -i 's/IMAP_HOST=.*$/IMAP_HOST=127.0.0.1/' /var/www/fiercephish/.env"
+		sys_cmd "sed -i 's/IMAP_PORT=.*$/IMAP_PORT=143/' /var/www/fiercephish/.env"
 		sys_cmd "sed -i 's/IMAP_USERNAME=.*$/IMAP_USERNAME=fiercephish/' /var/www/fiercephish/.env"
 		sys_cmd "sed -i 's/IMAP_PASSWORD=.*$/IMAP_PASSWORD=${IMAP_PASSWORD}/' /var/www/fiercephish/.env"
 		sys_cmd "pushd /var/www/fiercephish"
@@ -575,6 +583,8 @@ EOM
 		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_USERNAME=null')
 		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_PASSWORD=null')
 		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_ENCRYPTION=null')
+		FP_INSTRUCTIONS+=('Edit the following in .env:  IMAP_HOST=127.0.0.1')
+		FP_INSTRUCTIONS+=('Edit the following in .env:  IMAP_PORT=143')
 		FP_INSTRUCTIONS+=('Edit the following in .env:  IMAP_USERNAME=fiercephish')
 		FP_INSTRUCTIONS+=("Edit the following in .env:  IMAP_PASSWORD=${IMAP_PASSWORD}")
 		FP_INSTRUCTIONS+=("Run: php artisan config:cache")

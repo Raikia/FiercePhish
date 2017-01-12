@@ -22,7 +22,7 @@ class CheckMail extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'This connects to the IMAP server and caches the messages in the INBOX.';
 
     /**
      * Create a new command instance.
@@ -47,8 +47,6 @@ class CheckMail extends Command
      */
     public function handle()
     {
-        ReceivedMail::truncate();
-        ReceivedMailAttachment::truncate();
         $this->info("Starting email fetch.");
         if (config('fiercephish.IMAP_HOST') !== null && Cache::get('fp:checkmail_error',0) < 10)
         {
@@ -113,7 +111,6 @@ class CheckMail extends Command
         else
         {
             $this->error('Inbox feature is disabled, skipping');
-            //Cache::forget('fp:checkmail_error');
         }
     }
     
