@@ -374,8 +374,8 @@ EOM
 
 	info "Installing cron job"
 	cron_command="/usr/bin/env php /var/www/fiercephish/artisan schedule:run >> /dev/null 2>&1"
-	cron_job="* * * * * $command"
-	cat <(grep -i -F -v "$command" <(crontab -u www-data -l)) <(echo "$job") | crontab -u www-data -
+	cron_job="* * * * * $cron_command"
+	cat <(grep -i -F -v "$cron_command" <(crontab -u www-data -l 2>/dev/null)) <(echo "$cron_job") | crontab -u www-data -
 
 
 	info "Configuring Supervisor to process jobs"
