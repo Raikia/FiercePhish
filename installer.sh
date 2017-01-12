@@ -359,6 +359,8 @@ EOM
 
 	info "Generating database"
 	sys_cmd "php artisan key:generate"
+	sys_cmd "php artisan config:cache"
+	sleep 10
 	sys_cmd "php artisan migrate"
 
 	info "Creating User"
@@ -499,7 +501,7 @@ install_smtp_imap()
 		grep -q -F 'UserID' /etc/opendkim.conf || echo 'UserID            opendkim:opendkim' >> /etc/opendkim.conf
 		grep -q -F 'Socket' /etc/opendkim.conf || echo 'Socket            inet:12301@localhost' >> /etc/opendkim.conf
 		sys_cmd "sed -i 's/AutoRestart .*$/AutoRestart           Yes/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/AutoRestartRate .*$/AutoRestartRate           10/1h/' /etc/opendkim.conf"
+		sys_cmd "sed -i 's/AutoRestartRate .*$/AutoRestartRate           10\/1h/' /etc/opendkim.conf"
 		sys_cmd "sed -i 's/UMask .*$/UMask           002/' /etc/opendkim.conf"
 		sys_cmd "sed -i 's/Syslog .*$/Syslog           yes/' /etc/opendkim.conf"
 		sys_cmd "sed -i 's/SyslogSuccess .*$/SyslogSuccess           Yes/' /etc/opendkim.conf"
