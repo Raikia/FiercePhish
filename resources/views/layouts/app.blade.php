@@ -36,7 +36,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-envelope-o"></i> <span><span style="color: #FF4800">Fierce</span>Phish</span></a>
+              <a href="{{ action('DashboardController@index') }}" class="site_title"><i class="fa fa-envelope-o"></i> <span><span style="color: #FF4800">Fierce</span>Phish</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -73,9 +73,13 @@
                     <ul class="nav child_menu">
                       <li><a href="{{ action('EmailController@send_simple_index') }}">Simple Send</a></li>
                       <li><a href="{{ action('EmailController@template_index') }}">Email Templates</a></li>
-                      <!--<li><a href="#">Inbox</a></li>-->
                       <li><a href="{{ action('EmailController@check_settings_index') }}">Check Email DNS</a></li>
                       <li><a href="{{ action('EmailController@email_log') }}">Email Log</a></li>
+                      <li><a href="{{ action('EmailController@inbox_get') }}">Inbox<span id="inboxMark">
+                      @if (\App\ReceivedMail::where('seen',false)->count() != 0)
+                        <span class="label label-danger pull-right" style="padding-right: 5px; padding-top: 4px; background-color: #FF4800;">{{ \App\ReceivedMail::where('seen',false)->count() }}</span>
+                      @endif
+                      </span></a></li>
                     </ul>
                   </li><!--
                   <li><a><i class="fa fa-sitemap"></i>Sites <span class="fa fa-chevron-down"></span></a>
@@ -141,70 +145,16 @@
                   </ul>
                 </li>
 
-                <!--<li role="presentation" class="dropdown">
-                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                <li class="">
+                  <a href="{{ action('EmailController@inbox_get') }}" class="info-number">
                     <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-red">6</span>
-                  </a>
-                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                    <li>
-                      <a>
-                        <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="text-center">
-                        <a>
-                          <strong>See All Alerts</strong>
-                          <i class="fa fa-angle-right"></i>
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </li>-->
+                    <span id="hasMailBadge">
+                    @if (\App\ReceivedMail::where('seen',false)->count() != 0)
+                      <span class="badge bg-red">{{ \App\ReceivedMail::where('seen',false)->count() }}</span>
+                    @endif
+                    </span>
+                  </a></li>
+                
                 <li role="presentation" class="dropdown">
                   <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-tasks"></i>
@@ -312,6 +262,7 @@
         $(".alert").slideDown(1000).delay(10000).slideUp(1000);
         $(":input").inputmask();
         window.setInterval(grabJobs, 2000);
+        window.setInterval(grabMail, 2000);
         $(".tt").tooltipster({
           //theme: 'tooltipster-light',
         });
@@ -328,6 +279,22 @@
           else
           {
             $("#hasBadge").html('<span class="badge bg-red">' + results['num'] + '</span>');
+          }
+        });
+      }
+      
+      function grabMail()
+      {
+        $.get("{{ action('AjaxController@get_num_new_messages') }}", function(results) {
+          if (results['data'] == 0)
+          {
+            $("#hasMailBadge").html('');
+            $("#inboxMark").html('');
+          }
+          else
+          {
+            $("#hasMailBadge").html('<span class="badge bg-red">' + results['data'] + '</span>');
+            $("#inboxMark").html('<span class="label label-danger pull-right" style="padding-right: 5px; padding-top: 4px; background-color: #FF4800;">'+results['data']+'</span>');
           }
         });
       }

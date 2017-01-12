@@ -87,3 +87,7 @@ tr.selected {
 .pointer tbody>tr{
   cursor: pointer;
 }
+
+.single_pointer {
+  cursor: pointer;
+}

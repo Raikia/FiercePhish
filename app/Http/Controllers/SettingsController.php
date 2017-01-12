@@ -140,6 +140,10 @@ class SettingsController extends Controller
                     $real_new_value = trim($real_new_value, '/');
                     $new_uri = $value;
                 }
+                if ($key == 'IMAP_HOST')
+                {
+                    \Cache::forget('fp:checkmail_error');
+                }
                 $file_contents = str_replace($key.'='.$real_old_value, $key.'='.$real_new_value, $file_contents);
             }
             file_put_contents($path, $file_contents);

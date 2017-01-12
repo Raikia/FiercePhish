@@ -15,6 +15,8 @@ use App\Campaign;
 use App\Email;
 use Response;
 use Cache;
+use App\ReceivedMail;
+use App\ReceivedMailAttachment;
 
 class AjaxController extends Controller
 {
@@ -399,6 +401,64 @@ class AjaxController extends Controller
             }
             $ret['data'][] = ['0' => $email->receiver_name, '1' => $email->receiver_email, '2' => $email->sender_name, '3' => $email->sender_email, '4' => $email->subject, '5' => $email->uuid, '6' => $email->getStatus(), '7' => $camp, '8' => $email->created_at.'', '9' => $email->updated_at.'', 'DT_RowId' => 'row_'.$email->id];
         }
+        return Response::json($ret, 200);
+    }
+    
+    
+    public function get_inbox_messages($id='')
+    {
+        $ret = [];
+        if ($id === '')
+        {
+            $all_mails = ReceivedMail::with('attachment_count')->orderby('received_date', 'desc')->select(['id', 'subject', 'received_date', 'sender_name', 'seen', \DB::raw("SUBSTRING(`message`,1,80) as sub_msg")])->get();
+            for ($x=0; $x < count($all_mails); ++$x)
+            {
+                $all_mails[$x]->subject = e($all_mails[$x]->subject);
+                $all_mails[$x]->sender_name = e($all_mails[$x]->sender_name);
+                $all_mails[$x]->sub_msg = e($all_mails[$x]->sub_msg);
+            }
+            $ret['data'] = $all_mails;
+        }
+        else
+        {
+            $message = ReceivedMail::with('attachments')->findOrFail($id);
+            if (!$message->seen)
+            {
+                $message->seen = true;
+                $message->save();
+            }
+            $message->sender_name = e($message->sender_name);
+            $message->sender_email = e($message->sender_email);
+            $message->replyto_name = e($message->replyto_name);
+            $message->replyto_email = e($message->replyto_email);
+            $message->receiver_name = e($message->receiver_name);
+            $message->receiver_email = e($message->receiver_email);
+            $message->subject = e($message->subject);
+            $message->message = e($message->message);
+            
+            for ($x=0; $x < $message->attachments()->count(); ++$x)
+            {
+                $message->attachments[$x]->name = e($message->attachments[$x]->name);
+            }
+            
+            $ret['data'] = $message;
+        }
+        
+        
+        return Response::json($ret, 200);
+    }
+    
+    public function get_num_new_messages()
+    {
+        $ret = ['data' => ReceivedMail::where('seen', false)->count()];
+        return Response::json($ret, 200);
+    }
+    
+    public function delete_inbox_message($id='')
+    {
+        $ret = ['data' => true];
+        $mail = ReceivedMail::findOrFail($id);
+        $mail->delete();
         return Response::json($ret, 200);
     }
     

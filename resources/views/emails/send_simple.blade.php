@@ -3,7 +3,11 @@
 @section('content')
 <div class="page-title">
   <div class="title_left">
-    <h3>Send Single Email</h3>
+    @if ($replyMail->id == null)
+      <h3>Send Single Email</h3>
+    @else 
+      <h3>Reply to Email</h3>
+    @endif
   </div>
 </div>
 
@@ -18,36 +22,28 @@
               <div class="form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12">Sender Name <span class="required">*</span></label>
                 <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" id="sender_name" name="sender_name" class="form-control" placeholder="Bill Smith" value="{{ old('sbt_sender_name') }}">
+                  <input type="text" id="sender_name" name="sender_name" class="form-control" placeholder="Bill Smith" value="{{ old('sbt_sender_name', $replyMail->receiver_name)  }}">
                 </div>
               </div>
               <div class="form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12">Sender Email <span class="required">*</span></label>
                 <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="email" id="sender_email" name="sender_email" class="form-control" placeholder="bsmith@malicious.com" value="{{ old('sbt_sender_email') }}">
+                  <input type="email" id="sender_email" name="sender_email" class="form-control" placeholder="bsmith@malicious.com" value="{{ old('sbt_sender_email', $replyMail->receiver_email) }}">
                 </div>
               </div>
               <div class="ln_solid"></div>
               <div class="form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12">Receiver Name <span class="required">*</span></label>
                 <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" id="receiver_name" name="receiver_name" class="form-control" placeholder="John Doe" value="{{ old('sbt_receiver_name') }}">
+                  <input type="text" id="receiver_name" name="receiver_name" class="form-control" placeholder="John Doe" value="{{ old('sbt_receiver_name', $replyMail->replyto_name) }}">
                 </div>
               </div>
               <div class="form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12">Receiver Email <span class="required">*</span></label>
                 <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="email" id="receiver_email" name="receiver_email" class="form-control" placeholder="john.doe@domain.com" value="{{ old('sbt_receiver_email') }}">
+                  <input type="email" id="receiver_email" name="receiver_email" class="form-control" placeholder="john.doe@domain.com" value="{{ old('sbt_receiver_email', $replyMail->replyto_email) }}">
                 </div>
               </div>
-              <!--<div class="ln_solid"></div>
-              <div class="form-group">
-                <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
-                  <button type="submit" class="btn btn-primary">Cancel</button>
-                  <button type="submit" class="btn btn-success">Submit</button>
-                </div>
-              </div>
-                -->
             </form>
       </div>
     </div>
@@ -106,11 +102,11 @@
       <div class="form-group">
         <label class="control-label col-md-1 col-sm-1 col-xs-1">Subject <span class="required">*</span></label>
         <div class="col-md-9 col-sm-9 col-xs-12">
-          <input type="text" id="subject" name="subject" class="form-control" placeholder="Subject..." value="{{ old('sbt_subject') }}">
+          <input type="text" id="subject" name="subject" class="form-control" placeholder="Subject..." value="{{ old('sbt_subject', $newSubject) }}">
         </div>
       </div>
 
-      <textarea rows="10" id="bodyMsg" name="bodyMsg" class="bodyMsg">{{ old('sbt_message') }}</textarea>
+      <textarea rows="10" id="bodyMsg" name="bodyMsg" class="bodyMsg">{!! old('sbt_message', $newMessage) !!}</textarea>
     </form>
     </div>
   </div>

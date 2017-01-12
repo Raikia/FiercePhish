@@ -165,6 +165,59 @@
                 </form>
             </div>
         </div>
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>IMAP Inbox Settings</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form class="form-horizontal form-label-left" method="post" action="{{ action('SettingsController@post_config') }}">
+                    <div style="text-align: center;" class="form-group">
+                        @if (\Cache::has('fp:checkmail_error') && \Cache::get('fp:checkmail_error',0) >= 10)
+                            <span style="color: #FF0000;">INBOX feature has been disabled because of too many connection errors! Edit the settings below to reenable it.</span><br /><br />
+                        @endif
+                        
+                        Set this if you wan't to use the INBOX feature of FiercePhish.<br />
+                        Careful when editing these settings. If you mess up, you'll have to manually edit "{{ base_path('.env') }}"<br />
+                    </div>
+                    {{ csrf_field() }}
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">IMAP Host
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" name="IMAP_HOST" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.IMAP_HOST') }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">IMAP Port
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" name="IMAP_PORT" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.IMAP_PORT') }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">IMAP Username
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" name="IMAP_USERNAME" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.IMAP_USERNAME') }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">IMAP Password
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="password" name="IMAP_PASSWORD" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.IMAP_PASSWORD') }}">
+                        </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <button type="submit" class="btn btn-success">Save Settings</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
     <div class="col-md-6 col-sm-6 col-xs-12">
         <div class="x_panel">

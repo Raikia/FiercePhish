@@ -74,11 +74,14 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::post('emails/templates/edit', 'EmailController@editTemplate');
 	Route::post('emails/templates/delete', 'EmailController@deleteTemplate');
 	Route::get('emails/check', 'EmailController@check_settings_index');
-	Route::get('emails/simple', 'EmailController@send_simple_index');
+	Route::get('emails/simple/{id?}/{fwd?}', 'EmailController@send_simple_index');
 	Route::post('emails/simple/send', 'EmailController@send_simple_post');
 	Route::get('emails/log', 'EmailController@email_log');
 	Route::get('emails/log/{id?}', 'EmailController@email_log_details');
-
+	Route::get('inbox', 'EmailController@inbox_get');
+	Route::get('inbox/download/{id?}', 'EmailController@inbox_download_attachment');
+	
+	
 	// Dashboard Routes...
 	Route::get('home', 'DashboardController@index');
 	Route::get('/', 'DashboardController@index');
@@ -97,4 +100,7 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::get('ajax/log/{id?}', 'AjaxController@get_activitylog');
 	Route::get('ajax/jobs', 'AjaxController@get_jobs');
 	Route::post('ajax/campaign/{id}', 'AjaxController@campaign_emails_get');
+	Route::get('ajax/inbox/new', 'AjaxController@get_num_new_messages');
+	Route::get('ajax/inbox/delete/{id?}', 'AjaxController@delete_inbox_message');
+	Route::get('ajax/inbox/{id?}', 'AjaxController@get_inbox_messages');
 });

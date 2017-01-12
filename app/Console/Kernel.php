@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         // Commands\Inspire::class,
         Commands\CreateUser::class,
         Commands\Disable2FA::class,
+        Commands\CheckMail::class,
     ];
 
     /**
