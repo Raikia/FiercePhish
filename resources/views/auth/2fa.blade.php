@@ -32,5 +32,14 @@
         $("#totp").val($("#passcode").val().replace(" ",""));
         $("#actualValidateForm").submit();
     });
+    
+    $('#passcode').keyup(function () {
+        if (this.value.indexOf('_') == -1) {
+            $('#validateForm').submit();
+        }
+    });
+    $(document).ready(function() {
+        $("#passcode").val('');
+    });
 </script>
 @endsection
