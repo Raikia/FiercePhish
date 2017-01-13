@@ -551,6 +551,7 @@ EOM
 		then
 		sys_cmd "sed -i 's/^.*disable_plaintext_auth = .*$/disable_plaintext_auth = no/' /etc/dovecot/conf.d/10-auth.conf"
 		sys_cmd "sed -i 's/^.*auth_mechanisms = .*$/auth_mechanisms = plain login/' /etc/dovecot/conf.d/10-auth.conf"
+		sys_cmd "sed -i 's/^#\?log_path =.*$/log_path = \/var\/log\/dovecot.log/' /etc/dovecot/conf.d/10-logging.conf"
 	fi
 	
 	info "Restarting mail services"
