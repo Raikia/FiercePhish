@@ -476,6 +476,8 @@ install_smtp_imap()
 		sys_cmd "sed -i 's/luser_relay = .*$/luser_relay = fiercephish/' /etc/postfix/main.cf"
 		grep -q -F 'local_recipient_maps' /etc/postfix/main.cf || echo 'local_recipient_maps = ' >> /etc/postfix/main.cf
 		sys_cmd "sed -i 's/local_recipient_maps = .*$/local_recipient_maps = /' /etc/postfix/main.cf"
+		sys_cmd "touch /var/log/mail.log"
+		sys_cmd "chown www-data:www-data /var/log/mail.log"
 		echo ${EMAIL_DOMAIN} > /etc/mailname
 		sys_cmd "service postfix restart"
 	fi
@@ -552,6 +554,8 @@ EOM
 		sys_cmd "sed -i 's/^.*disable_plaintext_auth = .*$/disable_plaintext_auth = no/' /etc/dovecot/conf.d/10-auth.conf"
 		sys_cmd "sed -i 's/^.*auth_mechanisms = .*$/auth_mechanisms = plain login/' /etc/dovecot/conf.d/10-auth.conf"
 		sys_cmd "sed -i 's/^#\?log_path =.*$/log_path = \/var\/log\/dovecot.log/' /etc/dovecot/conf.d/10-logging.conf"
+		sys_cmd "touch /var/log/dovecot.log"
+		sys_cmd "chown www-data:www-data /var/log/dovecot.log"
 	fi
 	
 	info "Restarting mail services"

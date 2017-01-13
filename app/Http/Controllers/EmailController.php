@@ -98,7 +98,7 @@ class EmailController extends Controller
                 {
                     $newSubject = 'Re: ' . $replyMail->subject;
                 }
-                $newMessage = "<br /><br />On ".date("D, M d, Y \a\\t h:i A", strtotime($replyMail->received_date)).", ".$replyMail->sender_name." &lt;".$replyMail->sender_email."&gt; wrote:<br />";
+                $newMessage = "<br /><br />On ".date("D, M d, Y \a\\t g:i A", strtotime($replyMail->received_date)).", ".$replyMail->sender_name." &lt;".$replyMail->sender_email."&gt; wrote:<br />";
                 foreach ($messageLines as $line)
                     $newMessage .= "> ".e($line)."<br />";
             }
