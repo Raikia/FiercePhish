@@ -82,7 +82,13 @@ class LogPull extends Command
                         {
                             break;
                         }
-                        $newlog->save();
+                        try
+                        {
+                            $newlog->save();
+                        }
+                        catch (\Exception $e)
+                        {
+                        }
                         $currentLine = '';
                     }
                     $pos--;
