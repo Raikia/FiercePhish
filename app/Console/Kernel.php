@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\CreateUser::class,
         Commands\Disable2FA::class,
         Commands\CheckMail::class,
+        Commands\LogPull::class,
     ];
 
     /**

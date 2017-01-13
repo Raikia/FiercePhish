@@ -16,6 +16,7 @@ class CreateLogAggregatesTable extends Migration
             $table->increments('id');
             $table->dateTime('log_time')->index();
             $table->string('log_type')->index();
+            $table->string('hash')->unique();
             $table->text('data');
             $table->timestamps();
         });
