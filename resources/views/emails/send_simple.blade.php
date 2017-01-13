@@ -88,6 +88,10 @@
               <input type="hidden" name="sbt_receiver_email" id="sbt_receiver_email">
               <input type="hidden" name="sbt_subject" id="sbt_subject">
               <input type="hidden" name="sbt_message" id="sbt_message">
+              <input type="hidden" name="actionType" value="{{ $actionType }}">
+              @if ($actionType != '')
+                <input type="hidden" name="replyId" value="{{ $replyMail->id }}">
+              @endif
               {{ csrf_field() }}
             </form>
       </div>

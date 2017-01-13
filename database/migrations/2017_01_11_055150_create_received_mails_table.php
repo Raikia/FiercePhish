@@ -5,13 +5,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateReceivedMailsTable extends Migration
 {
-    /*
-    
-    $imap = imap_open("{127.0.0.1:143}INBOX", "fiercephish", "h9aGGObO6VaXhkem4cACGP51NaSHtLR9");
-    $n_msgs = imap_num_msg($imap)
-    imap_header($imap, 1)
-    imap_qprint(imap_body($imap,1))
-    */
     /**
      * Run the migrations.
      *
@@ -32,6 +25,8 @@ class CreateReceivedMailsTable extends Migration
             $table->dateTime('received_date');
             $table->text('message');
             $table->boolean('seen')->default(false);
+            $table->boolean('replied')->default(false);
+            $table->boolean('forwarded')->default(false);
             $table->softDeletes();
             $table->timestamps();
             $table->index('received_date');

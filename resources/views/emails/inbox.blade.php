@@ -96,6 +96,10 @@
         str += '<div class="left">';
         if (data[x].seen == 0)
           str += '<i class="fa fa-circle"></i>';
+        if (data[x].replied == 1)
+          str += '<i class="fa fa-mail-reply"></i>';
+        if (data[x].forwarded == 1)
+          str += '<i class="fa fa-share"></i>';
         if (data[x].attachment_count.length > 0)
           str += '<i class="fa fa-paperclip"></i>';
         str += '<i class="fa"></i></div>';

@@ -85,6 +85,7 @@ class EmailController extends Controller
         $replyMail = new ReceivedMail();
         $newSubject = '';
         $newMessage = '';
+        $actionType='';
         if ($id != '')
         {
             $replyMail = ReceivedMail::findOrFail($id);
@@ -92,6 +93,7 @@ class EmailController extends Controller
             $messageLines = explode("\n", $replyMail->message);
             if ($fwd === '')
             {
+                $actionType = 'reply';
                 if (strpos(strtolower(trim($replyMail->subject)), "re: ") !== 0)
                 {
                     $newSubject = 'Re: ' . $replyMail->subject;
@@ -102,6 +104,7 @@ class EmailController extends Controller
             }
             else
             {
+                $actionType = 'forward';
                 if (strpos(strtolower(trim($replyMail->subject)), "fwd: ") !== 0)
                 {
                     $newSubject = "Fwd: " . $replyMail->subject;
@@ -118,7 +121,7 @@ class EmailController extends Controller
             }
             
         }
-        return view('emails.send_simple')->with('replyMail', $replyMail)->with('newSubject', $newSubject)->with('newMessage', $newMessage);
+        return view('emails.send_simple')->with('replyMail', $replyMail)->with('newSubject', $newSubject)->with('newMessage', $newMessage)->with('actionType', $actionType);
     }
 
     public function send_simple_post(Request $request)
@@ -132,6 +135,22 @@ class EmailController extends Controller
             'sbt_message' => 'required',
             'sendTLS' =>  'required',
             ]);
+        $redir = redirect()->action('EmailController@send_simple_index');
+        if ($request->input('actionType') != '')
+        {
+            $mail = ReceivedMail::findOrFail($request->input('replyId'));
+            if ($request->input('actionType') == 'reply')
+            {
+                $mail->replied = true;
+                $mail->save();
+            }
+            elseif ($request->input('actionType') == 'forward')
+            {
+                $mail->forwarded = true;
+                $mail->save();
+            }
+            $redir = redirect()->action('EmailController@inbox_get');
+        }
         $email_obj = new Email();
         $email_obj->sender_name = $request->input('sbt_sender_name');
         $email_obj->sender_email = $request->input('sbt_sender_email');
@@ -152,8 +171,8 @@ class EmailController extends Controller
         $email_obj->save();
         $email_obj->send();
         ActivityLog::log("Queued to send an email (simple send) to \"" . $email_obj->receiver_email."\"", "Email");
-        // Maybe this should redirect to the list of the queue?
-        return redirect()->action('EmailController@send_simple_index')->with('success', 'Email queued for immediate sending!');
+        
+        return $redir->with('success', 'Email queued for immediate sending!');
     }
 
     public function email_log()

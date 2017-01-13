@@ -410,7 +410,7 @@ class AjaxController extends Controller
         $ret = [];
         if ($id === '')
         {
-            $all_mails = ReceivedMail::with('attachment_count')->orderby('received_date', 'desc')->select(['id', 'subject', 'received_date', 'sender_name', 'seen', \DB::raw("SUBSTRING(`message`,1,80) as sub_msg")])->get();
+            $all_mails = ReceivedMail::with('attachment_count')->orderby('received_date', 'desc')->select(['id', 'subject', 'received_date', 'sender_name', 'seen', 'replied', 'forwarded', \DB::raw("SUBSTRING(`message`,1,80) as sub_msg")])->get();
             for ($x=0; $x < count($all_mails); ++$x)
             {
                 $all_mails[$x]->subject = e($all_mails[$x]->subject);
