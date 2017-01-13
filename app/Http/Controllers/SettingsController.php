@@ -154,13 +154,7 @@ class SettingsController extends Controller
             sleep(5); // I know this is terrible, but we have to wait for the config to cache properly...
             while (strstr($new_redir, '//') !== false)
                 $new_redir = str_replace('//','/', $new_redir);
-            $base = config('fiercephish.APP_URL');
-            if (isset($_SERVER['SERVER_NAME']))
-            {
-                $base = 'http://'.$_SERVER['SERVER_NAME'];
-                if (!empty($_SERVER['HTTPS']))
-                    $base = 'https://'.$_SERVER['SERVER_NAME'];
-            }
+            $base = $request->root();
             return redirect($base.$new_redir)->with('success', 'Settings successfully saved!');
         }
         else
@@ -239,12 +233,7 @@ class SettingsController extends Controller
         \Artisan::call('config:cache');
         sleep(5); // I know this is terrible, but we have to wait for the config to cache properly...
         ActivityLog::log('Imported settings from a previous FiercePhish install', 'Settings');
-        if (isset($_SERVER['SERVER_NAME']))
-        {
-            $base = 'http://'.$_SERVER['SERVER_NAME'];
-            if (!empty($_SERVER['HTTPS']))
-                $base = 'https://'.$_SERVER['SERVER_NAME'];
-        }
+        $base = $request->root();
         return redirect($base.$new_redir)->with('success', 'Successfully imported settings');
     }
 }
