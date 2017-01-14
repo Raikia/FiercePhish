@@ -12,13 +12,11 @@
              <div class="error">{{ $error }}</div>
          @endforeach
      @endif
-    <form class="login-form" id="validateForm">
-      <input type="text" id="passcode" placeholder="Passcode" data-inputmask="'mask' : '999 999'" style="letter-spacing: 8px; font-size: 18pt; text-align: center; font-family: 'Courier New'" autofocus />
-      <input type="submit" class="button" value="Validate Code" />
-    </form>
+    <input type="text" id="passcode" placeholder="Passcode" data-inputmask="'mask' : '999 999'" style="letter-spacing: 8px; font-size: 18pt; text-align: center; font-family: 'Courier New'" autofocus />
     <form class="login-form" id="actualValidateForm" method="post" action="{{ action('Auth\AuthController@postValidateToken') }}">
         {{ csrf_field() }}
         <input type="hidden" name="totp" id="totp" value="" />
+        <input type="submit" class="button" value="Validate Code" />
     </form>
   </div>
 </div>
@@ -27,15 +25,14 @@
 @section('footer')
 <script type="text/javascript">
     /* global $ */
-    $("#validateForm").submit(function(e) {
-        e.preventDefault();
+    $("#actualValidateForm").submit(function(e) {
         $("#totp").val($("#passcode").val().replace(" ",""));
-        $("#actualValidateForm").submit();
+        return true;
     });
     
     $('#passcode').keyup(function () {
         if (this.value.indexOf('_') == -1) {
-            $('#validateForm').submit();
+            $('#actualValidateForm').submit();
         }
     });
     $(document).ready(function() {
