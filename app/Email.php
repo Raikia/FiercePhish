@@ -5,6 +5,7 @@ namespace App;
 use App\Jobs\SendEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use App\LogAggregate;
 
 class Email extends Model
 {
@@ -64,5 +65,10 @@ class Email extends Model
             $this->status = Email::CANCELLED;
             $this->save();
         }
+    }
+    
+    public function getLogs()
+    {
+        return LogAggregate::getSurroundingLogs($this->updated_at, 20);
     }
 }

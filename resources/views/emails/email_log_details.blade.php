@@ -54,6 +54,20 @@
         <pre>{{ $email->message }}</pre>
       </div>
     </div>
+    
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Logs at Email Timestamp</h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <pre>
+          @foreach ($email->getLogs() as $log)
+[{{ $log->log_type }}] {{ $log->log_time}}    {{ $log->data }}
+          @endforeach
+        </pre>
+      </div>
+    </div>
   </div>
   <div class="col-md-6 col-sm-6 col-xs-12">
     <div class="x_panel">
