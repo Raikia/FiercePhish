@@ -29,5 +29,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('fp:checkmail')->everyMinute();
+        $schedule->command('fp:logpull')->everyMinute();
     }
 }
