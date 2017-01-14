@@ -57,15 +57,19 @@
     
     <div class="x_panel">
       <div class="x_title">
-        <h2>Logs at Email Timestamp</h2>
+        <h2>Logs around Email Timestamp</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
+        @if (count($logs) != 0)
         <pre>
-          @foreach ($email->getLogs() as $log)
+          @foreach ($logs as $log)
 [{{ $log->log_type }}] {{ $log->log_time}}    {{ $log->data }}
-          @endforeach
-        </pre>
+@endforeach
+</pre>
+        @else 
+          <pre>No logs yet</pre>
+        @endif
       </div>
     </div>
   </div>
