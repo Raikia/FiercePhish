@@ -199,9 +199,9 @@ class EmailController extends Controller
     {
         $attachment = ReceivedMailAttachment::findOrFail($id);
         
-        return Response::make(base64_decode($attachment->content), '200', array(
+        return Response::make(base64_decode($attachment->content), '200', [
             'Content-Type' => 'application/octet-stream',
-            'Content-Disposition' => 'attachment; filename="'.$attachment->name.'"'
-        ));
+            'Content-Disposition' => 'attachment; filename="'.$attachment->name.'"',
+        ]);
     }
 }
