@@ -55,7 +55,7 @@ class LogController extends Controller
             $zip->close();
             $resp = Response::make(file_get_contents($file), '200', [
                 'Content-Type' => 'application/zip',
-                'Content-Disposition' => 'attachment; filename="fiercephish_logbundle.zip"'
+                'Content-Disposition' => 'attachment; filename="fiercephish_logs.bundle.zip"'
             ]);
             unlink($file);
             return $resp;
