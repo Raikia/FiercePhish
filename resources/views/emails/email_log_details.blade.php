@@ -57,13 +57,13 @@
     
     <div class="x_panel">
       <div class="x_title">
-        <h2>Logs around Email Timestamp</h2>
+        <h2>Related SMTP Logs</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
         @if (count($logs) != 0)
         <pre>
-          @foreach ($logs as $log)
+@foreach ($logs as $log)
 [{{ $log->log_type }}] {{ $log->log_time}}    {{ $log->data }}
 @endforeach
 </pre>

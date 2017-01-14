@@ -24,6 +24,7 @@ class LogAggregate extends Model
         $query = LogAggregate::where('log_time', '>=', $bdate)->where('log_time', '<=', $adate);
         if ($type !== null)
             $query = $query->where('log_type', $type);
+        $query = $query->orderby('log_time', 'asc')->orderby('id', 'desc');
         return $query->get();
     }
 }
