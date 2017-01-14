@@ -67,7 +67,10 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::get('settings/export/download', 'SettingsController@post_export_data');
 	Route::post('settings/export/import', 'SettingsController@post_import_data');
 
-
+	// LogController Routes...
+	Route::get('logs', 'LogController@index');
+	Route::get('logs/download/{type}', 'LogController@download');
+	
 	// EmailController Routes...
 	Route::get('emails/templates/{id?}', 'EmailController@template_index');
 	Route::post('emails/templates/add', 'EmailController@addTemplate');
