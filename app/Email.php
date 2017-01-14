@@ -69,6 +69,6 @@ class Email extends Model
     
     public function getLogs()
     {
-        return LogAggregate::getSurroundingLogs($this->updated_at, 20, 'smtp');
+        return LogAggregate::getSurroundingLogs($this->updated_at, 2, 5, 'smtp');
     }
 }
