@@ -58,7 +58,8 @@
         url: "{{ action('AjaxController@email_log') }}",
         type: "POST"
       },
-      columnDefs: [{ targets: 'no-sort', orderable: false}]
+      columnDefs: [{ targets: 'no-sort', orderable: false}],
+      order: [[ 9, "desc" ]]
     });
 </script>
 @endsection
