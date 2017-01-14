@@ -64,7 +64,7 @@
         @if (count($logs) != 0)
         <pre>
 @foreach ($logs as $log)
-[{{ $log->log_type }}] {{ $log->log_time}}    {{ $log->data }}
+[{{ $log->log_time}}]    {{ $log->data }}
 @endforeach
 </pre>
         @else 
