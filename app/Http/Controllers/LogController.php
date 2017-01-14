@@ -13,6 +13,7 @@ class LogController extends Controller
     
     private $logs_to_check;
     
+    // Add activitylog here as well!
     public function __construct()
     {
         $this->middleware('auth');
