@@ -73,6 +73,7 @@ class SendEmail extends Job implements ShouldQueue
                     if (config('fiercephish.MAIL_BCC_ALL') !== null)
                         $message->bcc(config('fiercephish.MAIL_BCC_ALL'));
                 });
+                $this->email->sent_time = date("Y-m-d h:i:s");
             }
             catch (\Exception $e)
             {
