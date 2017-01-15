@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use \Response;
 use \ZipArchive;
+use App\ActivityLog;
 
 class LogController extends Controller
 {
@@ -28,7 +29,14 @@ class LogController extends Controller
     
     public function index()
     {
-        return view('logs.index')->with('logs', $this->logs_to_check);
+        $logs = ActivityLog::orderby('id', 'desc')->take(200)->get();
+        $activitylog_arr = [];
+        foreach ($logs as $log)
+        {
+            $activitylog_arr[] = $log->read();
+        }
+        $activitylog = implode("\n", $activitylog_arr);
+        return view('logs.index')->with('logs', $this->logs_to_check)->with('activitylog', $activitylog);
     }
     
     public function download($type)
@@ -53,6 +61,15 @@ class LogController extends Controller
                 if (is_readable($log))
                     $zip->addFile($log, $name.'.log');
             }
+            // ActivityLog
+            $logs = ActivityLog::orderby('id', 'desc')->get();
+            $activitylog_arr = [];
+            foreach ($logs as $log)
+            {
+                $activitylog_arr[] = $log->read();
+            }
+            $activitylog = implode("\n", $activitylog_arr);
+            $zip->addFromString('activitylog.log', $activitylog);
             $zip->close();
             $resp = Response::make(file_get_contents($file), '200', [
                 'Content-Type' => 'application/zip',
@@ -61,6 +78,20 @@ class LogController extends Controller
             ]);
             unlink($file);
             return $resp;
+        }
+        elseif ($type == 'activitylog')
+        {
+            $logs = ActivityLog::orderby('id', 'desc')->get();
+            $activitylog_arr = [];
+            foreach ($logs as $log)
+            {
+                $activitylog_arr[] = $log->read();
+            }
+            $activitylog = implode("\n", $activitylog_arr);
+            return Response::make($activitylog, '200', [
+                'Content-Type' => 'application/octet-stream',
+                'Content-Disposition' => 'attachment; filename="activitylog.log"',
+            ]);
         }
         else 
         {

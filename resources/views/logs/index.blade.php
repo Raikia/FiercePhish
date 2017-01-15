@@ -31,6 +31,7 @@
                     @endif
                 </li>
                 @endforeach
+                <li>FiercePhish Activity Log</li>
             </ul>
       </div>
     </div>
@@ -52,9 +53,13 @@
                 </tr>
                 @endif
             @endforeach
-            <tr>
-                <td colspan="2" style="vertical-align: middle; text-align: center;"><a href="{{ action('LogController@download', ['type' => 'all']) }}" class="btn btn-primary">Download All Logs</a></td>
-            </tr>
+                <tr>
+                    <td style="vertical-align:middle;"><b>Activity Log</b></td>
+                    <td style="vertical-align:middle;"><a href="{{ action('LogController@download', ['type' => 'activitylog']) }}" class="btn btn-primary">Download log</a></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="vertical-align: middle; text-align: center;"><a href="{{ action('LogController@download', ['type' => 'all']) }}" class="btn btn-primary">Download All Logs</a></td>
+                </tr>
             </tbody>
           </table>
       </div>
@@ -79,7 +84,19 @@
 </div>
 @endif
 @endforeach
-
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Last 200 lines of Activity Log</h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+          <pre style="max-height: 400px;">{{ $activitylog }}</pre>
+      </div>
+    </div>
+  </div>
+</div>
 
 @endsection
 
