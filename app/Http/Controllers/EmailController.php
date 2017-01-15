@@ -183,8 +183,7 @@ class EmailController extends Controller
     public function email_log_details($id)
     {
         $email = Email::findorFail($id);
-        $logs = $email->getLogs();
-        return view('emails.email_log_details')->with('email', $email)->with('logs', $logs);
+        return view('emails.email_log_details')->with('email', $email);
     }
     
     public function inbox_get()

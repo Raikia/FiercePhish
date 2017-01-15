@@ -330,6 +330,7 @@ EOM
 		sys_cmd "a2ensite fiercephish"
 		sys_cmd "a2enmod rewrite"
 		sys_cmd "a2dissite 000-default"
+		sys_cmd "php5enmod imap"
 		sys_cmd "service apache2 restart"
 		sys_cmd "pushd /var/www/fiercephish"
 		sys_cmd "composer install"

@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use App\LogAggregate;
+use \Carbon;
+use App\Email;
 
 class LogPull extends Command
 {
@@ -96,6 +98,28 @@ class LogPull extends Command
                 fclose($fp);
             }
         }
+        $this->info("Completed log aggregation.");
+        $this->info("Searching for logs for emails");
+        $after_date = (new Carbon\Carbon())->subMinutes(5)->format('Y-m-d H:i:s');
+        $before_date = (new Carbon\Carbon())->addSeconds(30)->format('Y-m-d H:i:s');
+        $emails = Email::where('status', Email::SENT)->where('updated_at', '<=', $before_date)->where('updated_at', '>=', $after_date)->get();
+        foreach ($emails as $email)
+        {
+            $logs = LogAggregate::getSurroundingLogs($email->updated_at, 2, 5, 'smtp');
+            $total_str = '';
+            foreach ($logs as $log)
+            {
+                $total_str .= $log->log_time."\t".$log->data."\n";
+            }
+            if (strlen($total_str) > strlen($email->related_logs))
+            {
+                $email->related_logs = $total_str;
+                $email->save();
+            }
+        }
+        $this->info("Purging logs 10 minutes old");
+        $before_date = (new Carbon\Carbon())->subMinutes(10)->format('Y-m-d H:i:s');
+        LogAggregate::where('log_time', '<=', $before_date)->delete();
         $this->info("Completed log aggregation.");
     }
 }

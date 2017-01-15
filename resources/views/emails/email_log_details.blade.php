@@ -61,12 +61,8 @@
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
-        @if (count($logs) != 0)
-        <pre>
-@foreach ($logs as $log)
-[{{ $log->log_time}}]    {{ $log->data }}
-@endforeach
-</pre>
+        @if ($email->related_logs !== null)
+          <pre>{{ $email->related_logs }}</pre>
         @else 
           <pre>No logs yet</pre>
         @endif

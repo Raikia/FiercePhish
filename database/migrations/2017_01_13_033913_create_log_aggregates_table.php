@@ -20,6 +20,11 @@ class CreateLogAggregatesTable extends Migration
             $table->text('data');
             $table->timestamps();
         });
+        
+        Schema::table('emails', function(Blueprint $table) {
+            $table->text('related_logs')->nullable();
+            $table->index('updated_at');
+        });
     }
 
     /**
@@ -30,5 +35,9 @@ class CreateLogAggregatesTable extends Migration
     public function down()
     {
         Schema::drop('log_aggregates');
+        Schema::table('emails', function(Blueprint $table) {
+            $table->dropColumn('related_logs');
+            $table->dropIndex('emails_updated_at_index');
+        });
     }
 }
