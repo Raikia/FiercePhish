@@ -2,6 +2,9 @@
 
 define('LARAVEL_START', microtime(true));
 
+// This is a workaround for a known nesting bug...
+ini_set('xdebug.max_nesting_level', 500);
+
 /*
 |--------------------------------------------------------------------------
 | Register The Composer Auto Loader
