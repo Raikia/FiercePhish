@@ -330,7 +330,12 @@ EOM
 		sys_cmd "a2ensite fiercephish"
 		sys_cmd "a2enmod rewrite"
 		sys_cmd "a2dissite 000-default"
-		sys_cmd "php5enmod imap"
+		if [[ $OS_VERSION == '14.04' ]]
+			then
+			sys_cmd "php5enmod imap"
+		else
+			sys_cmd "phpenmod imap"
+		fi
 		sys_cmd "service apache2 restart"
 		sys_cmd "pushd /var/www/fiercephish"
 		sys_cmd "composer install"
