@@ -117,6 +117,10 @@
               <td>{!! ($email->campaign)?'<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>':'None' !!}</td>
             </tr>
             <tr>
+              <td>Sent At</td>
+              <td>{{ (new \Carbon\Carbon($email->sent_time))->format('M j, Y @ g:i:s a') }}</td>
+            </tr>
+            <tr>
               <td>Created At</td>
               <td>{{ $email->created_at->format('M j, Y @ g:i:s a') }}</td>
             </tr>
