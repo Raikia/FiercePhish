@@ -375,10 +375,10 @@ class AjaxController extends Controller
                     $query = $query->orderby('status', $sort['dir']);
                     break;
                 case 8:
-                    $query = $query->orderby('created_at', $sort['dir']);
+                    $query = $query->orderby('sent_time', $sort['dir']);
                     break;
                 case 9:
-                    $query = $query->orderby('updated_at', $sort['dir']);
+                    $query = $query->orderby('created_at', $sort['dir']);
                     break;
             }
         }
@@ -399,7 +399,9 @@ class AjaxController extends Controller
             {
                 $camp = '<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>';
             }
-            $ret['data'][] = ['0' => $email->receiver_name, '1' => $email->receiver_email, '2' => $email->sender_name, '3' => $email->sender_email, '4' => $email->subject, '5' => $email->uuid, '6' => $email->getStatus(), '7' => $camp, '8' => $email->created_at.'', '9' => $email->updated_at.'', 'DT_RowId' => 'row_'.$email->id];
+            if ($email->sent_time == '0000-00-00 00:00:00')
+                $email->sent_time = '';
+            $ret['data'][] = ['0' => $email->receiver_name, '1' => $email->receiver_email, '2' => $email->sender_name, '3' => $email->sender_email, '4' => $email->subject, '5' => $email->uuid, '6' => $email->getStatus(), '7' => $camp, '8' => $email->sent_time.'', '9' => $email->created_at.'', 'DT_RowId' => 'row_'.$email->id];
         }
         return Response::json($ret, 200);
     }

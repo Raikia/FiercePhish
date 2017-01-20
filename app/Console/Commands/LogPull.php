@@ -70,10 +70,15 @@ class LogPull extends Command
                     else
                     {
                         $words = explode(" ", $currentLine);
+                        if (count($words) < 3)
+                            continue; // This means the log was being written to while pulling
                         $strtime = $words[0] . " " . $words[1] . " " . $words[2];
                         $time = strtotime($strtime.' '.$timezone);
                         $datetime = date("Y-m-d H:i:s", $time);
-                        $words = explode(": ", $currentLine, 2)[1];
+                        $words_arr = explode(": ", $currentLine, 2);
+                        if (count($words_arr) < 2)
+                            continue; // This means the log was being written to while pulling
+                        $words = $words_arr[1];
                         $newlog = new LogAggregate();
                         $newlog->log_time = $datetime;
                         $newlog->log_type = $type;
@@ -102,10 +107,10 @@ class LogPull extends Command
         $this->info("Searching for logs for emails");
         $after_date = (new Carbon\Carbon())->subMinutes(5)->format('Y-m-d H:i:s');
         $before_date = (new Carbon\Carbon())->addSeconds(30)->format('Y-m-d H:i:s');
-        $emails = Email::where('status', Email::SENT)->where('updated_at', '<=', $before_date)->where('updated_at', '>=', $after_date)->get();
+        $emails = Email::where('status', Email::SENT)->where('sent_time', '<=', $before_date)->where('sent_time', '>=', $after_date)->get();
         foreach ($emails as $email)
         {
-            $logs = LogAggregate::getSurroundingLogs($email->updated_at, 2, 5, 'smtp');
+            $logs = LogAggregate::getSurroundingLogs((new Carbon\Carbon($email->sent_time)), 2, 5, 'smtp');
             $total_str = '';
             foreach ($logs as $log)
             {

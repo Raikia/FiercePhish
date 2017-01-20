@@ -28,8 +28,8 @@
                 <th>UUID</th>
                 <th>Status</th>
                 <th class="no-sort">Campaign</th>
+                <th>Sent At</th>
                 <th>Created At</th>
-                <th>Updated At</th>
               </tr>
             </thead>
             <tbody>
