@@ -312,6 +312,8 @@ class AjaxController extends Controller
                     $query = $query->orderby('status', $sort['dir']);
                     break;
                 case 4:
+                    $query = $query->orderby('sent_time', $sort['dir']);
+                case 5:
                     $query = $query->orderby('updated_at', $sort['dir']);
             }
         }
@@ -327,7 +329,7 @@ class AjaxController extends Controller
         ];
         foreach ($data as $email)
         {
-            $ret['data'][] = ['0' => $email->receiver_name, '1' => $email->receiver_email, '2' => $email->uuid, '3' => $email->getStatus(), '4' => $email->updated_at.'', 'DT_RowId' => 'row_'.$email->id];
+            $ret['data'][] = ['0' => $email->receiver_name, '1' => $email->receiver_email, '2' => $email->uuid, '3' => $email->getStatus(), '4' => $email->sent_time, '5' => $email->updated_at.'', 'DT_RowId' => 'row_'.$email->id];
         }
         return Response::json($ret, 200);
     }

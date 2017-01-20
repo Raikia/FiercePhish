@@ -79,6 +79,7 @@
                             <th>Receiver Email</th>
                             <th>UUID</th>
                             <th>Status</th>
+                            <th>Sent At</th>
                             <th>Last Updated</th>
                         </tr>
                     </thead>
