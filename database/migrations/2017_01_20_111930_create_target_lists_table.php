@@ -1,9 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateReceivedMailAttachmentsTable extends Migration
+class CreateTargetLists extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +13,10 @@ class CreateReceivedMailAttachmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('received_mail_attachments', function (Blueprint $table) {
+        Schema::create('target_lists', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('received_mail_id');
-            $table->string('name');
-            $table->text('content');
+            $table->string('name')->unique();
+            $table->text('notes');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateReceivedMailAttachmentsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('received_mail_attachments');
+        Schema::drop('target_lists');
     }
 }

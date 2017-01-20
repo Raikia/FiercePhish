@@ -2,21 +2,17 @@
 
 namespace App\Jobs;
 
-use App\Jobs\Job;
-use App\Email;
-use App\Campaign;
-use App\ActivityLog;
-use Mail;
+use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendEmail extends Job implements ShouldQueue
+class SendEmail implements ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels;
-
+    use InteractsWithQueue, Queueable, SerializesModels;
+    
     protected $email;
-
+    
     /**
      * Create a new job instance.
      *

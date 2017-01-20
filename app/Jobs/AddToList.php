@@ -2,22 +2,20 @@
 
 namespace App\Jobs;
 
-use App\Jobs\Job;
-use App\TargetList;
-use App\TargetUser;
-use App\ActivityLog;
+use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AddToList extends Job implements ShouldQueue
+class AddToList implements ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels;
-
+    use InteractsWithQueue, Queueable, SerializesModels;
+    
     protected $processing_job;
     protected $targetlist;
     protected $num_to_add;
     protected $only_unassigned;
+    
     /**
      * Create a new job instance.
      *

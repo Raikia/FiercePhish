@@ -142,7 +142,7 @@
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
                     <li><a href="{{ action('SettingsController@get_editprofile') }}"> Profile</a></li>
                     <li><a href="https://github.com/Raikia/FiercePhish/wiki" target="_blank">Help</a></li>
-                    <li><a href="{{ action('Auth\AuthController@logout') }}"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                    <li><a href="{{ action('Auth\LoginController@logout') }}"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                   </ul>
                 </li>
 

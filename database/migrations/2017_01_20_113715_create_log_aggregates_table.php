@@ -1,9 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProcessingJobsTable extends Migration
+class CreateLogAggregatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +13,12 @@ class CreateProcessingJobsTable extends Migration
      */
     public function up()
     {
-        Schema::create('processing_jobs', function (Blueprint $table) {
+        Schema::create('log_aggregates', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->integer('progress');
-            $table->text('description');
-            $table->string('icon');
+            $table->dateTime('log_time')->index();
+            $table->string('log_type')->index();
+            $table->string('hash')->unique();
+            $table->text('data');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateProcessingJobsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('processing_jobs');
+        Schema::drop('log_aggregates');
     }
 }

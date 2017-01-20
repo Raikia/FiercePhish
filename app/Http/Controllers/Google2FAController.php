@@ -4,16 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
 use Crypt;
-use \Google2FA;
+use Google2FA;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use \ParagonIE\ConstantTime\Base32;
 
 class Google2FAController extends Controller
 {
-    
+    use ValidatesRequests;
+
     public function __construct()
     {
         $this->middleware(['web', 'auth']);

@@ -2,15 +2,14 @@
 
 namespace App\Jobs;
 
-use App\Jobs\Job;
-use App\ActivityLog;
+use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class StartCampaign extends Job implements ShouldQueue
+class StartCampaign implements ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels;
+    use InteractsWithQueue, Queueable, SerializesModels;
 
     protected $process_job;
     protected $campaign;
@@ -19,7 +18,7 @@ class StartCampaign extends Job implements ShouldQueue
     protected $send_num_emails;
     protected $send_every_minutes;
     protected $seconds_offset_start;
-
+    
     /**
      * Create a new job instance.
      *

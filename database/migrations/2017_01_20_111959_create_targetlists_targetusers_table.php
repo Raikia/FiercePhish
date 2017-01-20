@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -14,8 +15,8 @@ class CreateTargetlistsTargetusers extends Migration
     {
         Schema::create('target_list_target_user', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('target_user_id');
-            $table->integer('target_list_id');
+            $table->integer('target_user_id')->index();
+            $table->integer('target_list_id')->index();
             $table->timestamps();
         });
     }

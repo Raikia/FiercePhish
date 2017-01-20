@@ -12,7 +12,7 @@
              <div class="error">{{ $error }}</div>
          @endforeach
      @endif
-    <form class="login-form" method="post" action="{{ action('Auth\AuthController@login') }}">
+    <form class="login-form" method="post" action="{{ action('Auth\LoginController@login') }}">
         {{ csrf_field() }}
       <input type="text" name="name" placeholder="Username" autofocus />
       <input type="password" name="password" placeholder="Password"/>

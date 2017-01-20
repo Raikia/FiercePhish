@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -22,14 +23,13 @@ class CreateReceivedMailsTable extends Migration
             $table->string('receiver_name');
             $table->string('receiver_email');
             $table->string('subject');
-            $table->dateTime('received_date');
+            $table->dateTime('received_date')->index();
             $table->text('message');
             $table->boolean('seen')->default(false);
             $table->boolean('replied')->default(false);
             $table->boolean('forwarded')->default(false);
             $table->softDeletes();
             $table->timestamps();
-            $table->index('received_date');
         });
     }
 

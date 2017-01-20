@@ -2,17 +2,14 @@
 
 namespace App\Jobs;
 
-use App\Jobs\Job;
-use App\TargetUser;
-use App\ProcessingJobs;
-use App\ActivityLog;
+use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ImportTargets extends Job implements ShouldQueue
+class ImportTargets implements ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels;
+    use InteractsWithQueue, Queueable, SerializesModels;
 
     protected $process_path;
     protected $process_job;

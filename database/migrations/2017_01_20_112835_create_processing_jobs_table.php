@@ -1,9 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCampaignsTable extends Migration
+class CreateProcessingJobs extends Migration
 {
     /**
      * Run the migrations.
@@ -12,15 +13,12 @@ class CreateCampaignsTable extends Migration
      */
     public function up()
     {
-        Schema::create('campaigns', function (Blueprint $table) {
+        Schema::create('processing_jobs', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('from_name');
-            $table->string('from_email');
+            $table->integer('progress');
             $table->text('description');
-            $table->integer('status');
-            $table->integer('target_list_id');
-            $table->integer('email_template_id');
+            $table->string('icon');
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ class CreateCampaignsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('campaigns');
+        Schema::drop('processing_jobs');
     }
 }

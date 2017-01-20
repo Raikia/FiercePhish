@@ -2,12 +2,12 @@
 
 /*
 |--------------------------------------------------------------------------
-| Application Routes
+| Web Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
+| This file is where you may define all of the routes that are handled
+| by your application. Just tell Laravel the URIs it should respond
+| to using a Closure or controller method. Build something great!
 |
 */
 
@@ -20,11 +20,11 @@ if (!empty(config('fiercephish.PROXY_SCHEMA')))
 
 Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	// Authentication Routes...
-	Route::get('login', 'Auth\AuthController@showLoginForm');
-	Route::post('login', 'Auth\AuthController@login');
-	Route::get('logout', 'Auth\AuthController@logout');
-	Route::get('2fa/validate', 'Auth\AuthController@getValidateToken');
-	Route::post('2fa/validate', ['middleware' => 'throttle:5', 'uses' => 'Auth\AuthController@postValidateToken']);
+	Route::get('login', 'Auth\LoginController@showLoginForm');
+	Route::post('login', 'Auth\LoginController@login');
+	Route::get('logout', 'Auth\LoginController@logout');
+	Route::get('2fa/validate', 'Auth\LoginController@getValidateToken');
+	Route::post('2fa/validate', ['middleware' => 'throttle:5', 'uses' => 'Auth\LoginController@postValidateToken']);
 
 
 

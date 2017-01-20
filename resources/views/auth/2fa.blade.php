@@ -13,7 +13,7 @@
          @endforeach
      @endif
     <input type="text" id="passcode" placeholder="Passcode" data-inputmask="'mask' : '999 999'" style="letter-spacing: 8px; font-size: 18pt; text-align: center; font-family: 'Courier New'" autofocus />
-    <form class="login-form" id="actualValidateForm" method="post" action="{{ action('Auth\AuthController@postValidateToken') }}">
+    <form class="login-form" id="actualValidateForm" method="post" action="{{ action('Auth\LoginController@postValidateToken') }}">
         {{ csrf_field() }}
         <input type="hidden" name="totp" id="totp" value="" />
         <input type="submit" class="button" value="Validate Code" />
