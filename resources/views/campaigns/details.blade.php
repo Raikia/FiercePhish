@@ -115,14 +115,24 @@
 
     
     
-    var dt = $("#emailLogTable").DataTable({
+    var dt = $(".datatable").DataTable({
+      language: {
+        "emptyTable": "No Campaign Emails Found"
+      },
       serverSide: true,
       processing: true,
       ajax: {
         url: "{{ action('AjaxController@campaign_emails_get', ['id' => $campaign->id]) }}",
         type: "POST"
       },
-      columnDefs: [{ targets: 'no-sort', orderable: false}]
+      columns: [
+        { data: 'receiver_name', name: 'receiver_name'},
+        { data: 'receiver_email', name: 'receiver_email'},
+        { data: 'uuid', name: 'uuid'},
+        { data: 'status', name: 'status'},
+        { data: 'sent_time', name: 'sent_time'},
+        { data: 'updated_at', name: 'updated_at'}
+      ]
     });
     
 </script>

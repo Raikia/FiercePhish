@@ -110,6 +110,7 @@
     /* global $ */
     var selected = [];
     var selectedData = [];
+    /*
     var dt = $(".datatable").DataTable({
       serverSide: true,
       processing: true,
@@ -123,13 +124,36 @@
                 $(row).addClass('selected');
             }
         }
+    });*/
+    
+    var dt = $(".datatable").DataTable({
+      language: {
+        "emptyTable": "No Target Users Found"
+      },
+      serverSide: true,
+      processing: true,
+      ajax: {
+        url: "{{ action('AjaxController@targetuser_list') }}/"+{{ $selectedList->id }},
+        type: "POST"
+      },
+      columns: [
+        { data: 'first_name', name: 'first_name'},
+        { data: 'last_name', name: 'last_name'},
+        { data: 'email', name: 'email'},
+        { data: 'list_of_membership', name: 'list_of_membership', orderable: false, searchable: false, sortable: false},
+        { data: 'notes', name: 'notes'}
+      ],
+      'rowCallback': function( row, data ) {
+            if ( $.inArray(data.DT_RowId, selected) !== -1 ) {
+                $(row).addClass('selected');
+            }
+        }
     });
     
     
     $('.datatable tbody').on('click', 'tr', function (data) {
         var id = this.id;
         var index = $.inArray(id, selected);
- 
         if ( index === -1 ) {
             selected.push( id );
             selectedData[id.split('_')[1]] = [data.currentTarget.cells[0].innerHTML, data.currentTarget.cells[1].innerHTML, data.currentTarget.cells[2].innerHTML];
@@ -148,6 +172,7 @@
       selector: 'tr td:nth-child(5) a',
       emptytext: 'Empty'
     });
+    
     $(".editnotes").on('save', function() {
         setTimeout(function() {
             dt.rows().invalidate();
@@ -180,7 +205,7 @@
         if (keys.length == 0)
             total_add += '<tr><td colspan="4" style="text-align: center;">None Selected</td></tr>';
         $("#selectedTable tbody").html(total_add);
-        console.log(selectedData);
+        //console.log(selectedData);
     }
 </script>
 @endsection

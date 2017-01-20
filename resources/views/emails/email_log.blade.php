@@ -51,7 +51,7 @@
   });
   
   
-  var dt = $("#mainEmailLogTable").DataTable({
+  /*var dt = $("#mainEmailLogTable").DataTable({
       serverSide: true,
       processing: true,
       ajax: {
@@ -60,6 +60,31 @@
       },
       columnDefs: [{ targets: 'no-sort', orderable: false}],
       order: [[ 9, "desc" ]]
+    });
+    */
+  var dt = $(".datatable").DataTable({
+      language: {
+        "emptyTable": "No Emails Found"
+      },
+      serverSide: true,
+      processing: true,
+      ajax: {
+        url: "{{ action('AjaxController@email_log') }}",
+        type: "POST"
+      },
+      columns: [
+        { data: 'receiver_name', name: 'receiver_name'},
+        { data: 'receiver_email', name: 'receiver_email'},
+        { data: 'sender_name', name: 'sender_name'},
+        { data: 'sender_email', name: 'sender_email'},
+        { data: 'subject', name: 'subject'},
+        { data: 'uuid', name: 'uuid'},
+        { data: 'status', name: 'status'},
+        { data: 'campaign.name', name: 'campaign.name'},
+        { data: 'sent_time', name: 'sent_time'},
+        { data: 'updated_at', name: 'updated_at'}
+      ],
+      order: [[ 8, 'desc' ]]
     });
 </script>
 @endsection

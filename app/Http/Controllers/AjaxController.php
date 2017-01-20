@@ -50,157 +50,65 @@ class AjaxController extends Controller
     
     public function targetuser_list(Request $request, $id=null)
     {
-        return Datatables::of(TargetUser::query())->addColumn('list_of_membership', function ($user) {
-                if (count($user->lists) == 0)
-                    return 'None';
-                $lists = '<ul style="margin-bottom: 0px;">';
-                foreach ($user->lists as $list)
-                    $lists .= '<li>'.$list->name.'</li>';
-                $lists .= '</ul>';
-                return $lists;
-            })->editColumn('notes', function($user) {
-                if ($user->notes == '')
-                {
-                    $notes = '<a href="#" class="editnotes editable-empty" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">Empty</a>';
-                }
-                else
-                {
-                    $notes = '<a href="#" class="editnotes" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">'.$user->notes.'</a>';
-                }
-                return $notes;
-            })->make(true);
+        if ($id === null)
+        {
+            return Datatables::of(TargetUser::query())->addColumn('list_of_membership', function ($user) {
+                    if (count($user->lists) == 0)
+                        return 'None';
+                    $lists = '<ul style="margin-bottom: 0px;">';
+                    foreach ($user->lists as $list)
+                        $lists .= '<li>'.$list->name.'</li>';
+                    $lists .= '</ul>';
+                    return $lists;
+                })->editColumn('notes', function($user) {
+                    if ($user->notes == '')
+                    {
+                        $notes = '<a href="#" class="editnotes editable-empty" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">Empty</a>';
+                    }
+                    else
+                    {
+                        $notes = '<a href="#" class="editnotes" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">'.$user->notes.'</a>';
+                    }
+                    return $notes;
+                })->make(true);
+        }
+        else
+        {
+            return Datatables::of(TargetList::findOrFail($id)->availableUsers())->setRowId('row_{{ $id }}')->addColumn('list_of_membership', function ($user) {
+                    if (count($user->lists) == 0)
+                        return 'None';
+                    $lists = '<ul style="margin-bottom: 0px;">';
+                    foreach ($user->lists as $list)
+                        $lists .= '<li>'.$list->name.'</li>';
+                    $lists .= '</ul>';
+                    return $lists;
+                })->editColumn('notes', function($user) {
+                    if ($user->notes == '')
+                    {
+                        $notes = '<a href="#" class="editnotes editable-empty" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">Empty</a>';
+                    }
+                    else
+                    {
+                        $notes = '<a href="#" class="editnotes" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">'.$user->notes.'</a>';
+                    }
+                    return $notes;
+                })->make(true);
+        }
     }
-    
-    /*public function targetuser_list(Request $request, $id=null)
-    {
-        $query = TargetUser::query();
-        if ($id != null)
-            $query = TargetList::findOrFail($id)->availableUsers();
-        $query = $query->with('lists');
-        if ($request->input('search')['value'] != '')
-        {
-            $sqa = array_filter(explode(' ', $request->input('search')['value']));
-            foreach ($sqa as $sq)
-            {
-                $query = $query->where(function ($query) use ($sq) {
-                    $query->where('first_name', 'like', '%'.$sq.'%')->orWhere('last_name', 'like', '%'.$sq.'%')->orWhere('email', 'like', '%'.$sq.'%')->orWhere('notes', 'like', '%'.$sq.'%')->orWhereHas('lists', function($q) {
-                        $q->where('name', 'like', '%'.request()->search['value'].'%');
-                    });
-                });
-            }
-        }
-        $orders = $request->input('order') ?: [];
-        foreach ($orders as $sort)
-        {
-            switch ($sort['column'])
-            {
-                case 0:
-                    $query = $query->orderby('first_name', $sort['dir']);
-                    break;
-                case 1:
-                    $query = $query->orderby('last_name', $sort['dir']);
-                    break;
-                case 2:
-                    $query = $query->orderby('email', $sort['dir']);
-                    break;
-                case 4:
-                    $query = $query->orderby('notes', $sort['dir']);
-                    break;
-            }
-        }
-        $filteredLength = $query->count();
-        $start = (int)$request->input('start') ?: 0;
-        $length = (int)$request->input('length') ?: 10;
-        $query = $query->skip($start)->take($length);
-        $data = $query->get();
-        $ret = ['draw' => (int)$request->input('draw'),
-                'recordsTotal' => TargetUser::count(),
-                'recordsFiltered' => $filteredLength,
-                'data' => [],
-        ];
-        foreach ($data as $user)
-        {
-            $lists = '<ul style="margin-bottom: 0px;">';
-            foreach ($user->lists as $list)
-            {
-                $lists .= '<li>'.$list->name.'</li>';
-            }
-            if (count($user->lists) != 0)
-            {
-                $lists .= '</ul>';
-            }
-            else
-            {
-                $lists = 'None';
-            }
-            if ($user->notes == '')
-            {
-                $notes = '<a href="#" class="editnotes editable-empty" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">Empty</a>';
-            }
-            else
-            {
-                $notes = '<a href="#" class="editnotes" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">'.$user->notes.'</a>';
-            }
-            $ret['data'][] = ['0' => $user->first_name, '1' => $user->last_name, '2' => $user->email, '3' => $lists, '4' => $notes, 'DT_RowId' => 'row_'.$user->id];
-        }
-        return Response::json($ret, 200);
-    }*/
     
     public function targetuser_membership(Request $request, $id)
     {
-        $query = TargetList::findOrFail($id)->users();
-        if ($request->input('search')['value'] != '')
-        {
-            $sqa = array_filter(explode(' ', $request->input('search')['value']));
-            foreach ($sqa as $sq)
-            {
-                $query = $query->where(function ($query) use ($sq) {
-                    $query->where('first_name', 'like', '%'.$sq.'%')->orWhere('last_name', 'like', '%'.$sq.'%')->orWhere('email', 'like', '%'.$sq.'%')->orWhere('notes', 'like', '%'.$sq.'%');
-                });
-            }
-        }
-        $orders = $request->input('order') ?: [];
-        foreach ($orders as $sort)
-        {
-            switch ($sort['column'])
-            {
-                case 0:
-                    $query = $query->orderby('first_name', $sort['dir']);
-                    break;
-                case 1:
-                    $query = $query->orderby('last_name', $sort['dir']);
-                    break;
-                case 2:
-                    $query = $query->orderby('email', $sort['dir']);
-                    break;
-                case 4:
-                    $query = $query->orderby('notes', $sort['dir']);
-                    break;
-            }
-        }
-        $filteredLength = $query->count();
-        $start = (int)$request->input('start') ?: 0;
-        $length = (int)$request->input('length') ?: 10;
-        $query = $query->skip($start)->take($length);
-        $data = $query->get();
-        $ret = ['draw' => (int)$request->input('draw'),
-                'recordsTotal' => TargetList::findOrFail($id)->users()->count(),
-                'recordsFiltered' => $filteredLength,
-                'data' => [],
-        ];
-        foreach ($data as $user)
-        {
-            if ($user->notes == '')
-            {
-                $notes = '<a href="#" class="editnotes editable-empty" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">Empty</a>';
-            }
-            else
-            {
-                $notes = '<a href="#" class="editnotes" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">'.$user->notes.'</a>';
-            }
-            $ret['data'][] = ['0' => $user->first_name, '1' => $user->last_name, '2' => $user->email, '3' => $notes, 'DT_RowId' => 'row_'.$user->id];
-        }
-        return Response::json($ret, 200);
+        return Datatables::of(TargetList::findOrFail($id)->users())->editColumn('notes', function($user) {
+                    if ($user->notes == '')
+                    {
+                        $notes = '<a href="#" class="editnotes editable-empty" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">Empty</a>';
+                    }
+                    else
+                    {
+                        $notes = '<a href="#" class="editnotes" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">'.$user->notes.'</a>';
+                    }
+                    return $notes;
+                })->make(true);
     }
     
     public function get_emailtemplate_info(Request $request, $id='')
@@ -306,130 +214,22 @@ class AjaxController extends Controller
     
     public function campaign_emails_get(Request $request, $id)
     {
-        $campaign = Campaign::findOrFail($id);
-        $query = $campaign->emails();
-        if ($request->input('search')['value'] != '')
-        {
-            $sqa = array_filter(explode(' ', $request->input('search')['value']));
-            foreach ($sqa as $sq)
-            {
-                $query = $query->where(function ($query) use ($sq) {
-                    $query->where('receiver_name', 'like', '%'.$sq.'%')->orWhere('receiver_email', 'like', '%'.$sq.'%')->orWhere('uuid', 'like', '%'.$sq.'%');
-                });
-            }
-        }
-        $orders = $request->input('order') ?: [];
-        foreach ($orders as $sort)
-        {
-            switch ($sort['column'])
-            {
-                case 0:
-                    $query = $query->orderby('receiver_name', $sort['dir']);
-                    break;
-                case 1:
-                    $query = $query->orderby('receiver_email', $sort['dir']);
-                    break;
-                case 2:
-                    $query = $query->orderby('uuid', $sort['dir']);
-                    break;
-                case 3:
-                    $query = $query->orderby('status', $sort['dir']);
-                    break;
-                case 4:
-                    $query = $query->orderby('sent_time', $sort['dir']);
-                case 5:
-                    $query = $query->orderby('updated_at', $sort['dir']);
-            }
-        }
-        $filteredLength = $query->count();
-        $start = (int)$request->input('start') ?: 0;
-        $length = (int)$request->input('length') ?: 10;
-        $query = $query->skip($start)->take($length);
-        $data = $query->get();
-        $ret = ['draw' => (int)$request->input('draw'),
-                'recordsTotal' => $campaign->emails()->count(),
-                'recordsFiltered' => $filteredLength,
-                'data' => [],
-        ];
-        foreach ($data as $email)
-        {
-            $ret['data'][] = ['0' => $email->receiver_name, '1' => $email->receiver_email, '2' => $email->uuid, '3' => $email->getStatus(), '4' => $email->sent_time, '5' => $email->updated_at.'', 'DT_RowId' => 'row_'.$email->id];
-        }
-        return Response::json($ret, 200);
+        return Datatables::of(Campaign::findOrFail($id)->emails())->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
+                return $email->getStatus();
+            })->make(true);
     }
     
     
     public function email_log(Request $request)
     {
-        $query = Email::with('campaign');
-        if ($request->input('search')['value'] != '')
-        {
-            $sqa = array_filter(explode(' ', $request->input('search')['value']));
-            foreach ($sqa as $sq)
-            {
-                $query = $query->where(function ($query) use ($sq) {
-                    $query->where('receiver_name', 'like', '%'.$sq.'%')->orWhere('receiver_email', 'like', '%'.$sq.'%')->orWhere('sender_name', 'like', '%'.$sq.'%')->orWhere('sender_email', 'like', '%'.$sq.'%')->orWhere('subject', 'like', '%'.$sq.'%')->orWhere('uuid', 'like', '%'.$sq.'%')->orWhereHas('campaign', function($q) {
-                        $q->where('name', 'like', '%'.request()->search['value'].'%');
-                    });
-                });
-            }
-        }
-        $orders = $request->input('order') ?: [];
-        foreach ($orders as $sort)
-        {
-            switch ($sort['column'])
-            {
-                case 0:
-                    $query = $query->orderby('receiver_name', $sort['dir']);
-                    break;
-                case 1:
-                    $query = $query->orderby('receiver_email', $sort['dir']);
-                    break;
-                case 2:
-                    $query = $query->orderby('sender_name', $sort['dir']);
-                    break;
-                case 3:
-                    $query = $query->orderby('sender_email', $sort['dir']);
-                    break;
-                case 4:
-                    $query = $query->orderby('subject', $sort['dir']);
-                    break;
-                case 5:
-                    $query = $query->orderby('uuid', $sort['dir']);
-                    break;
-                case 6:
-                    $query = $query->orderby('status', $sort['dir']);
-                    break;
-                case 8:
-                    $query = $query->orderby('sent_time', $sort['dir']);
-                    break;
-                case 9:
-                    $query = $query->orderby('created_at', $sort['dir']);
-                    break;
-            }
-        }
-        $filteredLength = $query->count();
-        $start = (int)$request->input('start') ?: 0;
-        $length = (int)$request->input('length') ?: 10;
-        $query = $query->skip($start)->take($length);
-        $data = $query->get();
-        $ret = ['draw' => (int)$request->input('draw'),
-                'recordsTotal' => Email::count(),
-                'recordsFiltered' => $filteredLength,
-                'data' => [],
-        ];
-        foreach ($data as $email)
-        {
-            $camp = 'None';
-            if ($email->campaign != null)
-            {
-                $camp = '<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>';
-            }
-            if ($email->sent_time == '0000-00-00 00:00:00')
-                $email->sent_time = '';
-            $ret['data'][] = ['0' => $email->receiver_name, '1' => $email->receiver_email, '2' => $email->sender_name, '3' => $email->sender_email, '4' => $email->subject, '5' => $email->uuid, '6' => $email->getStatus(), '7' => $camp, '8' => $email->sent_time.'', '9' => $email->created_at.'', 'DT_RowId' => 'row_'.$email->id];
-        }
-        return Response::json($ret, 200);
+        return Datatables::of(Email::with('campaign'))->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
+                return $email->getStatus();
+            })->editColumn('campaign.name', function($email) {
+                if ($email->campaign !== null)
+                    return '<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>';
+                else
+                    return 'None';
+            })->make(true);
     }
     
     

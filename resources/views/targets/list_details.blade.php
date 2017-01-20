@@ -109,6 +109,7 @@
 <script type="text/javascript">
     /* global $ */
     /* global bootbox */
+    /*
     var dt = $(".datatable").DataTable({
       serverSide: true,
       processing: true,
@@ -117,6 +118,25 @@
         type: "POST"
       },
       columnDefs: [{ targets: 'no-sort', orderable: false}]
+    });
+    */
+    
+    var dt = $(".datatable").DataTable({
+      language: {
+        "emptyTable": "No Target Users Found"
+      },
+      serverSide: true,
+      processing: true,
+      ajax: {
+        url: "{{ action('AjaxController@targetuser_membership', ['id' => $targetList->id]) }}",
+        type: "POST"
+      },
+      columns: [
+        { data: 'first_name', name: 'first_name'},
+        { data: 'last_name', name: 'last_name'},
+        { data: 'email', name: 'email'},
+        { data: 'notes', name: 'notes'}
+      ]
     });
     
     $("#removeAllUsersForm").submit(function(e) {
@@ -140,6 +160,11 @@
     });
     
     $(".editnotes").editable();
+    
+    $(".datatable").editable({
+      selector: 'tr td:nth-child(4) a',
+      emptytext: 'Empty'
+    });
     
     $(".editnotes").on('save', function() {
         setTimeout(function() {
