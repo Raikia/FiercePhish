@@ -177,7 +177,7 @@
                             <span style="color: #FF0000;">INBOX feature has been disabled because of too many connection errors! Edit the settings below to reenable it.</span><br /><br />
                         @endif
                         
-                        Set this if you wan't to use the INBOX feature of FiercePhish.<br />
+                        Set this if you want to use the INBOX feature of FiercePhish.<br />
                         Careful when editing these settings. If you mess up, you'll have to manually edit "{{ base_path('.env') }}"<br />
                     </div>
                     {{ csrf_field() }}

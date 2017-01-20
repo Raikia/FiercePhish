@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 use Crypt;
 use Google2FA;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use \ParagonIE\ConstantTime\Base32;
