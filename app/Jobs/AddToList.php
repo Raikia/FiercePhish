@@ -2,6 +2,10 @@
 
 namespace App\Jobs;
 
+use App\TargetList;
+use App\TargetUser;
+use App\ActivityLog;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

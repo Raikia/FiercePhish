@@ -2,6 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Jobs\Job;
+use App\ActivityLog;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

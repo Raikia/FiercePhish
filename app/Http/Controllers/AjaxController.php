@@ -17,6 +17,7 @@ use Response;
 use Cache;
 use App\ReceivedMail;
 use App\ReceivedMailAttachment;
+use Datatables;
 
 class AjaxController extends Controller
 {
@@ -48,6 +49,29 @@ class AjaxController extends Controller
     }
     
     public function targetuser_list(Request $request, $id=null)
+    {
+        return Datatables::of(TargetUser::query())->addColumn('list_of_membership', function ($user) {
+                if (count($user->lists) == 0)
+                    return 'None';
+                $lists = '<ul style="margin-bottom: 0px;">';
+                foreach ($user->lists as $list)
+                    $lists .= '<li>'.$list->name.'</li>';
+                $lists .= '</ul>';
+                return $lists;
+            })->editColumn('notes', function($user) {
+                if ($user->notes == '')
+                {
+                    $notes = '<a href="#" class="editnotes editable-empty" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">Empty</a>';
+                }
+                else
+                {
+                    $notes = '<a href="#" class="editnotes" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">'.$user->notes.'</a>';
+                }
+                return $notes;
+            })->make(true);
+    }
+    
+    /*public function targetuser_list(Request $request, $id=null)
     {
         $query = TargetUser::query();
         if ($id != null)
@@ -120,7 +144,7 @@ class AjaxController extends Controller
             $ret['data'][] = ['0' => $user->first_name, '1' => $user->last_name, '2' => $user->email, '3' => $lists, '4' => $notes, 'DT_RowId' => 'row_'.$user->id];
         }
         return Response::json($ret, 200);
-    }
+    }*/
     
     public function targetuser_membership(Request $request, $id)
     {

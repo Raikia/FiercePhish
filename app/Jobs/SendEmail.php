@@ -2,6 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Email;
+use App\Campaign;
+use App\ActivityLog;
+use Mail;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

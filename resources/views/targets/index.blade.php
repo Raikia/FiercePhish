@@ -158,7 +158,7 @@
         $("#selectedFile").val('');
     });
     
-    var dt = $(".datatable").DataTable({
+    /*var dt = $(".datatable").DataTable({
       serverSide: true,
       processing: true,
       ajax: {
@@ -166,7 +166,29 @@
         type: "POST"
       },
       columnDefs: [{ targets: 'no-sort', orderable: false}]
+    });*/
+    
+    
+    var dt = $(".datatable").DataTable({
+      language: {
+        "emptyTable": "No Target Users Found"
+      },
+      serverSide: true,
+      processing: true,
+      ajax: {
+        url: "{{ action('AjaxController@targetuser_list') }}",
+        type: "POST"
+      },
+      columns: [
+        { data: 'first_name', name: 'first_name'},
+        { data: 'last_name', name: 'last_name'},
+        { data: 'email', name: 'email'},
+        { data: 'list_of_membership', name: 'list_of_membership', orderable: false, searchable: false},
+        { data: 'notes', name: 'notes'}
+      ]
     });
+    
+    
     
     $(".datatable").editable({
       selector: 'tr td:nth-child(5) a',

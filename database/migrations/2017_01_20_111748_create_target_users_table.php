@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTargetUsers extends Migration
+class CreateTargetUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,8 +18,7 @@ class CreateTargetUsers extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email');
-            $table->text('notes');
-            $table->string('uuid');
+            $table->text('notes')->nullable();
             $table->unique(['first_name','last_name','email']);
             $table->timestamps();
         });
