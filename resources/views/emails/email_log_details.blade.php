@@ -26,7 +26,7 @@
                 <div class="outlook_from">{{ $email->sender_name }} &lt;{{ $email->sender_email }}&gt;</div>
                 <div class="outlook_subject" id="outlook_subject">{{ $email->subject }}</div>
               </div>
-              <div class="outlook_to"><span style="margin-right: 10px;">To:</span>{{ $email->receiver_name }} &lt;{{ $email->receiver_email }}&gt;</div>
+              <div class="outlook_to"><span style="margin-right: 10px;">To:</span>{{ $email->targetuser->full_name() }} &lt;{{ $email->targetuser->email }}&gt;</div>
               <div class="outlook_message">
                 <span id="outlook_content">
                 <!-- ummm persistent xss vulnerability lol, do we care though? I don't think so -->
@@ -88,11 +88,11 @@
             </tr>
             <tr>
               <td>Receiver Name</td>
-              <td>{{ $email->receiver_name }}</td>
+              <td>{{ $email->targetuser->full_name() }}</td>
             </tr>
             <tr>
               <td>Receiver Email</td>
-              <td>{{ $email->receiver_email }}</td>
+              <td>{{ $email->targetuser->email }}</td>
             </tr>
             @if ($email->has_attachment)
               <tr>

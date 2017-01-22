@@ -30,14 +30,20 @@ class TargetsController extends Controller
     {
         $this->validate($request, [
             'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
             'email' => 'required|email'
         ]);
         $checkUser = TargetUser::where('first_name', $request->input('first_name'))->where('last_name', $request->input('last_name'))->where('email', $request->input('email'))->get();
+        
         if (count($checkUser) == 0)
         {
             TargetUser::create($request->all());
             ActivityLog::log('Added new Target User ("'.$request->input('email').'")', "Target User");
+            return back()->with('success', 'Target added successfully');
+        }
+        elseif ($checkUser[0]->hidden)
+        {
+            $checkUser[0]->hidden = false;
+            $checkUser[0]->save();
             return back()->with('success', 'Target added successfully');
         }
         else

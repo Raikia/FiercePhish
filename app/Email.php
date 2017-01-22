@@ -42,7 +42,7 @@ class Email extends Model
     
     public function targetuser()
     {
-        return $this->belongsTo('App\TargetUser');
+        return $this->belongsTo('App\TargetUser', 'target_user_id');
     }
     
     public function getStatus()

@@ -52,7 +52,7 @@ class AjaxController extends Controller
     {
         if ($id === null)
         {
-            return Datatables::of(TargetUser::query())->addColumn('list_of_membership', function ($user) {
+            return Datatables::of(TargetUser::where('hidden', false))->addColumn('list_of_membership', function ($user) {
                     if (count($user->lists) == 0)
                         return 'None';
                     $lists = '<ul style="margin-bottom: 0px;">';
@@ -222,13 +222,20 @@ class AjaxController extends Controller
     
     public function email_log(Request $request)
     {
-        return Datatables::of(Email::with('campaign'))->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
+        return Datatables::of(Email::with('campaign', 'targetuser'))->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
                 return $email->getStatus();
             })->editColumn('campaign.name', function($email) {
                 if ($email->campaign !== null)
                     return '<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>';
                 else
                     return 'None';
+            })->addColumn('receiver_name', function($email) {
+                $name = $email->targetuser->first_name;
+                if ($email->targetuser->last_name != '')
+                    $name .= ' ' . $email->targetuser->last_name;
+                return $name;
+            })->addColumn('receiver_email', function($email) {
+                return $email->targetuser->email;
             })->make(true);
     }
     

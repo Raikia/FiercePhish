@@ -23,4 +23,12 @@ class TargetUser extends Model
     {
         return $this->hasMany('App\Email');
     }
+    
+    public function full_name()
+    {
+        $str = $this->first_name;
+        if ($this->last_name !== '')
+            $str .= ' '.$this->last_name;
+        return $str;
+    }
 }

@@ -72,6 +72,12 @@ class ImportTargets implements ShouldQueue
                 }
                 catch (\Illuminate\Database\QueryException $e)
                 {
+                    $t = TargetUser::where('first_name', $parts[0])->where('last_name', $parts[1])->where('email', $parts[2])->first();
+                    if ($t !== null && $t->hidden)
+                    {
+                        $t->hidden = false;
+                        $t->save();
+                    }
                 }
                 ++$processed;
                 $new_progress = round(($processed/$total)*100);
