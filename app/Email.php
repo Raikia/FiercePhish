@@ -6,6 +6,7 @@ use App\Jobs\SendEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use App\LogAggregate;
+use Carbon\Carbon;
 
 class Email extends Model
 {
@@ -18,8 +19,9 @@ class Email extends Model
 	const CANCELLED = 8;
 	const FAILED = 9;
 	
-    protected $fillable = ['sender_name', 'sender_email', 'receiver_name', 'receiver_email', 'subject', 'message', 'tls', 'has_attachment', 'attachment', 'status', 'uuid', 'related_logs', 'sent_time'];
+    protected $fillable = ['sender_name', 'sender_email', 'target_user_id', 'subject', 'message', 'tls', 'has_attachment', 'attachment', 'status', 'uuid', 'related_logs', 'sent_time', 'planned_time'];
     
+    protected $dates = ['sent_time', 'planned_time'];
     
     public function campaign()
     {
@@ -32,9 +34,15 @@ class Email extends Model
             $this->status = Email::PENDING_RESEND;
         else
     	   $this->status = Email::NOT_SENT;
+    	$this->planned_time = Carbon::now()->addSeconds(1);
     	$this->save();
     	$job = (new SendEmail($this))->onQueue($queue)->delay($delay);
     	dispatch($job);
+    }
+    
+    public function targetuser()
+    {
+        return $this->belongsTo('App\TargetUser');
     }
     
     public function getStatus()

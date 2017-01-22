@@ -12,6 +12,7 @@ use App\Email;
 use App\ActivityLog;
 use App\ReceivedMail;
 use App\ReceivedMailAttachment;
+use App\TargetUser;
 use \Response;
 use File;
 
@@ -151,11 +152,27 @@ class EmailController extends Controller
             }
             $redir = redirect()->action('EmailController@inbox_get');
         }
+        $target_user_query = TargetUser::query();
+        $name_parts = explode(' ', $request->input('sbt_receiver_name'), 2);
+        if (count($name_parts) == 1)
+            $target_user_query = $target_user_query->where('first_name', $name_parts[0])->where('email', $request->input('sbt_receiver_email'));
+        else
+            $target_user_query = $target_user_query->where('first_name', $name_parts[0])->where('last_name', $name_parts[1])->where('email', $request->input('sbt_receiver_email'));
+        $target_user = $target_user_query->first();
+        if ($target_user === null)
+        {
+            $target_user = new TargetUser();
+            $target_user->first_name = $name_parts[0];
+            if (count($name_parts) > 1)
+                $target_user->last_name = $name_parts[1];
+            $target_user->email = $request->input('sbt_receiver_email');
+            $target_user->hidden = true;
+            $target_user->save();
+        }
         $email_obj = new Email();
         $email_obj->sender_name = $request->input('sbt_sender_name');
         $email_obj->sender_email = $request->input('sbt_sender_email');
-        $email_obj->receiver_name = $request->input('sbt_receiver_name');
-        $email_obj->receiver_email = $request->input('sbt_receiver_email');
+        $email_obj->target_user_id = $target_user->id;
         $email_obj->subject = $request->input('sbt_subject');
         $email_obj->message = $request->input('sbt_message');
         $email_obj->tls = ($request->input('sendTLS') == 'yes');

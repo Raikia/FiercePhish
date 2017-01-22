@@ -15,7 +15,7 @@ class CreateLogAggregatesTable extends Migration
     {
         Schema::create('log_aggregates', function (Blueprint $table) {
             $table->increments('id');
-            $table->dateTime('log_time')->index();
+            $table->datetime('log_time')->index();
             $table->string('log_type')->index();
             $table->string('hash')->unique();
             $table->text('data');

@@ -18,11 +18,11 @@ class CreateEmailsTable extends Migration
             $table->integer('campaign_id')->nullable()->index();
             $table->string('sender_name')->index();
             $table->string('sender_email')->index();
-            $table->string('receiver_name')->index();
-            $table->string('receiver_email')->index();
+            $table->integer('target_user_id')->index();
             $table->string('subject')->index();
             $table->text('message');
             $table->boolean('tls');
+            $table->datetime('planned_time')->index();
             $table->datetime('sent_time')->nullable()->index();
             $table->string('uuid')->nullable()->index();
             $table->boolean('has_attachment');

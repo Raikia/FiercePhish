@@ -8,7 +8,7 @@ class LogAggregate extends Model
 {
     protected $fillable = ['log_time', 'log_type', 'data'];
     
-    
+    protected $dates = ['log_time'];
     
     public static function hash(LogAggregate $log)
     {

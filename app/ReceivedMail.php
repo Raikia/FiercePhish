@@ -12,7 +12,7 @@ class ReceivedMail extends Model
     
     protected $fillable = ['message_id', 'sender_name', 'sender_email', 'replyto_name', 'replyto_email', 'receiver_name', 'receiver_email', 'subject', 'received_date', 'message', 'seen', 'replied', 'forwarded'];
     
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'received_date'];
     
     
     public function attachments()

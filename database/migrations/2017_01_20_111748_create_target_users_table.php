@@ -18,6 +18,7 @@ class CreateTargetUsersTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email');
+            $table->boolean('hidden')->default(false)->index();
             $table->text('notes')->nullable();
             $table->unique(['first_name','last_name','email']);
             $table->timestamps();
