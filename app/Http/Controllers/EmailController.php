@@ -187,7 +187,7 @@ class EmailController extends Controller
         $email_obj->status = Email::NOT_SENT;
         $email_obj->save();
         $email_obj->send();
-        ActivityLog::log("Queued to send an email (simple send) to \"" . $email_obj->receiver_email."\"", "Email");
+        ActivityLog::log("Queued to send an email (simple send) to \"" . $email_obj->targetuser->email."\"", "Email");
         
         return $redir->with('success', 'Email queued for immediate sending!');
     }

@@ -230,10 +230,7 @@ class AjaxController extends Controller
                 else
                     return 'None';
             })->addColumn('receiver_name', function($email) {
-                $name = $email->targetuser->first_name;
-                if ($email->targetuser->last_name != '')
-                    $name .= ' ' . $email->targetuser->last_name;
-                return $name;
+                return $email->targetuser->full_name();
             })->addColumn('receiver_email', function($email) {
                 return $email->targetuser->email;
             })->make(true);

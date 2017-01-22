@@ -58,7 +58,7 @@ class SendEmail implements ShouldQueue
             {
                 Mail::send(['layouts.email_html', 'layouts.email_plaintext'], ['data' => $this->email->message], function ($message) {
                     $message->from($this->email->sender_email, $this->email->sender_name);
-                    $message->to($this->email->receiver_email, $this->email->receiver_name);
+                    $message->to($this->email->targetuser->email, $this->email->targetuser->full_name());
                     $message->subject($this->email->subject);
                     if (strstr(config('fiercephish.APP_URL'), '.') !== false)
                     {
@@ -82,11 +82,11 @@ class SendEmail implements ShouldQueue
                 echo 'Error: '.$e->getMessage()."\n";
                 if ($this->email->campaign != null)
                 {
-                    ActivityLog::log("Failed to send an email to \"".$this->email->receiver_email."\" for campaign \"".$this->email->campaign->name."\" (email ID ".$this->email->id.") (try #".$this->attempts().')', "SendEmail", true);
+                    ActivityLog::log("Failed to send an email to \"".$this->email->targetuser->email."\" for campaign \"".$this->email->campaign->name."\" (email ID ".$this->email->id.") (try #".$this->attempts().')', "SendEmail", true);
                 }
                 else
                 {
-                    ActivityLog::log("Failed to send an email (simple send) to \"".$this->email->receiver_email."\" (email ID ".$this->email->id.") (try #".$this->attempts().')', "SendEmail", true);
+                    ActivityLog::log("Failed to send an email (simple send) to \"".$this->email->targetuser->email."\" (email ID ".$this->email->id.") (try #".$this->attempts().')', "SendEmail", true);
                 }
                 if ($this->attempts() > 5)
                 {
@@ -100,11 +100,11 @@ class SendEmail implements ShouldQueue
         $this->email->status = Email::SENT;
         if ($this->email->campaign != null)
         {
-            ActivityLog::log("Sent an email to \"".$this->email->receiver_email."\" for campaign \"".$this->email->campaign->name."\" (email ID ".$this->email->id.")", "SendEmail");
+            ActivityLog::log("Sent an email to \"".$this->email->targetuser->email."\" for campaign \"".$this->email->campaign->name."\" (email ID ".$this->email->id.")", "SendEmail");
         }
         else
         {
-            ActivityLog::log("Sent an email (simple send) to \"".$this->email->receiver_email."\" (email ID ".$this->email->id.")", "SendEmail");
+            ActivityLog::log("Sent an email (simple send) to \"".$this->email->targetuser->email."\" (email ID ".$this->email->id.")", "SendEmail");
         }
         
         $this->email->save();
