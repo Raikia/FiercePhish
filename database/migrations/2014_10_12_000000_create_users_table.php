@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('email');
+            $table->string('phone_number');
             $table->string('google2fa_secret')->nullable();
             $table->string('password');
             $table->rememberToken();
