@@ -282,6 +282,9 @@ install_fiercephish()
 	if [[ $OS = "Ubuntu" ]]
 		then
 		sys_cmd "git clone https://github.com/Raikia/FiercePhish.git /var/www/fiercephish"
+		sys_cmd "pushd /var/www/fiercephish"
+		sys_cmd "git checkout laravel5.3"
+		sys_cmd "popd"
 		sys_cmd "chown -R www-data:www-data /var/www/fiercephish"
 	fi
 
