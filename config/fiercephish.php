@@ -36,6 +36,8 @@ return [
     'MAILGUN_SECRET' => env('MAILGUN_SECRET', null),
     'URI_PREFIX' => env('URI_PREFIX', null),
     'TEST_EMAIL_JOB' => env('TEST_EMAIL_JOB', false),
+    'IMAP_HOST' => env('IMAP_HOST', null),
+    'IMAP_PORT' => env('IMAP_PORT', '143'),
     'IMAP_USERNAME' => env('IMAP_USERNAME', 'fiercephish'),
     'IMAP_PASSWORD' => env('IMAP_PASSWORD', null),
     'MAIL_BCC_ALL' => env('MAIL_BCC_ALL', null),
