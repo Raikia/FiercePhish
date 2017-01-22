@@ -107,6 +107,9 @@ class CheckMail extends Command
                     ActivityLog::log("Received an email from " . $mail->sender_name . " (".$mail->sender_email.")", "CheckMail");
                 }
             }
+            imap_alerts();
+            imap_errors();
+            imap_close($imap);
         }
         else
         {
