@@ -22,7 +22,7 @@
             <div class="outlook_header">
               <img style="height: 72px; width: 72px; float: left; display: block;" src="{{ asset('images/outlook_person.png') }}" />
               <div class="outlook_metadata" style="margin-left: 100px;">
-                <div class="outlook_date">{{ $email->updated_at->format('D m/d/Y h:i a') }}</div>
+                <div class="outlook_date">{{ \App\Libraries\DateHelper::format($email->sent_time, 'D m/d/Y h:i a') }}</div>
                 <div class="outlook_from">{{ $email->sender_name }} &lt;{{ $email->sender_email }}&gt;</div>
                 <div class="outlook_subject" id="outlook_subject">{{ $email->subject }}</div>
               </div>
@@ -118,15 +118,15 @@
             </tr>
             <tr>
               <td>Sent At</td>
-              <td>{{ (new \Carbon\Carbon($email->sent_time))->format('M j, Y @ g:i:s a') }}</td>
+              <td>{{ \App\Libraries\DateHelper::readable($email->sent_time) }}</td>
             </tr>
             <tr>
               <td>Created At</td>
-              <td>{{ $email->created_at->format('M j, Y @ g:i:s a') }}</td>
+              <td>{{ \App\Libraries\DateHelper::readable($email->created_at) }}</td>
             </tr>
             <tr>
               <td>Updated At</td>
-              <td>{{ $email->updated_at->format('M j, Y @ g:i:s a') }}</td>
+              <td>{{ \App\Libraries\DateHelper::readable($email->updated_at) }}</td>
             </tr>
           </tbody>
         </table>
