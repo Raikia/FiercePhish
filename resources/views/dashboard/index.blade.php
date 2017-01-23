@@ -50,7 +50,7 @@
   <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div class="tile-stats">
       <div class="icon"><i class="fa fa-user-o"></i></div>
-      <div class="count">{{ number_format(App\TargetUser::count()) }}</div>
+      <div class="count">{{ number_format(App\TargetUser::where('hidden', false)->count()) }}</div>
       <h3>Total Users</h3>
       <p>Number of target users</p>
     </div>
@@ -100,7 +100,7 @@
                 <div class="media-body" style="padding-left: 10px;">
                   <a class="title" href="{{ action('EmailController@email_log_details', ['id' => $email->id]) }}">{{ $email->receiver_name }}</a>
                   <p>Campaign: {!! ($email->campaign)?'<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>':'None' !!} </p>
-                  <p> <small>Sent: {{ $email->updated_at->format('M j, Y @ g:i:s a') }}</small>
+                  <p> <small>Sent: {{ \App\Libraries\DateHelper::readable($email->updated_at) }}</small>
                   </p>
                 </div>
               </li>

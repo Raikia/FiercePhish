@@ -100,9 +100,11 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::get('ajax/emails/template/{id?}', 'AjaxController@get_emailtemplate_info');
 	Route::get('ajax/emails/check/{command?}/{domain?}', 'AjaxController@email_check_commands');
 	Route::post('ajax/email/log', 'AjaxController@email_log');
+	//Route::get('ajax/email/log', 'AjaxController@email_log');
 	Route::get('ajax/log/{id?}', 'AjaxController@get_activitylog');
 	Route::get('ajax/jobs', 'AjaxController@get_jobs');
 	Route::post('ajax/campaign/{id}', 'AjaxController@campaign_emails_get');
+	Route::get('ajax/campaign/{id}', 'AjaxController@campaign_emails_get');
 	Route::get('ajax/inbox/new', 'AjaxController@get_num_new_messages');
 	Route::get('ajax/inbox/delete/{id?}', 'AjaxController@delete_inbox_message');
 	Route::get('ajax/inbox/{id?}', 'AjaxController@get_inbox_messages');

@@ -193,7 +193,7 @@ class AjaxController extends Controller
                               <span class="image"><i class="fa fa-'.$j->icon.'"></i></span>
                               <span>
                                 <span style="margin-left: 5px;">'.$j->name.'</span>
-                                <span class="time">'.\Carbon\Carbon::createFromTimeStamp(strtotime($j->created_at))->diffForHumans().'</span>
+                                <span class="time">'.\App\Libraries\DateHelper::relative($j->created_at).'</span>
                               </span>
                               <span class="message">
                                '.$desc.'
@@ -214,7 +214,7 @@ class AjaxController extends Controller
     
     public function campaign_emails_get(Request $request, $id)
     {
-        return Datatables::of(Campaign::findOrFail($id)->emails())->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
+        return Datatables::of(Campaign::findorfail($id)->emails()->with('targetuser'))->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
                 return $email->getStatus();
             })->make(true);
     }
@@ -233,6 +233,8 @@ class AjaxController extends Controller
                 return $email->targetuser->full_name();
             })->addColumn('receiver_email', function($email) {
                 return $email->targetuser->email;
+            })->editColumn('sent_time', function($email) {
+                return \App\Libraries\DateHelper::print($email->sent_time);
             })->make(true);
     }
     

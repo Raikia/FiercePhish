@@ -126,12 +126,14 @@
         type: "POST"
       },
       columns: [
-        { data: 'receiver_name', name: 'receiver_name'},
-        { data: 'receiver_email', name: 'receiver_email'},
+        //{ data: 'receiver_name', name: 'receiver_name'},
+        //{ data: 'receiver_email', name: 'receiver_email'},
+        { data: 'targetuser.first_name', name: 'targetuser.first_name'},
+        { data: 'targetuser.email', name: 'targetuser.email'},
         { data: 'uuid', name: 'uuid'},
         { data: 'status', name: 'status'},
         { data: 'sent_time', name: 'sent_time'},
-        { data: 'updated_at', name: 'updated_at'}
+        { data: 'updated_at', name: 'emails.updated_at'}
       ]
     });
     
