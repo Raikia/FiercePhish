@@ -25,11 +25,11 @@
                         </tr>
                         <tr>
                             <td><b>Created at</b></td>
-                            <td>{{ $targetList->created_at }}</td>
+                            <td>{{ \App\Libraries\DateHelper::readable($targetList->created_at) }}</td>
                         </tr>
                         <tr>
                             <td><b>Updated at</b></td>
-                            <td>{{ $targetList->updated_at }}</td>
+                            <td>{{ \App\Libraries\DateHelper::readable($targetList->updated_at) }}</td>
                         </tr>
                         <tr>
                             <td><b>Notes</b></td>

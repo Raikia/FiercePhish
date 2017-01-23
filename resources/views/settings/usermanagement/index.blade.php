@@ -30,7 +30,7 @@
                               <td><a href="{{ action('SettingsController@get_editprofile', ['id' => $user->id ]) }}">{{ str_limit($user->name,50) }}</a></td>
                               <td>{{ str_limit($user->email,50) }}</td>
                               <td>{{ str_limit($user->phone_number,50) }}</td>
-                              <td>{{ $user->created_at }}</td>
+                              <td>{{ \App\Libraries\DateHelper::readable($user->created_at) }}</td>
                           </tr>
                       @endforeach
                   @else
