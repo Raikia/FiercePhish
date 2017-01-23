@@ -73,8 +73,8 @@
         type: "POST"
       },
       columns: [
-        { data: 'receiver_name', name: 'receiver_name'},
-        { data: 'receiver_email', name: 'receiver_email'},
+        { data: 'targetuser.full_name', name: 'targetuser.first_name'},
+        { data: 'targetuser.email', name: 'targetuser.email'},
         { data: 'sender_name', name: 'sender_name'},
         { data: 'sender_email', name: 'sender_email'},
         { data: 'subject', name: 'subject'},
@@ -82,7 +82,7 @@
         { data: 'status', name: 'status'},
         { data: 'campaign.name', name: 'campaign.name'},
         { data: 'sent_time', name: 'sent_time'},
-        { data: 'updated_at', name: 'updated_at'}
+        { data: 'created_at', name: 'emails.created_at'}
       ],
       order: [[ 8, 'desc' ]]
     });

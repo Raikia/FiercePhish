@@ -37,4 +37,11 @@ class DateHelper
     {
         return $date===null || property_exists($date, 'year') || $date->year < 5;
     }
+    
+    public static function getOffset($tz)
+    {
+        $target_time_zone = new \DateTimeZone($tz);
+        $date_time = new \DateTime('now', $target_time_zone);
+        return $date_time->format('P');
+    }
 }
