@@ -51,17 +51,6 @@
   });
   
   
-  /*var dt = $("#mainEmailLogTable").DataTable({
-      serverSide: true,
-      processing: true,
-      ajax: {
-        url: "{{ action('AjaxController@email_log') }}",
-        type: "POST"
-      },
-      columnDefs: [{ targets: 'no-sort', orderable: false}],
-      order: [[ 9, "desc" ]]
-    });
-    */
   var dt = $(".datatable").DataTable({
       language: {
         "emptyTable": "No Emails Found"

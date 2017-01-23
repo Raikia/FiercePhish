@@ -126,8 +126,6 @@
         type: "POST"
       },
       columns: [
-        //{ data: 'receiver_name', name: 'receiver_name'},
-        //{ data: 'receiver_email', name: 'receiver_email'},
         { data: 'targetuser.full_name', name: 'targetuser.first_name'},
         { data: 'targetuser.email', name: 'targetuser.email'},
         { data: 'uuid', name: 'uuid'},
