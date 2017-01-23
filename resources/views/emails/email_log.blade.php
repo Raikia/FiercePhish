@@ -28,8 +28,8 @@
                 <th>UUID</th>
                 <th>Status</th>
                 <th class="no-sort">Campaign</th>
+                <th>Planned Send At</th>
                 <th>Sent At</th>
-                <th>Created At</th>
               </tr>
             </thead>
             <tbody>
@@ -81,8 +81,8 @@
         { data: 'uuid', name: 'uuid'},
         { data: 'status', name: 'status'},
         { data: 'campaign.name', name: 'campaign.name'},
+        { data: 'planned_time', name: 'planned_time'},
         { data: 'sent_time', name: 'sent_time'},
-        { data: 'created_at', name: 'emails.created_at'}
       ],
       order: [[ 8, 'desc' ]]
     });

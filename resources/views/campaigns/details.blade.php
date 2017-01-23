@@ -79,8 +79,8 @@
                             <th>Receiver Email</th>
                             <th>UUID</th>
                             <th>Status</th>
+                            <th>Planned Send At</th>
                             <th>Sent At</th>
-                            <th>Last Updated</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -128,12 +128,12 @@
       columns: [
         //{ data: 'receiver_name', name: 'receiver_name'},
         //{ data: 'receiver_email', name: 'receiver_email'},
-        { data: 'targetuser.first_name', name: 'targetuser.first_name'},
+        { data: 'targetuser.full_name', name: 'targetuser.first_name'},
         { data: 'targetuser.email', name: 'targetuser.email'},
         { data: 'uuid', name: 'uuid'},
         { data: 'status', name: 'status'},
+        { data: 'planned_time', name: 'planned_time'},
         { data: 'sent_time', name: 'sent_time'},
-        { data: 'updated_at', name: 'emails.updated_at'}
       ]
     });
     

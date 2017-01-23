@@ -35,8 +35,8 @@
                   <td>{{ $camp->description }}</td>
                   <td>{{ $camp->getStatus() }}</td>
                   <td>{{ number_format($camp->emails()->where('status', \App\Email::SENT)->count()) }} / {{ number_format($camp->emails()->count()) }} sent</td>
-                  <td>{{ $camp->created_at->format('M j, Y @ g:i:s a') }}</td>
-                  <td>{{ $camp->updated_at->format('M j, Y @ g:i:s a') }}</td>
+                  <td>{{ \App\Libraries\DateHelper::readable($camp->created_at) }}</td>
+                  <td>{{ \App\Libraries\DateHelper::readable($camp->updated_at) }}</td>
                 </tr>
               @endforeach
             </tbody>

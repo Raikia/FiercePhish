@@ -216,6 +216,20 @@ class AjaxController extends Controller
     {
         return Datatables::of(Campaign::findorfail($id)->emails()->with('targetuser'))->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
                 return $email->getStatus();
+            })->editColumn('targetuser.full_name', function ($email) {
+                return $email->targetuser->full_name();
+            })->editColumn('sent_time', function ($email) {
+                return \App\Libraries\DateHelper::print($email->sent_time);
+            })->editColumn('planned_time', function($email) {
+                return \App\Libraries\DateHelper::print($email->planned_time);
+            })->filterColumn('sent_time', function($query, $keyword) {
+                $query->whereRaw('CAST(CONVERT_TZ(sent_time, "+00:00", "'.\App\Libraries\DateHelper::getOffset(config('fiercephish.APP_TIMEZONE')).'") as char) like ?', ["%{$keyword}%"]);
+            })->filterColumn('planned_time', function($query, $keyword) {
+                $query->whereRaw('CAST(CONVERT_TZ(planned_time, "+00:00", "'.\App\Libraries\DateHelper::getOffset(config('fiercephish.APP_TIMEZONE')).'") as char) like ?', ["%{$keyword}%"]);
+            })->filterColumn('targetuser.email', function ($query, $keyword) {
+                $query->whereRaw("(select count(1) from target_users where target_users.id = target_user_id and target_users.email like ?) >= 1", ["%{$keyword}%"]);
+            })->filterColumn('targetuser.first_name', function ($query, $keyword) {
+                $query->whereRaw("(select count(1) from target_users where target_users.id = target_user_id and CONCAT(target_users.first_name,' ',target_users.last_name) like ?) >= 1", ["%{$keyword}%"]);
             })->make(true);
     }
     
@@ -223,27 +237,29 @@ class AjaxController extends Controller
     public function email_log(Request $request)
     {
         return Datatables::of(Email::with('campaign', 'targetuser'))->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
-            return $email->getStatus();
-        })->editColumn('campaign.name', function($email) {
-            if ($email->campaign !== null)
-                return '<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>';
-            else
-                return 'None';
-        })->editColumn('targetuser.full_name', function ($email) {
-            return $email->targetuser->full_name();
-        })->editColumn('sent_time', function ($email) {
-            return \App\Libraries\DateHelper::print($email->sent_time);
-        })->editColumn('created_at', function($email) {
-            return \App\Libraries\DateHelper::print($email->created_at);
-        })->filterColumn('sent_time', function($query, $keyword) {
-            $query->whereRaw('CAST(CONVERT_TZ(sent_time, "+00:00", "'.\App\Libraries\DateHelper::getOffset(config('fiercephish.APP_TIMEZONE')).'") as char) like ?', ["%{$keyword}%"]);
-        })->filterColumn('created_at', function($query, $keyword) {
-            $query->whereRaw('CAST(CONVERT_TZ(created_at, "+00:00", "'.\App\Libraries\DateHelper::getOffset(config('fiercephish.APP_TIMEZONE')).'") as char) like ?', ["%{$keyword}%"]);
-        })->filterColumn('targetuser.full_name', function ($query, $keyword) {
-            $query->whereRaw("(select count(1) from target_users where target_users.id = target_user_id and CONCAT(target_users.first_name,' ',target_users.last_name) like ?) >= 1", ["%{$keyword}%"]);
-        })->filterColumn('campaign.name', function ($query, $keyword) {
-            $query->whereRaw("(select count(1) from campaigns where campaigns.id = campaign_id and campaigns.name like ?) >= 1", ["%{$keyword}%"]);
-        })->orderColumn('targetuser.full_name', 'target_users.first_name $1')->make(true);
+                return $email->getStatus();
+            })->editColumn('campaign.name', function($email) {
+                if ($email->campaign !== null)
+                    return '<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>';
+                else
+                    return 'None';
+            })->editColumn('targetuser.full_name', function ($email) {
+                return $email->targetuser->full_name();
+            })->editColumn('sent_time', function ($email) {
+                return \App\Libraries\DateHelper::print($email->sent_time);
+            })->editColumn('planned_time', function($email) {
+                return \App\Libraries\DateHelper::print($email->planned_time);
+            })->filterColumn('sent_time', function($query, $keyword) {
+                $query->whereRaw('CAST(CONVERT_TZ(sent_time, "+00:00", "'.\App\Libraries\DateHelper::getOffset(config('fiercephish.APP_TIMEZONE')).'") as char) like ?', ["%{$keyword}%"]);
+            })->filterColumn('planned_time', function($query, $keyword) {
+                $query->whereRaw('CAST(CONVERT_TZ(planned_time, "+00:00", "'.\App\Libraries\DateHelper::getOffset(config('fiercephish.APP_TIMEZONE')).'") as char) like ?', ["%{$keyword}%"]);
+            })->filterColumn('targetuser.first_name', function ($query, $keyword) {
+                $query->whereRaw("(select count(1) from target_users where target_users.id = target_user_id and CONCAT(target_users.first_name,' ',target_users.last_name) like ?) >= 1", ["%{$keyword}%"]);
+            })->filterColumn('targetuser.email', function ($query, $keyword) {
+                $query->whereRaw("(select count(1) from target_users where target_users.id = target_user_id and target_users.email like ?) >= 1", ["%{$keyword}%"]);
+            })->filterColumn('campaign.name', function ($query, $keyword) {
+                $query->whereRaw("(select count(1) from campaigns where campaigns.id = campaign_id and campaigns.name like ?) >= 1", ["%{$keyword}%"]);
+            })->make(true);
     }
     
     
