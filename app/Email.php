@@ -28,13 +28,15 @@ class Email extends Model
     	return $this->belongsTo('App\Campaign');
     }
     
-    public function send($delay=1, $queue="high")
+    public function send($delay=-1, $queue="high")
     {
+        if ($delay === -1)
+            $delay = \App\Libraries\DateHelper::now()->addSeconds(1);
         if ($this->status == Email::SENT)
             $this->status = Email::PENDING_RESEND;
         else
     	   $this->status = Email::NOT_SENT;
-    	$this->planned_time = Carbon::now()->addSeconds(1);
+    	$this->planned_time = $delay;
     	$this->save();
     	$job = (new SendEmail($this))->onQueue($queue)->delay($delay);
     	dispatch($job);

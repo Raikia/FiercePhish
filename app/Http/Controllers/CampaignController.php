@@ -12,6 +12,7 @@ use App\Email;
 use App\ActivityLog;
 use App\ProcessingJob;
 use App\Jobs\StartCampaign;
+use Carbon\Carbon;
 
 class CampaignController extends Controller
 {
@@ -56,9 +57,10 @@ class CampaignController extends Controller
         $campaign->target_list_id = $request->input('target_list');
         $campaign->email_template_id = $request->input('email_template');
         $campaign->save();
-        $start_date = $request->input('starting_date') ?: date('m/d/Y');
-        $start_time = $request->input('starting_time') ?: date('g:ia');
+        $start_date = $request->input('starting_date') ?: \App\Libraries\DateHelper::now()->format('m/d/Y');
+        $start_time = $request->input('starting_time') ?: \App\Libraries\DateHelper::now()->format('g:ia');
         $seconds_offset_start = max(strtotime($start_date . " " . $start_time) - time(), 1);
+        $start_date = (new Carbon($start_date . ' ' . $start_time, config('fiercephish.APP_TIMEZONE')))->addSeconds(1);
         //echo "STARTING OFFSET: " . $seconds_offset_start . "<br />";
         $send_num_emails = min((int)$request->input('send_num'),1000);
         $send_every_minutes = min((int)$request->input('send_every_x_minutes'), 1000);
@@ -69,7 +71,7 @@ class CampaignController extends Controller
         
         $pjob = new ProcessingJob(['name' => 'Create campaign', 'description' => 'Campaign: "' . $campaign->name.'"', 'icon' => 'play']);
         $pjob->save();
-        $job = (new StartCampaign($pjob, $campaign, $list, $template, $send_num_emails, $send_every_minutes, $seconds_offset_start))->onQueue('high')->delay(1);
+        $job = (new StartCampaign($pjob, $campaign, $list, $template, $send_num_emails, $send_every_minutes, $start_date))->onQueue('high')->delay(1);
         $this->dispatch($job);
         ActivityLog::log("Created a create campaign job named \"".$campaign->name."\" to queue ".$list->users()->count()." emails for sending", "Campaign");
         return redirect()->action('CampaignController@campaign_details', ['id' => $campaign->id])->with('success', 'Job to create campaign has been launched successfully');

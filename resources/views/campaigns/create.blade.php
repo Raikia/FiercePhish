@@ -58,14 +58,6 @@
                   @endif
                 </div>
               </div>
-              <!--<div class="ln_solid"></div>
-              <div class="form-group">
-                <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
-                  <button type="submit" class="btn btn-primary">Cancel</button>
-                  <button type="submit" class="btn btn-success">Submit</button>
-                </div>
-              </div>
-                -->
             </form>
       </div>
     </div>
@@ -112,20 +104,20 @@
               <div class="form-group date">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12">Starting date</label>
                 <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" class="form-control" id="starting_date_raw" placeholder="Today" value="{{ date('m/d/Y') }}" />
+                  <input type="text" class="form-control" id="starting_date_raw" placeholder="Today" value="{{ \App\Libraries\DateHelper::now()->format('m/d/Y') }}" />
                 </div>
               </div>
               <div class="form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12">Starting time</label>
                 <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" class="form-control" id="starting_time_raw" placeholder="Now" value="{{ date('g:ia') }}" />
+                  <input type="text" class="form-control" id="starting_time_raw" placeholder="Now" value="{{ \App\Libraries\DateHelper::now()->format('g:ia') }}" />
                 </div>
               </div>
               <div class="form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12">&nbsp;</label>
                 <div class="col-md-9 col-sm-9 col-xs-12">
                   <p>
-                  Current server date and time is {{ date('m/d/Y - g:ia') }}
+                  Current server date and time is {{ \App\Libraries\DateHelper::now()->format('m/d/Y - g:ia') }}
                   </p>
                 </div>
               </div>
@@ -177,7 +169,7 @@
   });
   
   $("#starting_date_raw").datepicker({
-    startDate: "{{ date('m/d/Y') }}",
+    startDate: "{{ \App\Libraries\DateHelper::now()->format('m/d/Y') }}",
     todayHighlight: true,
     autoclose: true,
     todayBtn: "linked",

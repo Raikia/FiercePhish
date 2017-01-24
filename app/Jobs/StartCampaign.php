@@ -20,14 +20,14 @@ class StartCampaign implements ShouldQueue
     protected $template;
     protected $send_num_emails;
     protected $send_every_minutes;
-    protected $seconds_offset_start;
+    protected $start_date;
     
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($process_job, $campaign, $list, $template, $send_num_emails, $send_every_minutes, $seconds_offset_start)
+    public function __construct($process_job, $campaign, $list, $template, $send_num_emails, $send_every_minutes, $start_date)
     {
         $this->process_job = $process_job;
         $this->campaign = $campaign;
@@ -35,7 +35,7 @@ class StartCampaign implements ShouldQueue
         $this->template = $template;
         $this->send_num_emails = $send_num_emails;
         $this->send_every_minutes = $send_every_minutes;
-        $this->seconds_offset_start = $seconds_offset_start;
+        $this->start_date = $start_date;
     }
 
     /**
@@ -51,30 +51,30 @@ class StartCampaign implements ShouldQueue
         $template = $this->template;
         $send_num_emails = $this->send_num_emails;
         $send_every_minutes = $this->send_every_minutes;
-        $seconds_offset_start = $this->seconds_offset_start;
+        $start_date = $this->start_date;
         $send_all_immediately = false;
         if ($send_num_emails < 0)
             $send_all_immediately = true;
-        $counter = 0;
         $original_send_num_emails = $send_num_emails;
         $numUsers = $list->users()->count();
         $numSent = 0;
-        $list->users()->chunk(1000, function($users) use($send_all_immediately, &$send_num_emails, $original_send_num_emails, &$counter, &$numSent, $pjob, $campaign, $template, $seconds_offset_start, $send_every_minutes, $numUsers) {
+        $list->users()->chunk(1000, function($users) use($send_all_immediately, &$send_num_emails, $original_send_num_emails, &$counter, &$numSent, $pjob, $campaign, $template, &$start_date, $send_every_minutes, $numUsers) {
+            $send_num_emails = $original_send_num_emails;
             foreach ($users as $user)
             {
                 $new_email = $template->craft_email($campaign, $user);
                 if ($send_all_immediately)
                 {
-                    $new_email->send($seconds_offset_start, 'medium');
+                    $new_email->send($start_date, 'medium');
                 }
                 else 
                 {
-                    $new_email->send($seconds_offset_start + ($counter * ($send_every_minutes*60)), 'low');
+                    $new_email->send($start_date, 'low');
                     --$send_num_emails;
                     if ($send_num_emails == 0)
                     {
+                        $start_date = $start_date->addMinutes($send_every_minutes);
                         $send_num_emails = $original_send_num_emails;
-                        ++$counter;
                     }
                 }
                 ++$numSent;

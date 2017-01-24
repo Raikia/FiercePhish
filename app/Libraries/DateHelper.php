@@ -44,4 +44,9 @@ class DateHelper
         $date_time = new \DateTime('now', $target_time_zone);
         return $date_time->format('P');
     }
+    
+    public static function now()
+    {
+        return Carbon::now()->timezone(config('fiercephish.APP_TIMEZONE'));
+    }
 }
