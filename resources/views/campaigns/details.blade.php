@@ -102,7 +102,8 @@
     /* global bootbox */
     $("#cancel_campaign_btn").click(function() {
         bootbox.confirm("Are you sure you want to cancel this campaign?", function(result) {
-            $("#cancelForm").submit();
+            if (result)
+                $("#cancelForm").submit();
         });
     });
     
