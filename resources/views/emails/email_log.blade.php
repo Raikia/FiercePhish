@@ -73,7 +73,7 @@
         { data: 'planned_time', name: 'planned_time'},
         { data: 'sent_time', name: 'sent_time'},
       ],
-      order: [[ 8, 'desc' ]]
+      order: [[ 9, 'desc' ]]
     });
 </script>
 @endsection
