@@ -59,7 +59,6 @@ class StartCampaign implements ShouldQueue
         $numUsers = $list->users()->count();
         $numSent = 0;
         $list->users()->chunk(1000, function($users) use($send_all_immediately, &$send_num_emails, $original_send_num_emails, &$counter, &$numSent, $pjob, $campaign, $template, &$start_date, $send_every_minutes, $numUsers) {
-            $send_num_emails = $original_send_num_emails;
             foreach ($users as $user)
             {
                 $new_email = $template->craft_email($campaign, $user);
