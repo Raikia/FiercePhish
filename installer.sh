@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-### Colors for output ###
+### Colors for output
 RESTORE='\033[0m'
 
 RED='\033[00;31m'
@@ -20,6 +20,8 @@ LPURPLE='\033[01;35m'
 LCYAN='\033[01;36m'
 WHITE='\033[01;37m'
 
+### Global variables
+
 OS=""
 OS_VERSION=""
 VERBOSE=false
@@ -30,157 +32,144 @@ FP_INSTRUCTIONS=()
 MAIL_INSTRUCTIONS=()
 DNS_INSTRUCTIONS=()
 
-### Functions ###
-
-random_str()
-{
-	cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1
-}
-
-get_input()
-{
-	local default=$1
-	if [[ $0 = "bash" ]]
-		then
-		echo $default
-	else
-		local input_answer=""
-		read input_answer
-		echo $input_answer
-	fi
-}
-
-prompt()
-{
-	local prompt=$1
-	if [[ $0 != "bash" ]]
-		then
-		echo -ne "   ${LYELLOW}[>] ${prompt} > ${RESTORE}"
-	fi
-}
-
-sys_cmd()
-{
-	com=$1
-	if [[ $VERBOSE = true ]]
-		then
-		notice "Running ${com}..."
-		eval "${com}"
-	else
-		#notice "Running ${com} > /dev/null 2>&1"
-		eval "${com} > /dev/null 2>&1"
-	fi
-}
-
-info()
-{
-	local prompt=$1
-	echo -e "   ${YELLOW}[~] ${GREEN}${prompt}${RESTORE}"
-}
+read -d '' CONFIG_FILE_CONTENTS << EOF
+#################################
+### FiercePhish Configuration ###
+###      By Chris King        ###
+###        @raikiasec         ###
+#################################
 
 
-error()
-{
-	local prompt=$1
-	echo -e "   ${LRED}[!] ${prompt}${RESTORE}"
-}
-
-notice()
-{
-	local prompt=$1
-	echo -e "   ${YELLOW}[~] ${WHITE}${prompt}${RESTORE}"
-}
+## Set this to true once you are done configuring everything
+##    Default: false
+##    Recommended: true
+CONFIGURED=false
 
 
-detect_os()
-{
-	info "Detecting OS distribution..."
-	if [[ -f /etc/lsb-release ]]
-		then
-		. /etc/lsb-release
-		OS=${DISTRIB_ID}
-		OS_VERSION=${DISTRIB_RELEASE}
-		if [[ $OS = 'Ubuntu' ]]
-			then
-			if [[ $OS_VERSION = "14.04" || $OS_VERSION = "16.04" || $OS_VERSION = "16.10" ]]
-				then
-				notice "Found that you are running ${LYELLOW}${OS} ${OS_VERSION}${WHITE}! This is a supported operating system!"
-			else
-				error "You are running ${LYELLOW}${OS} ${OS_VERSION}${LRED}. This is not supported by this installer. There's really no reason to not update Ubuntu"
-				exit 1
-			fi
-		else
-			error "You are running ${LYELLOW}${OS} ${OS_VERSION}${RESTORE}. This isn't supported by the installer yet"
-			exit 1;
-		fi
-	else
-		error "Could not identify what OS is running! This installer works on Ubuntu only right now"
-		exit 1
-	fi
-}
 
-menu()
-{
-	echo -e ""
-	echo -e "${CYAN}---------------- ${LYELLOW}FiercePhish Installer${CYAN} ---------------"
-	echo -e "|                                                    |"
-	echo -e "|  This installer automatically install FiercePhish  |"
-	echo -e "|  and all the other services needed. It is designed |"
-	echo -e "|  to work with Ubuntu, but it will attempt to       |"
-	echo -e "|  detect what distro you are running.               |"
-	echo -e "|                                                    |"
-	echo -e "------------------------------------------------------${RESTORE}"
-	echo -e ""
-	if [[ $0 != "bash" ]]
-		then
-		echo -e "    ${LYELLOW}Options:${RESTORE} "
-		echo -e "        1. ${WHITE}Install FiercePhish + SMTP + IMAP (${LRED}recommended${WHITE})${RESTORE}"
-		echo -e "        2. ${WHITE}Install FiercePhish only${RESTORE}"
-		echo -e "        3. ${WHITE}Install SMTP + IMAP only${RESTORE}"
-	fi
-	echo -e ""
-	selection=""
-	while [ true ]
-	do
-		prompt "Selection [1-3]"
-		selection=$(get_input "1")
-		if [ "$selection" -eq "$selection" ] 2> /dev/null
-			then
-			if [[ $selection -lt 4 && $selection -gt 0 ]]
-				then
-				break
-			fi
-		fi
-		error "Unknown selection!  Choose again!"
-	done
-	echo -e ""
-}
+############ General Settings ############
+
+## Set this to true if you want to see all output of all installation actions
+##    Default: false
+##    Recommended: false
+VERBOSE=false
+
+## Do you want HTTPS to be configured (using LetsEncrypt) for SMTP and Web?
+## YOU MUST HAVE A VALID DOMAIN NAME FOR THIS TO WORK!
+##     Default: false
+##     Recommended: false
+SSL_ENABLE=false
+
+
+
+############ Web Settings ############
+
+## Specify the port you'd like Apache to run on
+##    Default: 80
+##    Recommended: 80
+APACHE_PORT=80
+
+## Set this to what the website domain is (ie: example.com). No "http://"
+## If you don't have a domain, use the publicly facing IP address (or 127.0.0.1)
+## This will be what you use to browse to FiercePhish in your browser
+##     Default: 127.0.0.1
+##     Recommended: <domain or 127.0.0.1>
+WEBSITE_DOMAIN="127.0.0.1"
+
+
+
+############ SMTP Settings ############
+
+## Set this to the domain that you will be sending email from. If you don't
+## have a domain, use "localhost". Otherwise, use the domain (ie: example.com) 
+## without "http://"
+##     Default: localhost
+##     Recommended: <domain or localhost>
+EMAIL_DOMAIN="localhost"
+
+
+
+############ Account Settings ############ 
+
+## Set this to what you want the MySQL root password to be. If MySQL is already
+## installed, make sure this is the valid root password for it.
+##     Default: mysqlPasswd123
+##     Recommended: <something else>
+MYSQL_ROOT_PASSWD="mysqlPasswd123"
+
+## First FiercePhish user's username
+##     Default: admin
+##     Recommended: admin
+ADMIN_USERNAME="admin"
+
+## First FiercePhish user's email
+##     Default: root@localhost
+##     Recommended: <your email address>
+ADMIN_EMAIL="root@localhost"
+
+## First FiercePhish user's password
+##     Default: defaultpass
+##     Recommended: <something else>
+ADMIN_PASSWORD="defaultpass"
+
+
+
+############ Advanced Settings ############
+
+## If you have limited RAM (less than 600 MB) and no swap space, set this to true
+## to automatically create 2GB swap space.  This is useful if you are running the
+## installer on a brand new VPS that has little RAM.
+##     Default: false
+##     Recommended: false
+CREATE_SWAPSPACE=false
+
+
+
+EOF
+
+### Main function
 
 main()
 {
-	menu
-	if [[ $0 = "bash" ]]
-		then
-		echo -e "${LRED}  !!! This is the quick install method and will install FiercePhish + SMTP + IMAP !!!"
-		echo -e "  !!!       You have 10 seconds to CTRL+C if you do not want this to happen     !!!${RESTORE}"
-		sleep 10
-	fi
-	detect_os
-	if [[ $selection -eq 1 ]]
-		then
-		install_fiercephish
-		install_smtp_imap
-	elif [[ $selection -eq 2 ]]
-		then
-		install_fiercephish
-	elif [[ $selection -eq 3 ]]
-		then
-		install_smtp_imap
-	else
-		error "Unknown action selected"
-		exit 1
-	fi
-	notice "Installation is complete"
+    show_header
+    if [ $EUID != 0 ]
+    	then
+    	error "You must run the installation script as root"
+    	exit 1
+    fi
+    check_os
+    get_config_vars
+    prompt_choice
+    if [[ $INPUT_SELECTION = 1 ]]
+    	then
+    	validate_vars_general
+    	validate_vars_http
+    	validate_vars_smtp
+    elif [[ $INPUT_SELECTION = 2 ]]
+    	then
+    	validate_vars_general
+    	validate_vars_http
+    elif [[ $INPUT_SELECTION = 3 ]]
+    	then
+    	validate_vars_general
+    	validate_vars_smtp
+    else
+    	error "Unknown selection!"
+    	exit 1
+    fi
+    review_vars
+    if [[ $INPUT_SELECTION = 1 ]]
+    	then
+    	install_fiercephish
+    	install_smtp_imap
+    elif [[ $INPUT_SELECTION = 2 ]]
+    	then
+    	install_fiercephish
+    elif [[ $INPUT_SELECTION = 3 ]]
+    	then
+    	install_smtp_imap
+    fi
+    notice "Installation is complete"
 	info "Perform the following actions to finish up:"
 	echo -e ""
 	if [[ ${#FP_INSTRUCTIONS[@]} -ne 0 ]]
@@ -210,7 +199,369 @@ main()
 		done
 		echo -e ""
 	fi
+	if [[ $0 = "bash" ]]
+		then
+		rm ~/fiercephish.config
+	fi
 }
+
+
+
+
+### Action functions
+
+show_header()
+{
+    echo -e ""
+    echo -e "${CYAN}#################################################################"
+    echo -e "####################  ${LYELLOW}FiercePhish Installer${CYAN}  ####################"
+    echo -e "####################      By ${GREEN}Chris King${CYAN}      ####################"
+    echo -e "####################        ${GREEN}@raikiasec${CYAN}       ####################"
+    echo -e "#################################################################${RESTORE}"
+    echo -e ""
+    echo -e ""
+    notice "This installer automatically installs FiercePhish and all the other services needed."
+    notice "It is designed to work with Ubuntu and currently only works for Ubuntu 16.04 and Ubuntu 16.10"
+    echo -e ""
+}
+
+check_os()
+{
+	info "Detecting OS distribution..."
+	if [[ -f /etc/lsb-release ]]
+		then
+		. /etc/lsb-release
+		OS=${DISTRIB_ID}
+		OS_VERSION=${DISTRIB_RELEASE}
+		if [[ $OS = 'Ubuntu' ]]
+			then
+			if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" ]]
+				then
+				notice "Found that you are running ${LYELLOW}${OS} ${OS_VERSION}${WHITE}! This is a supported operating system!"
+			elif [[ $OS_VERSION = "14.04" ]]
+				then
+				error "You are running ${LYELLOW}${OS} ${OS_VERSION}${LRED}. As of FiercePhish v1.2.0, this OS version is not officially supported."
+				error "You can read how to get FiercePhish working with ${LYELLOW}${OS} ${OS_VERSION}${LRED} here: "
+				error "     https://github.com/Raikia/FiercePhish/wiki/Ubuntu-14.04-Installation-Guide"
+				exit 1
+			else
+				error "You are running ${LYELLOW}${OS} ${OS_VERSION}${LRED}. This is not supported by this installer. There's really no reason to not update Ubuntu"
+				exit 1
+			fi
+		else
+			error "You are running ${LYELLOW}${OS} ${OS_VERSION}${RESTORE}. This isn't supported by the installer yet"
+			exit 1;
+		fi
+	else
+		error "Could not identify what OS is running! This installer works on Ubuntu only right now"
+		exit 1
+	fi
+	echo -e ""
+}
+
+get_config_vars()
+{
+	if [[ $0 = "bash" ]]
+		then
+		if [[ ! -f ~/fiercephish.config ]]
+			then
+			error "Because you are running this as a remote pipe execution, you need to create a configuration file for all the information that is required."
+			notice "Please edit ~/fiercephish.config with the necessary information and rerun this command"
+			echo "$CONFIG_FILE_CONTENTS" > ~/fiercephish.config
+			exit 1
+		else
+			source ~/fiercephish.config
+			info "Found the fiercephish.config configuration file!"
+			if [[ -z $CONFIGURED || ! $CONFIGURED = "true" ]]
+				then
+				error "You must set CONFIGURED=true in the configuration file to proceed"
+				exit 1
+			fi
+		fi
+	fi
+	if [[ $1 = '-v' ]]
+		then
+		VERBOSE=true
+		notice "Verbose mode is set to ${LYELLOW}ON${RESTORE}"
+	fi
+}
+
+prompt_choice()
+{
+	if [[ $0 != "bash" ]]
+		then
+		echo -e "    ${LYELLOW}Options:${RESTORE} "
+		echo -e "        1. ${WHITE}Install FiercePhish + SMTP + IMAP (${LRED}recommended${WHITE})${RESTORE}"
+		echo -e "        2. ${WHITE}Install FiercePhish only${RESTORE}"
+		echo -e "        3. ${WHITE}Install SMTP + IMAP only${RESTORE}"
+	fi
+	echo -e ""
+	while [ true ]
+		do
+		prompt "Selection [1-3]"
+		INPUT_SELECTION=$(get_input "1")
+		if [ "$INPUT_SELECTION" -eq "$INPUT_SELECTION" ] 2> /dev/null
+			then
+			if [[ $INPUT_SELECTION -lt 4 && $INPUT_SELECTION -gt 0 ]]
+				then
+				break
+			fi
+		fi 
+		error "Unknown selection! Choose again!"
+	done 
+	if [[ $0 = "bash" ]]
+		then
+		echo -e "${LRED}  !!! This is the quick install method and will install FiercePhish + SMTP + IMAP !!!"
+		echo -e "  !!!       You have 10 seconds to CTRL+C if you do not want this to happen       !!!${RESTORE}"
+		sleep 10
+	fi
+	echo -e ""
+}
+
+validate_vars_general()
+{
+	if [[ -z $CONFIGURED || $CONFIGURED = false ]]
+		then
+		if [[ $0 = "bash" ]]
+			then
+			error "CONFIGURED variable is not set or is not \"true\". Set the variable to \"true\" to proceed"
+			exit 1
+		fi
+	fi
+	
+	if [[ -z $VERBOSE ]]
+		then
+		error "VERBOSE variable is not set.  Make sure it is \"true\" or \"false\""
+		exit 1
+	fi
+	
+	while [[ -z $SSL_ENABLE ]]
+		do
+		if [[ $0 = "bash" ]]
+			then
+			error "SSL_ENABLE is not set!  Make sure it is \"true\" or \"false\""
+			exit 1
+		else
+			prompt "Do you want HTTPS to be configured for Web and/or SMTP (${LRED}you must have a purchased domain name${LYELLOW})? [y/N]"
+			SSL_ENABLE_INPUT=$(get_input "false")
+			if [[ $SSL_ENABLE_INPUT = "" ]]
+				then
+				SSL_ENABLE=false
+			elif [[ $SSL_ENABLE_INPUT =~ ^[y|Y]$ ]]
+				then
+				SSL_ENABLE=true
+			elif [[ $SSL_ENABLE_INPUT =~ ^[n|N]$ ]]
+				then
+				SSL_ENABLE=false
+			fi
+		fi 
+	done
+	
+	
+	mem=$(free -m | awk '/^Mem:/{print $2}')
+	swap=$(free -m | awk '/^Swap:/{print $2}')
+	total=$(($mem+$swap))
+	if [[ $total -lt 600 ]]
+		then
+		error "System memory + swap is less than 600 MB (it has ${total} MB)!"
+		if [[ ! $0 = "bash" ]]
+			then
+			prompt "Do you want to create a 2GB swap space? [Y/n]"
+			CREATE_SWAPSPACE_INPUT=$(get_input "n")
+			if [[ $CREATE_SWAPSPACE_INPUT =~ ^[n|N]$ ]]
+				then
+				CREATE_SWAPSPACE="false"
+			else
+				CREATE_SWAPSPACE="true"
+			fi
+		else
+			if [[ -z $CREATE_SWAPSPACE ]]
+				then
+				error "CREATE_SWAPSPACE variable is not set or is not \"true\". Set the variable to \"true\" to proceed"
+				exit 1
+			fi
+		fi
+	fi
+	
+	if [[ $CREATE_SWAPSPACE = "true" ]]
+		then
+		notice "Creating a 2GB swapspace at /swapfile"
+		sys_cmd "fallocate -l 2G /swapfile"
+		sys_cmd "chmod 600 /swapfile"
+		sys_cmd "mkswap /swapfile"
+		sys_cmd "swapon /swapfile"
+		echo "/swapfile none swap sw 0 0" >> /etc/fstab
+		grep -q -F 'swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+		notice "Done creating swapspace. Swap enabled"
+	fi
+}
+
+validate_vars_http()
+{
+	while [[ -z $APACHE_PORT || ! $APACHE_PORT =~ ^[0-9]+$ || $APACHE_PORT -lt 1 || $APACHE_PORT -gt 65535 ]]
+		do
+		if [[ $0 = "bash" ]]
+			then
+			error "APACHE_PORT is not set or is not a number.  It must be a number between 1 and 65535."
+			exit 1
+		else
+			prompt "Enter the port you want Apache to run on (default: 80)"
+			APACHE_PORT=$(get_input "80")
+			if [[ $APACHE_PORT = "" ]]
+				then
+				APACHE_PORT=80
+			fi
+			validate_vars_http
+		fi 
+	done
+	
+	if [[ -z $WEBSITE_DOMAIN ]]
+		then
+		if [[ $0 = "bash" ]]
+			then
+			error "WEBSITE_DOMAIN is not set. It must be a domain name, the public IP, or \"127.0.0.1\""
+			exit 1
+		else
+			prompt "Enter the domain name of the website (ie: example.com) (IP address is ok) [127.0.0.1]"
+			WEBSITE_DOMAIN=$(get_input "127.0.0.1")
+			if [[ $WEBSITE_DOMAIN = "" ]]
+				then
+				WEBSITE_DOMAIN="127.0.0.1"
+			fi
+		fi
+	fi
+	
+	
+	if [[ -z $MYSQL_ROOT_PASSWD ]]
+		then
+		if [[ $0 = "bash" ]]
+			then
+			error "MYSQL_ROOT_PASSWD is not set. If MySQL is installed already, this should be the current root MySQL password."
+			error "Otherwise, it should be whatever you want the new password to be"
+			exit 1
+		else
+			if [[ $(type mysql) ]] >/dev/null 2>&1
+				then
+				prompt "Enter the current root MySQL password"
+				MYSQL_ROOT_PASSWD=$(get_input "pass")
+			else
+				prompt "Enter a password for the MySQL root user"
+				MYSQL_ROOT_PASSWD=$(get_input "pass")
+			fi
+		fi
+	fi
+	if [[ $(type mysql) ]] >/dev/null 2>&1
+		then
+		while [[ ! $(mysql -u root --password="${MYSQL_ROOT_PASSWD}" -e "show databases" 2> /dev/null) ]]
+			do
+			error "Invalid root MySQL password!"
+			if [[ $0 = "bash" ]]
+				then
+				exit 1
+			fi
+			prompt "Enter a password for the MySQL root user"
+			MYSQL_ROOT_PASSWD=$(get_input "pass")
+		done
+	fi
+	
+	if [[ -z $ADMIN_USERNAME ]]
+		then
+		if [[ $0 = "bash" ]]
+			then
+			error "ADMIN_USERNAME is not set."
+			exit 1
+		else
+			prompt "Enter a username for the first FiercePhish user account [admin]"
+			ADMIN_USERNAME=$(get_input "admin")
+			if [[ $ADMIN_USERNAME = "" ]]
+				then
+				ADMIN_USERNAME="admin"
+			fi
+		fi
+	fi
+	
+	while [[ -z $ADMIN_EMAIL ]]
+		do
+		if [[ $0 = "bash" ]]
+			then
+			error "ADMIN_EMAIL is not set."
+			exit 1
+		else
+			prompt "Enter an email for the first FiercePhish user account"
+			ADMIN_EMAIL=$(get_input "")
+			if [[ $ADMIN_EMAIL = "" ]]
+				then
+				unset ADMIN_EMAIL
+			fi
+		fi
+	done
+	
+	while [[ -z $ADMIN_PASSWORD ]]
+		do
+		if [[ $0 = "bash" ]]
+			then
+			error "ADMIN_PASSWORD is not set."
+			exit 1
+		else
+			prompt "Enter a password for the first FiercePhish user account"
+			ADMIN_PASSWORD=$(get_input "")
+			if [[ $ADMIN_PASSWORD = "" ]]
+				then
+				unset ADMIN_PASSWORD
+			fi
+		fi
+	done
+	
+}
+
+validate_vars_smtp()
+{
+	if [[ -z $EMAIL_DOMAIN ]]
+		then
+		if [[ $0 = "bash" ]]
+			then
+			error "EMAIL_DOMAIN is not set. It must be a domain name, or \"localhost\""
+			exit 1
+		else
+			prompt "Enter the domain you will be sending email from (ie: example.com) (\"localhost\" is ok) [localhost]"
+			EMAIL_DOMAIN=$(get_input "localhost")
+			if [[ $EMAIL_DOMAIN = "" ]]
+				then
+				EMAIL_DOMAIN="localhost"
+			fi
+		fi
+	fi
+}
+
+
+review_vars()
+{
+	if [[ ! $0 = "bash" ]]
+		then
+		info "Review the configurations below: "
+		echo -e "
+     VERBOSE           = ${VERBOSE}
+     SSL_ENABLE        = ${SSL_ENABLE}
+     APACHE_PORT       = ${APACHE_PORT}
+     WEBSITE_DOMAIN    = ${WEBSITE_DOMAIN}
+     MYSQL_ROOT_PASSWD = ${MYSQL_ROOT_PASSWD}
+     ADMIN_USERNAME    = ${ADMIN_USERNAME}
+     ADMIN_EMAIL       = ${ADMIN_EMAIL}
+     ADMIN_PASSWORD    = ${ADMIN_PASSWORD}
+     EMAIL_DOMAIN      = ${EMAIL_DOMAIN}
+     "
+    	prompt "Continue with install? [Y/n]"
+    	CONTINUE=$(get_input "n")
+    	if [[ $CONTINUE =~ ^[n|N]$ ]]
+    		then
+    		error "Exiting install!"
+    		exit 1
+    	else
+    		info "Continuing installation..."
+    	fi
+    fi
+}
+
 
 install_fiercephish()
 {
@@ -225,42 +576,23 @@ install_fiercephish()
 	
 
 	info "Installing the required packages (this may take a few minutes)"
-	if [ -z $MYSQL_ROOT_PASSWD ]
-		then
-		prompt "Set MySQL root passsword"
-		MYSQL_ROOT_PASSWD=$(get_input "root")
-		info "Downloading..."
-	fi
 	if [[ $OS = "Ubuntu" ]]
 		then
 		sys_cmd "debconf-set-selections <<< 'mysql-server mysql-server/root_password password $MYSQL_ROOT_PASSWD'"
 		sys_cmd "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWD'"
-		if [[ $OS_VERSION = "14.04" ]]
-			then
-			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php5 php5-cli mysql-server php5-mysql libapache2-mod-php5 php5-mcrypt php5-imap php5-gd phpunit npm unzip git curl supervisor"
-		elif [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" ]]
+		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" ]]
 			then
 			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php php-cli mysql-server php-mysql libapache2-mod-php php-mcrypt php-mbstring php-imap php-gd php-zip phpunit npm unzip git curl supervisor"
 		fi
 		sys_cmd "service mysql restart"
 	fi
 
-	info "Validating MySQL root password"
-	if [[ $OS = "Ubuntu" ]]
-		then
-		if [[ ! $(mysql -u root --password="${MYSQL_ROOT_PASSWD}" -e "show databases" 2> /dev/null) ]]
-			then
-			error "Detected an invalid MySQL root password!  Make sure you provide the correct root mysql password to the installer!"
-			error "If you are sure you are giving the correct password, run in verbose mode and look for errors"
-			exit 1
-		fi
-	fi
 	
 
 	info "Installing Composer"
 	if [[ $OS = "Ubuntu" ]]
 		then
-		if [[ $OS_VERSION = "14.04" || $OS_VERSION = "16.04" || $OS_VERSION = "16.10" ]]
+		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" ]]
 			then
 			sys_cmd "curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer"
 		fi
@@ -270,7 +602,7 @@ install_fiercephish()
 	info "Installing Bower"
 	if [[ $OS = "Ubuntu" ]]
 		then
-		if [[ $OS_VERSION = "14.04" || $OS_VERSION = "16.04" || $OS_VERSION = "16.10" ]]
+		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" ]]
 			then
 			sys_cmd "npm install -g bower"
 			sys_cmd "ln -s /usr/bin/nodejs /usr/bin/node"
@@ -290,24 +622,6 @@ install_fiercephish()
 
 
 	info "Installing FiercePhish into Apache (this can take a few minutes)"
-	if [ -z $WEBSITE_DOMAIN ]
-		then
-		prompt "What is the domain name of the website (ie: example.com) (IP address is ok)"
-		WEBSITE_DOMAIN=$(get_input "localhost")
-		if [[ $WEBSITE_DOMAIN = "" ]]
-			then
-			WEBSITE_DOMAIN="localhost"
-		fi
-	fi
-	if [[ -z $APACHE_PORT ]]
-		then
-		prompt "What port do you want Apache to run on (default: 80)"
-		APACHE_PORT=$(get_input "80")
-		if [[ $APACHE_PORT = "" || ! $APACHE_PORT =~ ^-?[0-9]+$ ]]
-			then
-			APACHE_PORT=80
-		fi
-	fi
 	if [[ $OS = "Ubuntu" ]]
 		then
 		cat > /etc/apache2/sites-available/fiercephish.conf <<- EOM
@@ -320,8 +634,8 @@ install_fiercephish()
         AllowOverride All
         Require all granted
     </Directory>
-    ErrorLog \${APACHE_LOG_DIR}/error.log
-    CustomLog \${APACHE_LOG_DIR}/access.log combined
+    ErrorLog \${APACHE_LOG_DIR}/error_fiercephish.log
+    CustomLog \${APACHE_LOG_DIR}/access_fiercephish.log combined
 </VirtualHost>
 EOM
 		if [[ $APACHE_PORT != "80" ]]
@@ -333,10 +647,8 @@ EOM
 		sys_cmd "a2ensite fiercephish"
 		sys_cmd "a2enmod rewrite"
 		sys_cmd "a2dissite 000-default"
-		if [[ $OS_VERSION == '14.04' ]]
+		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" ]]
 			then
-			sys_cmd "php5enmod imap"
-		else
 			sys_cmd "phpenmod imap"
 		fi
 		sys_cmd "service apache2 restart"
@@ -360,6 +672,10 @@ EOM
 	if [[ $OS = "Ubuntu" ]]
 		then
 		sys_cmd "chown -R www-data:www-data ."
+		sys_cmd "touch /var/log/apache2/error_fiercephish.log"
+		sys_cmd "touch /var/log/apache2/access_fiercephish.log"
+		sys_cmd "chown www-data:www-data /var/log/apache2/error_fiercephish.log"
+		sys_cmd "chown www-data:www-data /var/log/apache2/access_fiercephish.log"
 	fi
 	sys_cmd "sed -i 's/APP_DEBUG=.*$/APP_DEBUG=false/' .env"
 	sys_cmd "sed -i 's/APP_URL=.*$/APP_URL=http:\/\/${WEBSITE_DOMAIN}:${APACHE_PORT}/' .env"
@@ -444,16 +760,6 @@ install_smtp_imap()
 	
 
 	info "Installing the required packages (this may take a few minutes)"
-	if [ -z $EMAIL_DOMAIN ]
-		then
-		prompt "What is the domain name you will be sending email from (ie: example.com) (if none, use localhost)"
-		EMAIL_DOMAIN=$(get_input "localhost")
-		if [[ $EMAIL_DOMAIN = "" ]]
-			then
-			EMAIL_DOMAIN="localhost"
-		fi
-		info "Installing..."
-	fi
 	if [[ $OS = "Ubuntu" ]]
 		then
 		sys_cmd "debconf-set-selections <<< \$'postfix postfix/mailname string \'${EMAIL_DOMAIN}\''"
@@ -614,81 +920,77 @@ EOM
 	notice "Done installing SMTP and IMAP!"
 }
 
-if [[ $1 = '-v' ]]
-	then VERBOSE=true
-fi
-if [ $EUID != 0 ]; then
-	error "You must run the installer script as root"
-	exit 1
-fi
+### Helper functions
 
-if [[ $0 = "bash" && ! -f ~/fiercephish.config ]]
-	then
-	error "Because you are running this as a remote pipe execution, you need to create a configuration file for all the information that is required."
-	notice "Please edit ~/fiercephish.config with the necessary information and rerun this command"
-	cat > ~/fiercephish.config <<- EOM
-#### FiercePhish Installation Configuration File ####
+random_str()
+{
+	cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1
+}
 
-# Set this to true once you are done configuring everything
-CONFIGURED=false
-
-# Set this to true if you want to see all output of all installation actions
-VERBOSE=false
-
-# Specify the port you'd like Apache to run on. Default is 80
-APACHE_PORT=80
-
-# Do you want HTTPS to be configured (using LetsEncrypt) for SMTP and Web?
-# YOU MUST HAVE A VALID DOMAIN NAME FOR THIS TO WORK!
-SSL_ENABLE=false
-
-# Set this to what you want the mysql root password to be.
-# If MySQL is already installed, make sure this is the valid root password for it
-MYSQL_ROOT_PASSWD=root_passwd
-
-# Set this to what the website domain is (ie: example.com). No "http://"
-# If you don't have a domain, use the publicly facing IP address (or 127.0.0.1)
-# This will be what you use to browse to FiercePhish in your browser
-WEBSITE_DOMAIN=127.0.0.1
-
-# Set this to the domain that you will be sending email from
-# If you don't have a domain, use "localhost"
-EMAIL_DOMAIN=localhost
-
-
-# Firet FiercePhish user's Username
-ADMIN_USERNAME=admin
-
-# First FiercePhish user's Email
-ADMIN_EMAIL=root@localhost
-
-# First FiercePhish user's Password
-ADMIN_PASSWORD=test
-
-EOM
-	exit 1
-elif [[ $0 = "bash" && -f ~/fiercephish.config ]]
-	then
-	source ~/fiercephish.config
-	if [[ $CONFIGURED = true ]]
+get_input()
+{
+	local default=$1
+	if [[ $0 = "bash" ]]
 		then
-		if [[ -z $CONFIGURED || -z $VERBOSE || -z $SSL_ENABLE || -z $MYSQL_ROOT_PASSWD || -z $WEBSITE_DOMAIN || -z $EMAIL_DOMAIN || -z $ADMIN_USERNAME || -z $ADMIN_EMAIL || -z $ADMIN_PASSWORD ]]
-			then
-			error "Found the configuration file, but it is missing some variables!"
-			exit 1
-		fi
-		info "Found the FiercePhish configuration file and continuing with installation"
+		echo $default
 	else
-		error "Edit ~/fiercephish.config with the proper settings. Once done, make sure CONFIGURED=true at the top"
-		exit 1
+		local input_answer=""
+		read -e input_answer
+		echo $input_answer
 	fi
-fi
+}
 
-main
+prompt()
+{
+	local prompt=$1
+	if [[ $0 != "bash" ]]
+		then
+		echo -ne "   ${LYELLOW}[>] ${prompt} > ${RESTORE}"
+	fi
+}
 
-if [[ $0 = "bash" && -f ~/fiercephish.config ]]
-	then
-	rm ~/fiercephish.config
-fi
+sys_cmd()
+{
+	com=$1
+	if [[ $VERBOSE = true ]]
+		then
+		notice "Running ${com}..."
+		eval "${com}"
+	else
+		#notice "Running ${com} > /dev/null 2>&1"
+		eval "${com} > /dev/null 2>&1"
+	fi
+}
+
+info()
+{
+	local prompt=$1
+	echo -e "   ${YELLOW}[~] ${GREEN}${prompt}${RESTORE}"
+}
+
+
+error()
+{
+	local prompt=$1
+	echo -e "   ${LRED}[!] ${prompt}${RESTORE}"
+}
+
+notice()
+{
+	local prompt=$1
+	echo -e "   ${YELLOW}[~] ${WHITE}${prompt}${RESTORE}"
+}
+
+
+## Execute main function
+
+main "$@"
+
+
+
+
+
+
+
 
 
