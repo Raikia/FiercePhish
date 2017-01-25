@@ -38,7 +38,7 @@
                       @endforeach
                     </select>
                     @else
-                      <p style="color: #ff0000; font-style: italic;">No templates found</p>
+                      <p style="color: #ff0000; padding-top: 7px;">No templates found</p>
                     @endif
                 </div>
               </div>
@@ -54,7 +54,7 @@
                       @endforeach
                     </select>
                   @else
-                    <p style="color: #ff0000; font-size: italic;">No target list found</p>
+                    <p style="color: #ff0000; padding-top: 7px;">No target list found</p>
                   @endif
                 </div>
               </div>
