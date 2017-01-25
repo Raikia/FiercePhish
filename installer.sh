@@ -54,12 +54,6 @@ CONFIGURED=false
 ##    Recommended: false
 VERBOSE=false
 
-## Do you want HTTPS to be configured (using LetsEncrypt) for SMTP and Web?
-## YOU MUST HAVE A VALID DOMAIN NAME FOR THIS TO WORK!
-##     Default: false
-##     Recommended: false
-SSL_ENABLE=false
-
 
 
 ############ Web Settings ############
@@ -153,6 +147,12 @@ main()
     	then
     	validate_vars_general
     	validate_vars_smtp
+    elif [[ $INPUT_SELECTION = 4 ]]
+    	then
+    	validate_vars_general
+    	validate_vars_ssl
+    	install_ssl
+    	exit 1
     else
     	error "Unknown selection!"
     	exit 1
@@ -170,8 +170,11 @@ main()
     	install_smtp_imap
     fi
     notice "Installation is complete"
-	info "Perform the following actions to finish up:"
-	echo -e ""
+    if [[ ${#FP_INSTRUCTIONS[@]} -ne 0 || ${#MAIL_INSTRUCTIONS[@]} -ne 0 || ${#DNS_INSTRUCTIONS[@]} -ne 0 ]]
+    	then
+		info "Perform the following actions to finish up:"
+		echo -e ""
+	fi
 	if [[ ${#FP_INSTRUCTIONS[@]} -ne 0 ]]
 		then
 		echo -e "   FiercePhish Follow Up Items:"
@@ -294,15 +297,16 @@ prompt_choice()
 		echo -e "        1. ${WHITE}Install FiercePhish + SMTP + IMAP (${LRED}recommended${WHITE})${RESTORE}"
 		echo -e "        2. ${WHITE}Install FiercePhish only${RESTORE}"
 		echo -e "        3. ${WHITE}Install SMTP + IMAP only${RESTORE}"
+		echo -e "        4. ${WHITE}Setup SSL using LetsEncrypt${RESTORE}"
 	fi
 	echo -e ""
 	while [ true ]
 		do
-		prompt "Selection [1-3]"
+		prompt "Selection [1-4]"
 		INPUT_SELECTION=$(get_input "1")
 		if [ "$INPUT_SELECTION" -eq "$INPUT_SELECTION" ] 2> /dev/null
 			then
-			if [[ $INPUT_SELECTION -lt 4 && $INPUT_SELECTION -gt 0 ]]
+			if [[ $INPUT_SELECTION -lt 5 && $INPUT_SELECTION -gt 0 ]]
 				then
 				break
 			fi
@@ -334,28 +338,6 @@ validate_vars_general()
 		error "VERBOSE variable is not set.  Make sure it is \"true\" or \"false\""
 		exit 1
 	fi
-	
-	while [[ -z $SSL_ENABLE ]]
-		do
-		if [[ $0 = "bash" ]]
-			then
-			error "SSL_ENABLE is not set!  Make sure it is \"true\" or \"false\""
-			exit 1
-		else
-			prompt "Do you want HTTPS to be configured for Web and/or SMTP (${LRED}you must have a purchased domain name${LYELLOW})? [y/N]"
-			SSL_ENABLE_INPUT=$(get_input "false")
-			if [[ $SSL_ENABLE_INPUT = "" ]]
-				then
-				SSL_ENABLE=false
-			elif [[ $SSL_ENABLE_INPUT =~ ^[y|Y]$ ]]
-				then
-				SSL_ENABLE=true
-			elif [[ $SSL_ENABLE_INPUT =~ ^[n|N]$ ]]
-				then
-				SSL_ENABLE=false
-			fi
-		fi 
-	done
 	
 	
 	mem=$(free -m | awk '/^Mem:/{print $2}')
@@ -533,6 +515,28 @@ validate_vars_smtp()
 	fi
 }
 
+validate_vars_ssl()
+{
+	while [[ -z $SSL_DOMAIN ]]
+		do
+		prompt "Enter the domain you want configured for SSL (${LRED}This domain's A records must be set properly!${LYELLOW}"
+		SSL_DOMAIN=$(get_input "")
+		if [[ $SSL_DOMAIN = "" ]]
+			then
+			unset SSL_DOMAIN
+		fi
+	done
+	
+	while [[ -z $SSL_EMAIL ]]
+		do
+		prompt "Enter your email for SSL cert registration"
+		SSL_EMAIL=$(get_input "")
+		if [[ $SSL_EMAIL = "" ]]
+			then
+			unset SSL_EMAIL
+		fi
+	done
+}
 
 review_vars()
 {
@@ -541,7 +545,6 @@ review_vars()
 		info "Review the configurations below: "
 		echo -e "
      VERBOSE           = ${VERBOSE}
-     SSL_ENABLE        = ${SSL_ENABLE}
      APACHE_PORT       = ${APACHE_PORT}
      WEBSITE_DOMAIN    = ${WEBSITE_DOMAIN}
      MYSQL_ROOT_PASSWD = ${MYSQL_ROOT_PASSWD}
@@ -728,20 +731,7 @@ EOM
 		sleep 5
 	fi
 	
-	if [[ -z ${SSL_ENABLE} ]]
-		then
-		prompt "Do you want to enable HTTPS for FiercePhish using LetsEncrypt (you must have a valid domain name)? [y/n]"
-		ssl=$(get_input "n")
-		SSL_ENABLE=false
-		if [[ ${ssl} =~ [yY] ]]
-			then
-			SSL_ENABLE=true
-		fi
-	fi
-	if [[ $SSL_ENABLE = true ]]
-		then
-		error "You want to enable HTTPS but this isn't implemented yet.  You can do this yourself though until its implemented :-("
-	fi
+	
 	FP_INSTRUCTIONS+=("Go to http://${SERVER_IP}:${APACHE_PORT}/ to use FiercePhish! (or http://${WEBSITE_DOMAIN}:${APACHE_PORT}/ if you used a domain name)")
 	DNS_INSTRUCTIONS+=("A record for '@' point to '${SERVER_IP}'")
 	DNS_INSTRUCTIONS+=("A record for 'www' point to '${SERVER_IP}'")
@@ -919,6 +909,44 @@ EOM
 	DNS_INSTRUCTIONS+=("TXT record for '_dmarc' with text: v=DMARC1; p=none");
 	notice "Done installing SMTP and IMAP!"
 }
+
+
+install_ssl()
+{
+	info "Configuring Apache for SSL...this can take a few minutes"
+	sys_cmd "pushd /usr/local/sbin/"
+	sys_cmd "wget https://dl.eff.org/certbot-auto"
+	sys_cmd "chmod a+x /usr/local/sbin/certbot-auto"
+	if [[ -f /etc/apache2/sites-available/fiercephish.conf ]]
+		then
+		resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1)
+		if [[ $resp =~ Failed ]]
+			then
+			error "Error creating SSL certificate!  Check to make sure the A record of your domain \"${SSL_DOMAIN}\" is properly set"
+			error "LetsEncrypt Error Message: ${resp}"
+			exit 1;
+		elif [[ $resp =~ Congratulations ]]
+			then
+			info "Success! Your FiercePhish instance is now SSL encrypted!"
+		elif [[ $resp =~ existing ]]
+			then
+			error "You already have an SSL certificate set up for this domain"
+		else
+			error "Unknown response: ${resp}"
+		fi
+		info "Setting up SSL certificate auto renewal"
+		cron_command="/usr/local/sbin/certbot-auto renew >> /var/log/le-renew.log 2>&1"
+		cron_job="30 2 * * 1 $cron_command"
+		cat <(grep -i -F -v "$cron_command" <(crontab -u root -l 2>/dev/null)) <(echo "$cron_job") | crontab -u root -
+		info "Done setting up the SSL certificate"
+		info "Installation complete"
+	else
+		error "FiercePhish is not installed!  Can't set up SSL encryption if FiercePhish isn't installed"
+	fi
+	sys_cmd "popd"
+}
+
+
 
 ### Helper functions
 
