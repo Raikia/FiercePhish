@@ -823,13 +823,14 @@ install_smtp_imap()
 		sys_cmd "sed -i 's/SignatureAlgorithm .*$/SignatureAlgorithm           rsa-sha256/' /etc/opendkim.conf"
 		sys_cmd "sed -i 's/UserID .*$/UserID           opendkim:opendkim/' /etc/opendkim.conf"
 		sys_cmd "sed -i 's/Socket .*$/Socket           inet:12301@localhost/' /etc/opendkim.conf"
-		echo 'SOCKET="inet:12301@localhost"' > /etc/default/opendkim
+		grep -q -P '^SOCKET=' /etc/default/opendkim || echo 'SOCKET="inet:12301@localhost"' >> /etc/default/opendkim
+		sys_cmd "sed -i 's/^SOCKET=.*$/SOCKET=\"inet:12301@localhost\"/' /etc/default/opendkim"
 		grep -q -F 'milter_protocol' /etc/postfix/main.cf || echo 'milter_protocol = 2' >> /etc/postfix/main.cf
 		sys_cmd "sed -i 's/^.*milter_protocol = .*$/milter_protocol = 2/' /etc/postfix/main.cf"
 		grep -q -F 'milter_default_action' /etc/postfix/main.cf || echo 'milter_default_action = accept' >> /etc/postfix/main.cf
 		sys_cmd "sed -i 's/^.*milter_default_action = .*$/milter_default_action = accept/' /etc/postfix/main.cf"
-		grep -q -F 'smtpd_milters' /etc/postfix/main.cf || echo 'smtpd_milters = inet:localhost:12301' >> /etc/postfix/main.cf
-		sys_cmd "sed -i 's/^.*smtpd_milters = .*$/smtpd_milters = inet:localhost:12301/' /etc/postfix/main.cf"
+		grep -q -P '^smtpd_milters' /etc/postfix/main.cf || echo 'smtpd_milters = inet:localhost:12301' >> /etc/postfix/main.cf
+		sys_cmd "sed -i 's/^smtpd_milters = .*$/smtpd_milters = inet:localhost:12301/' /etc/postfix/main.cf"
 		grep -q -F 'non_smtpd_milters' /etc/postfix/main.cf || echo 'non_smtpd_milters = inet:localhost:12301' >> /etc/postfix/main.cf
 		sys_cmd "sed -i 's/^.*non_smtpd_milters = .*$/non_smtpd_milters = inet:localhost:12301/' /etc/postfix/main.cf"
 		sys_cmd "mkdir -p /etc/opendkim/keys"
