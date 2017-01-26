@@ -921,7 +921,7 @@ install_ssl()
 {
 	info "Configuring Apache for SSL...this can take a few minutes"
 	sys_cmd "pushd /usr/local/sbin/"
-	sys_cmd "wget https://dl.eff.org/certbot-auto"
+	sys_cmd "wget https://dl.eff.org/certbot-auto -O certbot-auto"
 	sys_cmd "chmod a+x /usr/local/sbin/certbot-auto"
 	if [[ -f /etc/apache2/sites-available/fiercephish.conf ]]
 		then
