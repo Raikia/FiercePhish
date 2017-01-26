@@ -132,7 +132,7 @@ main()
     	exit 1
     fi
     check_os
-    get_config_vars
+    get_config_vars "$@"
     prompt_choice
     if [[ $INPUT_SELECTION = 1 ]]
     	then
@@ -404,7 +404,7 @@ validate_vars_http()
 			error "WEBSITE_DOMAIN is not set. It must be a domain name, the public IP, or \"127.0.0.1\""
 			exit 1
 		else
-			prompt "Enter the domain name of the website (ie: example.com) (IP address is ok) [127.0.0.1]"
+			prompt "Enter the domain name of the website (ie: example.com) (IP address is ok if no domain) [127.0.0.1]"
 			WEBSITE_DOMAIN=$(get_input "127.0.0.1")
 			if [[ $WEBSITE_DOMAIN = "" ]]
 				then
@@ -505,7 +505,7 @@ validate_vars_smtp()
 			error "EMAIL_DOMAIN is not set. It must be a domain name, or \"localhost\""
 			exit 1
 		else
-			prompt "Enter the domain you will be sending email from (ie: example.com) (\"localhost\" is ok) [localhost]"
+			prompt "Enter the domain you will be sending email from (ie: example.com) (\"localhost\" is ok if no real domain) [localhost]"
 			EMAIL_DOMAIN=$(get_input "localhost")
 			if [[ $EMAIL_DOMAIN = "" ]]
 				then
@@ -919,7 +919,12 @@ install_ssl()
 	sys_cmd "chmod a+x /usr/local/sbin/certbot-auto"
 	if [[ -f /etc/apache2/sites-available/fiercephish.conf ]]
 		then
-		resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1)
+		if [[ $VERBOSE = "true" ]]
+			then
+			resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1 | tee /dev/tty)
+		else
+			resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1)
+		fi
 		if [[ $resp =~ Failed ]]
 			then
 			error "Error creating SSL certificate!  Check to make sure the A record of your domain \"${SSL_DOMAIN}\" is properly set"
