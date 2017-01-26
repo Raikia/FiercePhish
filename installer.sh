@@ -505,11 +505,16 @@ validate_vars_smtp()
 			error "EMAIL_DOMAIN is not set. It must be a domain name, or \"localhost\""
 			exit 1
 		else
-			prompt "Enter the domain you will be sending email from (ie: example.com) (\"localhost\" is ok if no real domain) [localhost]"
+			DEFAULT_EMAIL_DOMAIN="localhost"
+			if [[ ! -z $WEBSITE_DOMAIN ]]
+				then
+				DEFAULT_EMAIL_DOMAIN=$WEBSITE_DOMAIN
+			fi
+			prompt "Enter the domain you will be sending email from (ie: example.com) (\"localhost\" is ok if no real domain) [${DEFAULT_EMAIL_DOMAIN}]"
 			EMAIL_DOMAIN=$(get_input "localhost")
 			if [[ $EMAIL_DOMAIN = "" ]]
 				then
-				EMAIL_DOMAIN="localhost"
+				EMAIL_DOMAIN=$WEBSITE_DOMAIN
 			fi
 		fi
 	fi
