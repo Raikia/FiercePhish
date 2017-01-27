@@ -498,8 +498,8 @@ validate_vars_http()
 
 validate_vars_smtp()
 {
-	if [[ -z $EMAIL_DOMAIN ]]
-		then
+	while [[ -z $EMAIL_DOMAIN ]]
+		do
 		if [[ $0 = "bash" ]]
 			then
 			error "EMAIL_DOMAIN is not set. It must be a domain name, or \"localhost\""
@@ -516,8 +516,14 @@ validate_vars_smtp()
 				then
 				EMAIL_DOMAIN=$DEFAULT_EMAIL_DOMAIN
 			fi
+			
+			if valid_ip "$EMAIL_DOMAIN"
+				then
+				error "This must be a domain, not an IP address. If you don't have a domain, enter \"localhost\"!"
+				unset EMAIL_DOMAIN
+			fi
 		fi
-	fi
+	done
 }
 
 validate_vars_ssl()
@@ -737,10 +743,17 @@ EOM
 		sleep 5
 	fi
 	
-	
-	FP_INSTRUCTIONS+=("Go to ${LYELLOW}http://${SERVER_IP}:${APACHE_PORT}/${RESTORE} to use FiercePhish! (or ${LYELLOW}http://${WEBSITE_DOMAIN}:${APACHE_PORT}/${RESTORE} if you used a domain name)")
-	DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}@${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
-	DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}www${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
+	ADDON_INSTRUCTION=""
+	if [[ $WEBSITE_DOMAIN != "localhost" ]]
+	then
+		if ! valid_ip $WEBSITE_DOMAIN
+			then
+			ADDON_INSTRUCTION=" (or ${LYELLOW}http://${WEBSITE_DOMAIN}:${APACHE_PORT}/${RESTORE} if you used a domain name)"
+			DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}@${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
+			DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}www${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
+		fi
+	fi
+	FP_INSTRUCTIONS+=("Go to ${LYELLOW}http://${SERVER_IP}:${APACHE_PORT}/${RESTORE} to use FiercePhish!${ADDON_INSTRUCTION}")
 	notice "Done installing FiercePhish!"
 }
 
@@ -790,57 +803,59 @@ install_smtp_imap()
 		sys_cmd "touch /var/log/mail.log"
 		sys_cmd "chown www-data:www-data /var/log/mail.log"
 		echo ${EMAIL_DOMAIN} > /etc/mailname
-		sys_cmd "service postfix restart"
+		sys_cmd "postfix stop"
+		sys_cmd "postfix start"
 	fi
 	
-	
-	info "Configuring DKIM"
-	if [[ $OS = "Ubuntu" ]]
+	if ! valid_ip $EMAIL_DOMAIN && [[ $EMAIL_DOMAIN != 'localhost' ]]
 		then
-		grep -q -F 'AutoRestart' /etc/opendkim.conf || echo 'AutoRestart            Yes' >> /etc/opendkim.conf
-		grep -q -F 'AutoRestartRate' /etc/opendkim.conf || echo 'AutoRestartRate            10/1h' >> /etc/opendkim.conf
-		grep -q -F 'UMask' /etc/opendkim.conf || echo 'UMask            002' >> /etc/opendkim.conf
-		grep -q -F 'Syslog' /etc/opendkim.conf || echo 'Syslog            yes' >> /etc/opendkim.conf
-		grep -q -F 'SyslogSuccess' /etc/opendkim.conf || echo 'SyslogSuccess            Yes' >> /etc/opendkim.conf
-		grep -q -F 'LogWhy' /etc/opendkim.conf || echo 'LogWhy            Yes' >> /etc/opendkim.conf
-		grep -q -F 'Canonicalization' /etc/opendkim.conf || echo 'Canonicalization            relaxed/simple' >> /etc/opendkim.conf
-		grep -q -F 'ExternalIgnoreList' /etc/opendkim.conf || echo 'ExternalIgnoreList            refile:/etc/opendkim/TrustedHosts' >> /etc/opendkim.conf
-		grep -q -F 'InternalHosts' /etc/opendkim.conf || echo 'InternalHosts            refile:/etc/opendkim/TrustedHosts' >> /etc/opendkim.conf
-		grep -q -F 'KeyTable' /etc/opendkim.conf || echo 'KeyTable            refile:/etc/opendkim/KeyTable' >> /etc/opendkim.conf
-		grep -q -F 'SigningTable' /etc/opendkim.conf || echo 'SigningTable            refile:/etc/opendkim/SigningTable' >> /etc/opendkim.conf
-		grep -q -F 'Mode' /etc/opendkim.conf || echo 'Mode            sv' >> /etc/opendkim.conf
-		grep -q -F 'PidFile' /etc/opendkim.conf || echo 'PidFile            /var/run/opendkim/opendkim.pid' >> /etc/opendkim.conf
-		grep -q -F 'SignatureAlgorithm' /etc/opendkim.conf || echo 'SignatureAlgorithm            rsa-sha256' >> /etc/opendkim.conf
-		grep -q -F 'UserID' /etc/opendkim.conf || echo 'UserID            opendkim:opendkim' >> /etc/opendkim.conf
-		grep -q -F 'Socket' /etc/opendkim.conf || echo 'Socket            inet:12301@localhost' >> /etc/opendkim.conf
-		sys_cmd "sed -i 's/AutoRestart .*$/AutoRestart           Yes/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/AutoRestartRate .*$/AutoRestartRate           10\/1h/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/UMask .*$/UMask           002/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/Syslog .*$/Syslog           yes/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/SyslogSuccess .*$/SyslogSuccess           Yes/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/LogWhy .*$/LogWhy           Yes/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/Canonicalization .*$/Canonicalization           relaxed\/simple/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/ExternalIgnoreList .*$/ExternalIgnoreList           refile:\/etc\/opendkim\/TrustedHosts/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/InternalHosts .*$/InternalHosts           refile:\/etc\/opendkim\/TrustedHosts/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/KeyTable .*$/KeyTable           refile:\/etc\/opendkim\/KeyTable/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/SigningTable .*$/SigningTable           refile:\/etc\/opendkim\/SigningTable/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/Mode .*$/Mode           sv/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/PidFile .*$/PidFile           \/var\/run\/opendkim\/opendkim.pid/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/SignatureAlgorithm .*$/SignatureAlgorithm           rsa-sha256/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/UserID .*$/UserID           opendkim:opendkim/' /etc/opendkim.conf"
-		sys_cmd "sed -i 's/Socket .*$/Socket           inet:12301@localhost/' /etc/opendkim.conf"
-		grep -q -P '^SOCKET=' /etc/default/opendkim || echo 'SOCKET="inet:12301@localhost"' >> /etc/default/opendkim
-		sys_cmd "sed -i 's/^SOCKET=.*$/SOCKET=\"inet:12301@localhost\"/' /etc/default/opendkim"
-		grep -q -F 'milter_protocol' /etc/postfix/main.cf || echo 'milter_protocol = 2' >> /etc/postfix/main.cf
-		sys_cmd "sed -i 's/^.*milter_protocol = .*$/milter_protocol = 2/' /etc/postfix/main.cf"
-		grep -q -F 'milter_default_action' /etc/postfix/main.cf || echo 'milter_default_action = accept' >> /etc/postfix/main.cf
-		sys_cmd "sed -i 's/^.*milter_default_action = .*$/milter_default_action = accept/' /etc/postfix/main.cf"
-		grep -q -P '^smtpd_milters' /etc/postfix/main.cf || echo 'smtpd_milters = inet:localhost:12301' >> /etc/postfix/main.cf
-		sys_cmd "sed -i 's/^smtpd_milters = .*$/smtpd_milters = inet:localhost:12301/' /etc/postfix/main.cf"
-		grep -q -F 'non_smtpd_milters' /etc/postfix/main.cf || echo 'non_smtpd_milters = inet:localhost:12301' >> /etc/postfix/main.cf
-		sys_cmd "sed -i 's/^.*non_smtpd_milters = .*$/non_smtpd_milters = inet:localhost:12301/' /etc/postfix/main.cf"
-		sys_cmd "mkdir -p /etc/opendkim/keys"
-		cat > /etc/opendkim/TrustedHosts <<- EOM
+		info "Configuring DKIM"
+		if [[ $OS = "Ubuntu" ]]
+			then
+			grep -q -F 'AutoRestart' /etc/opendkim.conf || echo 'AutoRestart            Yes' >> /etc/opendkim.conf
+			grep -q -F 'AutoRestartRate' /etc/opendkim.conf || echo 'AutoRestartRate            10/1h' >> /etc/opendkim.conf
+			grep -q -F 'UMask' /etc/opendkim.conf || echo 'UMask            002' >> /etc/opendkim.conf
+			grep -q -F 'Syslog' /etc/opendkim.conf || echo 'Syslog            yes' >> /etc/opendkim.conf
+			grep -q -F 'SyslogSuccess' /etc/opendkim.conf || echo 'SyslogSuccess            Yes' >> /etc/opendkim.conf
+			grep -q -F 'LogWhy' /etc/opendkim.conf || echo 'LogWhy            Yes' >> /etc/opendkim.conf
+			grep -q -F 'Canonicalization' /etc/opendkim.conf || echo 'Canonicalization            relaxed/simple' >> /etc/opendkim.conf
+			grep -q -F 'ExternalIgnoreList' /etc/opendkim.conf || echo 'ExternalIgnoreList            refile:/etc/opendkim/TrustedHosts' >> /etc/opendkim.conf
+			grep -q -F 'InternalHosts' /etc/opendkim.conf || echo 'InternalHosts            refile:/etc/opendkim/TrustedHosts' >> /etc/opendkim.conf
+			grep -q -F 'KeyTable' /etc/opendkim.conf || echo 'KeyTable            refile:/etc/opendkim/KeyTable' >> /etc/opendkim.conf
+			grep -q -F 'SigningTable' /etc/opendkim.conf || echo 'SigningTable            refile:/etc/opendkim/SigningTable' >> /etc/opendkim.conf
+			grep -q -F 'Mode' /etc/opendkim.conf || echo 'Mode            sv' >> /etc/opendkim.conf
+			grep -q -F 'PidFile' /etc/opendkim.conf || echo 'PidFile            /var/run/opendkim/opendkim.pid' >> /etc/opendkim.conf
+			grep -q -F 'SignatureAlgorithm' /etc/opendkim.conf || echo 'SignatureAlgorithm            rsa-sha256' >> /etc/opendkim.conf
+			grep -q -F 'UserID' /etc/opendkim.conf || echo 'UserID            opendkim:opendkim' >> /etc/opendkim.conf
+			grep -q -F 'Socket' /etc/opendkim.conf || echo 'Socket            inet:12301@localhost' >> /etc/opendkim.conf
+			sys_cmd "sed -i 's/AutoRestart .*$/AutoRestart           Yes/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/AutoRestartRate .*$/AutoRestartRate           10\/1h/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/UMask .*$/UMask           002/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/Syslog .*$/Syslog           yes/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/SyslogSuccess .*$/SyslogSuccess           Yes/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/LogWhy .*$/LogWhy           Yes/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/Canonicalization .*$/Canonicalization           relaxed\/simple/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/ExternalIgnoreList .*$/ExternalIgnoreList           refile:\/etc\/opendkim\/TrustedHosts/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/InternalHosts .*$/InternalHosts           refile:\/etc\/opendkim\/TrustedHosts/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/KeyTable .*$/KeyTable           refile:\/etc\/opendkim\/KeyTable/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/SigningTable .*$/SigningTable           refile:\/etc\/opendkim\/SigningTable/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/Mode .*$/Mode           sv/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/PidFile .*$/PidFile           \/var\/run\/opendkim\/opendkim.pid/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/SignatureAlgorithm .*$/SignatureAlgorithm           rsa-sha256/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/UserID .*$/UserID           opendkim:opendkim/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/Socket .*$/Socket           inet:12301@localhost/' /etc/opendkim.conf"
+			grep -q -P '^SOCKET=' /etc/default/opendkim || echo 'SOCKET="inet:12301@localhost"' >> /etc/default/opendkim
+			sys_cmd "sed -i 's/^SOCKET=.*$/SOCKET=\"inet:12301@localhost\"/' /etc/default/opendkim"
+			grep -q -F 'milter_protocol' /etc/postfix/main.cf || echo 'milter_protocol = 2' >> /etc/postfix/main.cf
+			sys_cmd "sed -i 's/^.*milter_protocol = .*$/milter_protocol = 2/' /etc/postfix/main.cf"
+			grep -q -F 'milter_default_action' /etc/postfix/main.cf || echo 'milter_default_action = accept' >> /etc/postfix/main.cf
+			sys_cmd "sed -i 's/^.*milter_default_action = .*$/milter_default_action = accept/' /etc/postfix/main.cf"
+			grep -q -P '^smtpd_milters' /etc/postfix/main.cf || echo 'smtpd_milters = inet:localhost:12301' >> /etc/postfix/main.cf
+			sys_cmd "sed -i 's/^smtpd_milters = .*$/smtpd_milters = inet:localhost:12301/' /etc/postfix/main.cf"
+			grep -q -F 'non_smtpd_milters' /etc/postfix/main.cf || echo 'non_smtpd_milters = inet:localhost:12301' >> /etc/postfix/main.cf
+			sys_cmd "sed -i 's/^.*non_smtpd_milters = .*$/non_smtpd_milters = inet:localhost:12301/' /etc/postfix/main.cf"
+			sys_cmd "mkdir -p /etc/opendkim/keys"
+			cat > /etc/opendkim/TrustedHosts <<- EOM
 127.0.0.1
 localhost
 192.168.0.1/24
@@ -848,34 +863,38 @@ localhost
 ${EMAIL_DOMAIN}
 *.${EMAIL_DOMAIN}
 EOM
-		echo "mail._domainkey.${EMAIL_DOMAIN} ${EMAIL_DOMAIN}:mail:/etc/opendkim/keys/${EMAIL_DOMAIN}/mail.private" > /etc/opendkim/KeyTable
-		echo "*@${EMAIL_DOMAIN} mail._domainkey.${EMAIL_DOMAIN}" > /etc/opendkim/SigningTable
-		sys_cmd "pushd /etc/opendkim/keys"
-		sys_cmd "mkdir ${EMAIL_DOMAIN}"
-		sys_cmd "pushd ${EMAIL_DOMAIN}"
-		sys_cmd "opendkim-genkey -s mail -d ${EMAIL_DOMAIN}"
-		sys_cmd "chown opendkim:opendkim mail.private"
-		DKIM_KEY=$(cat mail.txt | xargs | sed 's/.*(\s\(.*\)\s).*/\1/')
-		DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}mail._domainkey${RESTORE}' with text: ${LYELLOW}${DKIM_KEY}${RESTORE}")
-		sys_cmd "popd"
-		sys_cmd "popd"
-	fi
+			echo "mail._domainkey.${EMAIL_DOMAIN} ${EMAIL_DOMAIN}:mail:/etc/opendkim/keys/${EMAIL_DOMAIN}/mail.private" > /etc/opendkim/KeyTable
+			echo "*@${EMAIL_DOMAIN} mail._domainkey.${EMAIL_DOMAIN}" > /etc/opendkim/SigningTable
+			sys_cmd "pushd /etc/opendkim/keys"
+			sys_cmd "mkdir ${EMAIL_DOMAIN}"
+			sys_cmd "pushd ${EMAIL_DOMAIN}"
+			sys_cmd "opendkim-genkey -s mail -d ${EMAIL_DOMAIN}"
+			sys_cmd "chown opendkim:opendkim mail.private"
+			DKIM_KEY=$(cat mail.txt | xargs | sed 's/.*(\s\(.*\)\s).*/\1/')
+			DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}mail._domainkey${RESTORE}' with text: ${LYELLOW}${DKIM_KEY}${RESTORE}")
+			sys_cmd "popd"
+			sys_cmd "popd"
+		fi
 	
 	
-	info "Configuring Dovecot"
-	if [[ $OS = "Ubuntu" ]]
-		then
-		sys_cmd "sed -i 's/^.*disable_plaintext_auth = .*$/disable_plaintext_auth = no/' /etc/dovecot/conf.d/10-auth.conf"
-		sys_cmd "sed -i 's/^.*auth_mechanisms = .*$/auth_mechanisms = plain login/' /etc/dovecot/conf.d/10-auth.conf"
-		sys_cmd "sed -i 's/^#\?log_path =.*$/log_path = \/var\/log\/dovecot.log/' /etc/dovecot/conf.d/10-logging.conf"
-		sys_cmd "touch /var/log/dovecot.log"
-		sys_cmd "chown www-data:www-data /var/log/dovecot.log"
+		info "Configuring Dovecot"
+		if [[ $OS = "Ubuntu" ]]
+			then
+			sys_cmd "sed -i 's/^.*disable_plaintext_auth = .*$/disable_plaintext_auth = no/' /etc/dovecot/conf.d/10-auth.conf"
+			sys_cmd "sed -i 's/^.*auth_mechanisms = .*$/auth_mechanisms = plain login/' /etc/dovecot/conf.d/10-auth.conf"
+			sys_cmd "sed -i 's/^#\?log_path =.*$/log_path = \/var\/log\/dovecot.log/' /etc/dovecot/conf.d/10-logging.conf"
+			sys_cmd "touch /var/log/dovecot.log"
+			sys_cmd "chown www-data:www-data /var/log/dovecot.log"
+		fi
+	else
+		notice "Skipping OpenDKIM and Dovecot installs because you aren't sending email from your own domain"
 	fi
 	
 	info "Restarting mail services"
 	if [[ $OS = "Ubuntu" ]]
 		then
-		sys_cmd "service postfix restart"
+		sys_cmd "postfix stop"
+		sys_cmd "postfix start"
 		sys_cmd "service dovecot restart"
 		sys_cmd "service opendkim restart"
 	fi
@@ -912,10 +931,13 @@ EOM
 		sleep 5
 	fi
 	
-	DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}mail${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
-	DNS_INSTRUCTIONS+=("${LCYAN}MX${RESTORE} record point to '${LGREEN}mail${RESTORE}' subdomain (or MXE record pointing to ${LGREEN}${SERVER_IP}${RESTORE})")
-	DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}@${RESTORE}' with text: ${LYELLOW}v=spf1 a mx a:mail.${EMAIL_DOMAIN} a:${EMAIL_DOMAIN} ip4:${SERVER_IP} ~all${RESTORE}")
-	DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}_dmarc${RESTORE}' with text: ${LYELLOW}v=DMARC1; p=none${RESTORE}");
+	if ! valid_ip $EMAIL_DOMAIN && [[ $EMAIL_DOMAIN != 'localhost' ]]
+		then
+		DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}mail${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
+		DNS_INSTRUCTIONS+=("${LCYAN}MX${RESTORE} record point to '${LGREEN}mail${RESTORE}' subdomain (or MXE record pointing to ${LGREEN}${SERVER_IP}${RESTORE})")
+		DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}@${RESTORE}' with text: ${LYELLOW}v=spf1 a mx a:mail.${EMAIL_DOMAIN} a:${EMAIL_DOMAIN} ip4:${SERVER_IP} ~all${RESTORE}")
+		DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}_dmarc${RESTORE}' with text: ${LYELLOW}v=DMARC1; p=none${RESTORE}");
+	fi
 	notice "Done installing SMTP and IMAP!"
 }
 
@@ -1023,6 +1045,23 @@ notice()
 	echo -e "   ${YELLOW}[~] ${WHITE}${prompt}${RESTORE}"
 }
 
+
+valid_ip()
+{
+    local  ip=$1
+    local  stat=1
+
+    if [[ $ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+        OIFS=$IFS
+        IFS='.'
+        ip=($ip)
+        IFS=$OIFS
+        [[ ${ip[0]} -le 255 && ${ip[1]} -le 255 \
+            && ${ip[2]} -le 255 && ${ip[3]} -le 255 ]]
+        stat=$?
+    fi
+    return $stat
+}
 
 ## Execute main function
 
