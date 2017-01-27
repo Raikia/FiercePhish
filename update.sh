@@ -238,7 +238,8 @@ cleanup_backup()
 		sys_cmd "rm ${BACKUP_LOCATION}"
 		info "Backups removed"
 	else
-		info "Keeping backup database dump, located: ${LYELLOW}${BACKUP_LOCATION}${RESET}" 
+		info "Keeping backup database dump, located: ${LYELLOW}${BACKUP_LOCATION}${RESET}"
+	fi
 }
 
 ## Helper functions
