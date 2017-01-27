@@ -506,7 +506,7 @@ validate_vars_smtp()
 			exit 1
 		else
 			DEFAULT_EMAIL_DOMAIN="localhost"
-			if [[ ! -z $WEBSITE_DOMAIN ]]
+			if [[ ! -z $WEBSITE_DOMAIN && $WEBSITE_DOMAIN != "127.0.0.1" ]]
 				then
 				DEFAULT_EMAIL_DOMAIN=$WEBSITE_DOMAIN
 			fi
