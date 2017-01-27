@@ -206,7 +206,7 @@ update_env()
 	for i in "${!envVars[@]}"
 		do 
 		eval tempVar=\$${envVars[$i]}
-		sys_cmd "sed -i 's/${envVars[$i]}=.*$/${tempVar}=/' .env"
+		sys_cmd "sed -i 's/${envVars[$i]}=.*$/${envVars[$i]}=${tempVar}/' .env"
 	done
 	sys_cmd "rm .env_old"
 	info "Caching new configuration"
