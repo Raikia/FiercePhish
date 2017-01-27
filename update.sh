@@ -24,6 +24,7 @@ WHITE='\033[01;37m'
 OS=""
 OS_VERSION=""
 VERBOSE=false
+BACKUP_LOCATION="/tmp/fiercephish_db_backup.sql"
 GITHUB_BRANCH="updater"
 
 ## Main function
@@ -42,11 +43,9 @@ main()
         check_new_version
         self_update
     else
-    	echo -e "UPDATE LOLOLOLOL"
-    	update_env
-    	exit 1
         check_os
         run_update
+        exit 0
     fi
 }
 
@@ -183,6 +182,7 @@ run_update()
 	sys_cmd "pushd /var/www/fiercephish/"
 	info "Putting FiercePhish into maintenance mode"
 	sys_cmd "php artisan down"
+	backup_database
 	info "Pulling the latest version of FiercePhish"
 	sys_cmd "git pull origin ${GITHUB_BRANCH}"
 	info "Updating Composer"
@@ -195,6 +195,8 @@ run_update()
 	info "Turning off maintenance mode"
 	sys_cmd "php artisan up"
 	notice "Update complete!"
+	cleanup_backup
+	notice "Process complete! Enjoy the new FiercePhish"
 }
 
 update_env()
@@ -216,6 +218,28 @@ update_env()
 	sys_cmd "php artisan config:cache"
 }
 
+
+backup_database()
+{
+	source .env
+	info "Backing up the FiercePhish database"
+	mysqldump -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME"  --password="$DB_PASSWORD" "$DB_DATABASE" > $BACKUP_LOCATION
+	info "Done backing up database"
+}
+
+cleanup_backup()
+{
+	notice "Do you want to clean up the database backup file (${BACKUP_LOCATION})?"
+	prompt "Delete backups? [y/N]"
+	INPUT=$(get_input "n")
+	if [[ $INPUT =~ ^[y|Y]$ ]]
+		then
+		info "Removing backups"
+		sys_cmd "rm ${BACKUP_LOCATION}"
+		info "Backups removed"
+	else
+		info "Keeping backup database dump, located: ${LYELLOW}${BACKUP_LOCATION}${RESET}" 
+}
 
 ## Helper functions
 
