@@ -109,7 +109,7 @@ self_update()
 {
     info "Pulling latest version from GitHub"
     sys_cmd "pushd /var/www/fiercephish/"
-#    sys_cmd "wget -O update.sh https://raw.githubusercontent.com/Raikia/FiercePhish/${GITHUB_BRANCH}/update.sh"
+    sys_cmd "wget -O update.sh https://raw.githubusercontent.com/Raikia/FiercePhish/${GITHUB_BRANCH}/update.sh"
     info "Successfully pulled the latest updater!"
     info "Beginning update process"
     /usr/bin/env bash ./update.sh -r
