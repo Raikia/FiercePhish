@@ -30,6 +30,6 @@ class CreateLogAggregatesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('log_aggregates');
+        Schema::dropIfExists('log_aggregates');
     }
 }

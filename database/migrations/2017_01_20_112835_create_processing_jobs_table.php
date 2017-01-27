@@ -30,6 +30,6 @@ class CreateProcessingJobsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('processing_jobs');
+        Schema::dropIfExists('processing_jobs');
     }
 }

@@ -29,6 +29,6 @@ class CreateReceivedMailAttachmentsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('received_mail_attachments');
+        Schema::dropIfExists('received_mail_attachments');
     }
 }

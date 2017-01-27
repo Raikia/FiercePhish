@@ -42,6 +42,6 @@ class CreateEmailsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('emails');
+        Schema::dropIfExists('emails');
     }
 }

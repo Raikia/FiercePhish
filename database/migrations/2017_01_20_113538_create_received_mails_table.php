@@ -40,6 +40,6 @@ class CreateReceivedMailsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('received_mails');
+        Schema::dropIfExists('received_mails');
     }
 }

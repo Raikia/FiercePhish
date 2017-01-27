@@ -28,6 +28,6 @@ class CreateTargetlistsTargetusersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('target_list_target_user');
+        Schema::dropIfExists('target_list_target_user');
     }
 }
