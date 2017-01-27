@@ -862,7 +862,7 @@ EOM
 	fi
 	
 	
-	info "Configuring Dovecot (for future use)"
+	info "Configuring Dovecot"
 	if [[ $OS = "Ubuntu" ]]
 		then
 		sys_cmd "sed -i 's/^.*disable_plaintext_auth = .*$/disable_plaintext_auth = no/' /etc/dovecot/conf.d/10-auth.conf"
