@@ -514,7 +514,7 @@ validate_vars_smtp()
 			EMAIL_DOMAIN=$(get_input "localhost")
 			if [[ $EMAIL_DOMAIN = "" ]]
 				then
-				EMAIL_DOMAIN=$WEBSITE_DOMAIN
+				EMAIL_DOMAIN=$DEFAULT_EMAIL_DOMAIN
 			fi
 		fi
 	fi
