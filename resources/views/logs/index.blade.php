@@ -77,6 +77,9 @@
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
+          @php
+              $retArr = [];
+          @endphp
           @if (exec('tail -n 200 '.$loc, $retArr))
             <pre style="max-height: 400px;">{{ implode("\n", $retArr) }}</pre>
           @else
