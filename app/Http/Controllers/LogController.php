@@ -19,8 +19,8 @@ class LogController extends Controller
     {
         $this->middleware('auth');
         $this->logs_to_check = [
-            'apache-access' => '/var/log/apache2/access.log', 
-            'apache-error' => '/var/log/apache2/error.log',
+            'apache-access' => '/var/log/apache2/access_fiercephish.log', 
+            'apache-error' => '/var/log/apache2/error_fiercephish.log',
             'mail' => '/var/log/mail.log', 
             'dovecot' => '/var/log/dovecot.log',
             'laravel' => base_path('storage/logs/laravel.log'),
