@@ -737,7 +737,7 @@ EOM
 	fi
 	
 	
-	FP_INSTRUCTIONS+=("Go to ${LYELLOW}http://${SERVER_IP}:${APACHE_PORT}/${RESTORE} to use FiercePhish! (or ${LYELLOW}http://${WEBSITE_DOMAIN}:${APACHE_PORT}${RESTORE}/ if you used a domain name)")
+	FP_INSTRUCTIONS+=("Go to ${LYELLOW}http://${SERVER_IP}:${APACHE_PORT}/${RESTORE} to use FiercePhish! (or ${LYELLOW}http://${WEBSITE_DOMAIN}:${APACHE_PORT}/${RESTORE} if you used a domain name)")
 	DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}@${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
 	DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}www${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
 	notice "Done installing FiercePhish!"
