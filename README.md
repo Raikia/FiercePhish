@@ -28,7 +28,6 @@ For more information (like a manual installation method), see the [wiki pages](h
 This is the preferred method of installing FiercePhish + SMTP + IMAP services.
 
 ### Supported Operating Systems
-* Ubuntu 14.04
 * Ubuntu 16.04
 * Ubuntu 16.10
 
