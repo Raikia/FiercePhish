@@ -77,7 +77,11 @@
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
-          <pre style="max-height: 400px;">{{ system('tail -n 200 '.$loc) }}</pre>
+          @if (exec('tail -n 200 '.$loc, $retArr))
+            <pre style="max-height: 400px;">{{ implode("\n", $retArr) }}</pre>
+          @else
+            <pre style="max-height: 400px;">Empty log file</pre>
+          @endif
       </div>
     </div>
   </div>
