@@ -90,6 +90,7 @@ check_new_version()
     if [[ ! $INPUT =~ ^[y|Y]$ ]]
         then
         error "Exiting updater"
+        exit 1
     fi 
     
 }
@@ -206,6 +207,8 @@ update_env()
 	for i in "${!envVars[@]}"
 		do 
 		eval tempVar=\$${envVars[$i]}
+		tempVar=${tempVar//\//\\/}
+		VERBOSE=true
 		sys_cmd "sed -i 's/${envVars[$i]}=.*$/${envVars[$i]}=${tempVar}/' .env"
 	done
 	sys_cmd "rm .env_old"
