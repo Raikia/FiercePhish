@@ -24,8 +24,7 @@ WHITE='\033[01;37m'
 OS=""
 OS_VERSION=""
 VERBOSE=false
-#GITHUB_URL="https://raw.githubusercontent.com/Raikia/FiercePhish/master"
-GITHUB_URL="https://raw.githubusercontent.com/Raikia/FiercePhish/updater"
+GITHUB_BRANCH="updater"
 
 ## Main function
 main()
@@ -44,6 +43,7 @@ main()
         self_update
     else
     	echo -e "UPDATE LOLOLOLOL"
+    	update_env
     	exit 1
         check_os
         run_update
@@ -108,7 +108,7 @@ self_update()
 {
     info "Pulling latest version from GitHub"
     sys_cmd "pushd /var/www/fiercephish/"
-    sys_cmd "wget -O update.sh ${GITHUB_URL}/update.sh"
+#    sys_cmd "wget -O update.sh https://raw.githubusercontent.com/Raikia/FiercePhish/${GITHUB_BRANCH}/update.sh"
     info "Successfully pulled the latest updater!"
     info "Beginning update process"
     /usr/bin/env bash ./update.sh -r
@@ -176,6 +176,43 @@ check_os()
 	fi
 	echo -e ""
 }
+
+run_update()
+{
+	sys_cmd "pushd /var/www/fiercephish/"
+	info "Putting FiercePhish into maintenance mode"
+	sys_cmd "php artisan down"
+	info "Pulling the latest version of FiercePhish"
+	sys_cmd "git pull origin ${GITHUB_BRANCH}"
+	info "Updating Composer"
+	sys_cmd "composer install"
+	info "Updating Bower"
+	sys_cmd "bower install --allow-root"
+	info "Running migrations"
+	sys_cmd "php artisan migrate"
+	update_env
+	info "Turning off maintenance mode"
+	sys_cmd "php artisan up"
+	notice "Update complete!"
+}
+
+update_env()
+{
+	info "Creating new .env file"
+	local envVars=("APP_ENV" "APP_DEBUG" "APP_LOG_LEVEL" "APP_TIMEZONE" "APP_KEY" "APP_URL" "APP_NAME" "PROXY_URL" "PROXY_SCHEMA" "DB_CONNECTION" "DB_HOST" "DB_PORT" "DB_USERNAME" "DB_PASSWORD" "DB_DATABASE" "CACHE_DRIVER" "SESSION_DRIVER" "BROADCAST_DRIVER" "QUEUE_DRIVER" "REDIS_HOST" "REDIS_PASSWORD" "REDIS_PORT" "PUSHER_APP_ID" "PUSHER_APP_KEY" "PUSHER_APP_SECRET" "MAIL_HOST" "MAIL_PORT" "MAIL_USERNAME" "MAIL_PASSWORD" "MAILGUN_DOMAIN" "MAILGUN_SECRET" "URI_PREFIX" "IMAP_HOST" "IMAP_PORT" "MAIL_BCC_ALL")
+	sys_cmd "mv .env .env_old"
+	sys_cmd "cp .env.example .env"
+	source .env_old
+	for i in "${!envVars[@]}"
+		do 
+		eval tempVar=\$${envVars[$i]}
+		sys_cmd "sed -i 's/${envVars[$i]}=.*$/${tempVar}=/' .env"
+	done
+	sys_cmd "rm .env_old"
+	info "Caching new configuration"
+	sys_cmd "php artisan config:cache"
+}
+
 
 ## Helper functions
 
