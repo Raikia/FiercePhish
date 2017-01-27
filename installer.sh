@@ -348,6 +348,8 @@ validate_vars_general()
 		error "System memory + swap is less than 600 MB (it has ${total} MB)!"
 		if [[ ! $0 = "bash" ]]
 			then
+			echo -e ""
+			notice "FiercePhish requires at least 600 MB of RAM. Creating swap space can fix a low RAM issue."
 			prompt "Do you want to create a 2GB swap space? [Y/n]"
 			CREATE_SWAPSPACE_INPUT=$(get_input "n")
 			if [[ $CREATE_SWAPSPACE_INPUT =~ ^[n|N]$ ]]
@@ -380,20 +382,25 @@ validate_vars_general()
 
 validate_vars_http()
 {
-	while [[ -z $APACHE_PORT || ! $APACHE_PORT =~ ^[0-9]+$ || $APACHE_PORT -lt 1 || $APACHE_PORT -gt 65535 ]]
+	while [[ -z $APACHE_PORT ]]
 		do
 		if [[ $0 = "bash" ]]
 			then
 			error "APACHE_PORT is not set or is not a number.  It must be a number between 1 and 65535."
 			exit 1
 		else
-			prompt "Enter the port you want Apache to run on (default: 80)"
+			echo -e ""
+			prompt "Enter the port you want Apache to run on [80]"
 			APACHE_PORT=$(get_input "80")
 			if [[ $APACHE_PORT = "" ]]
 				then
 				APACHE_PORT=80
 			fi
-			validate_vars_http
+			if [[ ! $APACHE_PORT =~ ^[0-9]+$ || $APACHE_PORT -lt 1 || $APACHE_PORT -gt 65535 ]]
+			then
+				error "Invalid port!  It must be a number between 1 and 65535"
+				unset APACHE_PORT
+			fi
 		fi 
 	done
 	
@@ -404,7 +411,10 @@ validate_vars_http()
 			error "WEBSITE_DOMAIN is not set. It must be a domain name, the public IP, or \"127.0.0.1\""
 			exit 1
 		else
-			prompt "Enter the domain name of the website (ie: example.com) (IP address is ok if no domain) [127.0.0.1]"
+			echo -e ""
+			notice "If you have purchased a real domain to use with FiercePhish, enter it below. If you don't"
+			notice "have a domain, you can use the public IP address or just \"127.0.0.1\""
+			prompt "Enter the domain name for the website [127.0.0.1]"
 			WEBSITE_DOMAIN=$(get_input "127.0.0.1")
 			if [[ $WEBSITE_DOMAIN = "" ]]
 				then
@@ -422,8 +432,10 @@ validate_vars_http()
 			error "Otherwise, it should be whatever you want the new password to be"
 			exit 1
 		else
+			echo -e ""
 			if [[ $(type mysql) ]] >/dev/null 2>&1
 				then
+				notice "MySQL installation detected!"
 				prompt "Enter the current root MySQL password"
 				MYSQL_ROOT_PASSWD=$(get_input "pass")
 			else
@@ -441,7 +453,7 @@ validate_vars_http()
 				then
 				exit 1
 			fi
-			prompt "Enter a password for the MySQL root user"
+			prompt "Enter the current root MySQL password"
 			MYSQL_ROOT_PASSWD=$(get_input "pass")
 		done
 	fi
@@ -453,7 +465,9 @@ validate_vars_http()
 			error "ADMIN_USERNAME is not set."
 			exit 1
 		else
-			prompt "Enter a username for the first FiercePhish user account [admin]"
+			echo -e ""
+			notice "Enter the account information for the first FiercePhish user account:"
+			prompt "Enter a username [admin]"
 			ADMIN_USERNAME=$(get_input "admin")
 			if [[ $ADMIN_USERNAME = "" ]]
 				then
@@ -469,11 +483,11 @@ validate_vars_http()
 			error "ADMIN_EMAIL is not set."
 			exit 1
 		else
-			prompt "Enter an email for the first FiercePhish user account"
-			ADMIN_EMAIL=$(get_input "")
+			prompt "Enter an email [root@localhost]"
+			ADMIN_EMAIL=$(get_input "root@localhost")
 			if [[ $ADMIN_EMAIL = "" ]]
 				then
-				unset ADMIN_EMAIL
+				ADMIN_EMAIL="root@localhost"
 			fi
 		fi
 	done
@@ -485,7 +499,7 @@ validate_vars_http()
 			error "ADMIN_PASSWORD is not set."
 			exit 1
 		else
-			prompt "Enter a password for the first FiercePhish user account"
+			prompt "Enter a password"
 			ADMIN_PASSWORD=$(get_input "")
 			if [[ $ADMIN_PASSWORD = "" ]]
 				then
@@ -510,7 +524,10 @@ validate_vars_smtp()
 				then
 				DEFAULT_EMAIL_DOMAIN=$WEBSITE_DOMAIN
 			fi
-			prompt "Enter the domain you will be sending email from (ie: example.com) (\"localhost\" is ok if no real domain) [${DEFAULT_EMAIL_DOMAIN}]"
+			echo -e ""
+			notice "If you have purchased a real domain to send email from, enter it below (ie: example.com). If you"
+			notice "plan to spoof another domain that you do not own, enter \"localhost\". ${LRED}Do not enter an IP address${WHITE}"
+			prompt "Enter the domain that will send email [${DEFAULT_EMAIL_DOMAIN}]"
 			EMAIL_DOMAIN=$(get_input "localhost")
 			if [[ $EMAIL_DOMAIN = "" ]]
 				then
@@ -530,7 +547,10 @@ validate_vars_ssl()
 {
 	while [[ -z $SSL_DOMAIN ]]
 		do
-		prompt "Enter the domain you want configured for SSL (${LRED}This domain's A records must be set properly!${LYELLOW})"
+		echo -e ""
+		notice "Enter the domain you would like configured for SSL below (${LRED}This domain's A records must be set properly!${LYELLOW})"
+		notice "Note: this will auto-redirect all HTTP requests to HTTPS"
+		prompt "Enter the domain you want configured for SSL"
 		SSL_DOMAIN=$(get_input "")
 		if [[ $SSL_DOMAIN = "" ]]
 			then
@@ -540,7 +560,9 @@ validate_vars_ssl()
 	
 	while [[ -z $SSL_EMAIL ]]
 		do
-		prompt "Enter your email for SSL cert registration"
+		echo -e ""
+		notice "LetsEncrypt requires a valid email address for you. Enter it below"
+		prompt "Enter your email"
 		SSL_EMAIL=$(get_input "")
 		if [[ $SSL_EMAIL = "" ]]
 			then
