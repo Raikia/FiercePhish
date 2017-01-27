@@ -255,6 +255,7 @@
     <script src="{{ asset('vendor/tooltipster/dist/js/tooltipster.bundle.min.js') }}"></script>
     <script src="{{ asset('vendor/tooltipster/dist/js/plugins/tooltipster/SVG/tooltipster-SVG.js') }}"></script>
     <!-- Custom Theme Scripts -->
+    <script src="{{ asset('vendor/DateJS/build/production/date.min.js') }}"></script>
     <script src="{{ asset('vendor/gentelella/build/js/custom.min.js') }}"></script>
     @yield('footer')
     <script type="text/javascript">
