@@ -52,6 +52,9 @@
 @section('footer')
 <script type="text/javascript">
 /* global $ */
-  $("#mainCampaignTable").dataTable();
+  $("#mainCampaignTable").DataTable({
+      language: {
+        "emptyTable": "No Campaigns Found"
+      });
 </script>
 @endsection
