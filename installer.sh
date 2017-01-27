@@ -682,8 +682,9 @@ EOM
 		sys_cmd "chown -R www-data:www-data ."
 		sys_cmd "touch /var/log/apache2/error_fiercephish.log"
 		sys_cmd "touch /var/log/apache2/access_fiercephish.log"
-		sys_cmd "chown www-data:www-data /var/log/apache2/error_fiercephish.log"
-		sys_cmd "chown www-data:www-data /var/log/apache2/access_fiercephish.log"
+		sys_cmd "chown root:www-data /var/log/apache2/"
+		sys_cmd "chown root:www-data /var/log/apache2/error_fiercephish.log"
+		sys_cmd "chown root:www-data /var/log/apache2/access_fiercephish.log"
 	fi
 	sys_cmd "sed -i 's/APP_DEBUG=.*$/APP_DEBUG=false/' .env"
 	sys_cmd "sed -i 's/APP_URL=.*$/APP_URL=http:\/\/${WEBSITE_DOMAIN}:${APACHE_PORT}/' .env"
