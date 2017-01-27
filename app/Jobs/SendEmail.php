@@ -88,12 +88,8 @@ class SendEmail implements ShouldQueue
                 {
                     ActivityLog::log("Failed to send an email (simple send) to \"".$this->email->targetuser->email."\" (email ID ".$this->email->id.") (try #".$this->attempts().')', "SendEmail", true);
                 }
-                if ($this->attempts() > 5)
-                {
-                    ActivityLog::log("Cancelling email due to too many failed attempts.  Check the log for the errors!", "SendEmail");
-                    $this->delete();
-                }
-                throw $e;
+                ActivityLog::log("Cancelling email due to failed sending attempt.  Check the log for the errors!", "SendEmail");
+                $this->delete();
             }
         }
         $this->email->sent_time = date("Y-m-d h:i:s");
