@@ -857,6 +857,8 @@ EOM
 		sys_cmd "chown opendkim:opendkim mail.private"
 		DKIM_KEY=$(cat mail.txt | xargs | sed 's/.*(\s\(.*\)\s).*/\1/')
 		DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}mail._domainkey${RESTORE}' with text: ${LYELLOW}${DKIM_KEY}${RESTORE}")
+		sys_cmd "popd"
+		sys_cmd "popd"
 	fi
 	
 	
