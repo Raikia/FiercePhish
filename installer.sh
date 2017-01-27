@@ -153,6 +153,11 @@ main()
     	validate_vars_ssl
     	install_ssl
     	exit 1
+    elif [[ $INPUT_SELECTION = 5 ]]
+    	then
+    	validate_vars_general
+    	uninstall_ssl
+    	exit 1
     else
     	error "Unknown selection!"
     	exit 1
@@ -298,15 +303,16 @@ prompt_choice()
 		echo -e "        2. ${WHITE}Install FiercePhish only${RESTORE}"
 		echo -e "        3. ${WHITE}Install SMTP + IMAP only${RESTORE}"
 		echo -e "        4. ${WHITE}Setup SSL using LetsEncrypt${RESTORE}"
+		echo -e "        5. ${WHITE}Disable SSL${RESTORE}"
 	fi
 	echo -e ""
 	while [ true ]
 		do
-		prompt "Selection [1-4]"
+		prompt "Selection [1-5]"
 		INPUT_SELECTION=$(get_input "1")
 		if [ "$INPUT_SELECTION" -eq "$INPUT_SELECTION" ] 2> /dev/null
 			then
-			if [[ $INPUT_SELECTION -lt 5 && $INPUT_SELECTION -gt 0 ]]
+			if [[ $INPUT_SELECTION -lt 6 && $INPUT_SELECTION -gt 0 ]]
 				then
 				break
 			fi
@@ -570,6 +576,7 @@ validate_vars_ssl()
 		fi
 	done
 }
+
 
 review_vars()
 {
@@ -1004,6 +1011,30 @@ install_ssl()
 		error "FiercePhish is not installed!  Can't set up SSL encryption if FiercePhish isn't installed"
 	fi
 	sys_cmd "popd"
+}
+
+
+uninstall_ssl()
+{
+	if [[ -f /etc/apache2/sites-enabled/fiercephish.conf ]]
+		then
+		if [[ -f /etc/apache2/sites-enabled/fiercephish-le-ssl.conf ]]
+			then
+			info "Disabling FiercePhish's SSL configuration"
+			sys_cmd "a2dissite fiercephish-le-ssl"
+			info "Removing HTTP to HTTPS redirect"
+			sys_cmd "sed -i 's/^RewriteEngine .*$//' /etc/apache2/sites-available/fiercephish.conf"
+			sys_cmd "sed -i 's/^RewriteCond .*$//' /etc/apache2/sites-available/fiercephish.conf"
+			sys_cmd "sed -i 's/^RewriteRule .*$//' /etc/apache2/sites-available/fiercephish.conf"
+			info "Rebooting Apache"
+			sys_cmd "service apache2 restart"
+			info "Done!  SSL disabled"
+		else
+			error "SSL is not enabled for FiercePhish"
+		fi
+	else
+		error "FiercePhish is not installed!"
+	fi
 }
 
 
