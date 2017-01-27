@@ -51,7 +51,7 @@ This method is probably the easiest way to install/configure everything. It is a
 
  2. Generate the configuration file:
 
-   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/master/installer.sh | bash```
+   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/master/install.sh | bash```
 
  3. This will create a configuration file located at "~/fiercephish.config".  You must edit this file before moving on!
 
@@ -59,7 +59,7 @@ This method is probably the easiest way to install/configure everything. It is a
 
  4. Once "CONFIGURED=true" is set in the configuration file, re-run the install script:
 
-   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/master/installer.sh | bash```
+   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/master/install.sh | bash```
 
  5. Sit and wait.  The installation could take anywhere from 5-15 minutes depending on your server's download speed.
 
@@ -76,15 +76,15 @@ This method is just as easy as method #1, but the install will prompt you as it 
  
  2. Download the configuration file:
 
-   ```wget https://raw.githubusercontent.com/Raikia/FiercePhish/master/installer.sh```
+   ```wget https://raw.githubusercontent.com/Raikia/FiercePhish/master/install.sh```
 
  3. Set the installer as executable:
 
-   ```chmod +x installer.sh```
+   ```chmod +x install.sh```
 
  4. Run the installer:
 
-   ``` ./installer.sh ```
+   ``` ./install.sh ```
 
    The installer will prompt you for the same information as is described in [the configuration file for method #1](https://github.com/Raikia/FiercePhish/wiki/Installation-Configuration-File).  See that wiki page for information on what to provide.
 
@@ -96,4 +96,4 @@ This method is just as easy as method #1, but the install will prompt you as it 
 
 ### Troubleshooting
 
-If you have errors with the installation script, you can safely rerun the script without messing anything up (even if you provide it different information). If you continue to have problems, set "VERBOSE=true" (for method #1) or run ```./installer.sh -v``` (for method #2) to see the full log of everything running.  If you still have problems, [submit a bug report](https://github.com/Raikia/FiercePhish/wiki/Reporting-Bugs).
+If you have errors with the installation script, you can safely rerun the script without messing anything up (even if you provide it different information). If you continue to have problems, set "VERBOSE=true" (for method #1) or run ```./install.sh -v``` (for method #2) to see the full log of everything running.  If you still have problems, [submit a bug report](https://github.com/Raikia/FiercePhish/wiki/Reporting-Bugs).
