@@ -737,9 +737,9 @@ EOM
 	fi
 	
 	
-	FP_INSTRUCTIONS+=("Go to http://${SERVER_IP}:${APACHE_PORT}/ to use FiercePhish! (or http://${WEBSITE_DOMAIN}:${APACHE_PORT}/ if you used a domain name)")
-	DNS_INSTRUCTIONS+=("A record for '@' point to '${SERVER_IP}'")
-	DNS_INSTRUCTIONS+=("A record for 'www' point to '${SERVER_IP}'")
+	FP_INSTRUCTIONS+=("Go to ${LYELLOW}http://${SERVER_IP}:${APACHE_PORT}/${RESTORE} to use FiercePhish! (or ${LYELLOW}http://${WEBSITE_DOMAIN}:${APACHE_PORT}${RESTORE}/ if you used a domain name)")
+	DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}@${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
+	DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}www${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
 	notice "Done installing FiercePhish!"
 }
 
@@ -855,7 +855,7 @@ EOM
 		sys_cmd "opendkim-genkey -s mail -d ${EMAIL_DOMAIN}"
 		sys_cmd "chown opendkim:opendkim mail.private"
 		DKIM_KEY=$(cat mail.txt | xargs | sed 's/.*(\s\(.*\)\s).*/\1/')
-		DNS_INSTRUCTIONS+=("TXT record for 'mail._domainkey' with text: ${DKIM_KEY}")
+		DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}mail._domainkey${RESTORE}' with text: ${LYELLOW}${DKIM_KEY}${RESTORE}")
 	fi
 	
 	
@@ -895,24 +895,24 @@ EOM
 		sys_cmd "popd"
 	else
 		error "Unable to find the .env file for FiercePhish.  You'll have to update it manually at the end"
-		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_DRIVER=smtp')
-		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_HOST=127.0.0.1')
-		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_PORT=25')
-		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_USERNAME=null')
-		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_PASSWORD=null')
-		FP_INSTRUCTIONS+=('Edit the following in .env:  MAIL_ENCRYPTION=null')
-		FP_INSTRUCTIONS+=('Edit the following in .env:  IMAP_HOST=127.0.0.1')
-		FP_INSTRUCTIONS+=('Edit the following in .env:  IMAP_PORT=143')
-		FP_INSTRUCTIONS+=('Edit the following in .env:  IMAP_USERNAME=fiercephish')
-		FP_INSTRUCTIONS+=("Edit the following in .env:  IMAP_PASSWORD=${IMAP_PASSWORD}")
-		FP_INSTRUCTIONS+=("Run: php artisan config:cache")
+		FP_INSTRUCTIONS+=("Edit the following in ${LGREEN}.env${RESTORE}:  ${LYELLOW}MAIL_DRIVER=smtp${RESTORE}")
+		FP_INSTRUCTIONS+=("Edit the following in ${LGREEN}.env${RESTORE}:  ${LYELLOW}MAIL_HOST=127.0.0.1${RESTORE}")
+		FP_INSTRUCTIONS+=("Edit the following in ${LGREEN}.env${RESTORE}:  ${LYELLOW}MAIL_PORT=25${RESTORE}")
+		FP_INSTRUCTIONS+=("Edit the following in ${LGREEN}.env${RESTORE}:  ${LYELLOW}MAIL_USERNAME=null${RESTORE}")
+		FP_INSTRUCTIONS+=("Edit the following in ${LGREEN}.env${RESTORE}:  ${LYELLOW}MAIL_PASSWORD=null${RESTORE}")
+		FP_INSTRUCTIONS+=("Edit the following in ${LGREEN}.env${RESTORE}:  ${LYELLOW}MAIL_ENCRYPTION=null${RESTORE}")
+		FP_INSTRUCTIONS+=("Edit the following in ${LGREEN}.env${RESTORE}:  ${LYELLOW}IMAP_HOST=127.0.0.1${RESTORE}")
+		FP_INSTRUCTIONS+=("Edit the following in ${LGREEN}.env${RESTORE}:  ${LYELLOW}IMAP_PORT=143${RESTORE}")
+		FP_INSTRUCTIONS+=("Edit the following in ${LGREEN}.env${RESTORE}:  ${LYELLOW}IMAP_USERNAME=fiercephish${RESTORE}")
+		FP_INSTRUCTIONS+=("Edit the following in ${LGREEN}.env${RESTORE}:  ${LYELLOW}IMAP_PASSWORD=${IMAP_PASSWORD}${RESTORE}")
+		FP_INSTRUCTIONS+=("Run: ${LYELLOW}php artisan config:cache${RESTORE}")
 		sleep 5
 	fi
 	
-	DNS_INSTRUCTIONS+=("A record for 'mail' point to '${SERVER_IP}'")
-	DNS_INSTRUCTIONS+=("MX record point to 'mail' subdomain (or MXE record pointing to ${SERVER_IP})")
-	DNS_INSTRUCTIONS+=("TXT record for '@' with text: v=spf1 a mx a:mail.${EMAIL_DOMAIN} a:${EMAIL_DOMAIN} ip4:${SERVER_IP} ~all")
-	DNS_INSTRUCTIONS+=("TXT record for '_dmarc' with text: v=DMARC1; p=none");
+	DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}mail${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
+	DNS_INSTRUCTIONS+=("${LCYAN}MX${RESTORE} record point to '${LGREEN}mail${RESTORE}' subdomain (or MXE record pointing to ${LGREEN}${SERVER_IP}${RESTORE})")
+	DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}@${RESTORE}' with text: ${LYELLOW}v=spf1 a mx a:mail.${EMAIL_DOMAIN} a:${EMAIL_DOMAIN} ip4:${SERVER_IP} ~all${RESTORE}")
+	DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}_dmarc${RESTORE}' with text: ${LYELLOW}v=DMARC1; p=none${RESTORE}");
 	notice "Done installing SMTP and IMAP!"
 }
 
