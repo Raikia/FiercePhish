@@ -770,7 +770,7 @@ EOM
 	then
 		if ! valid_ip $WEBSITE_DOMAIN
 			then
-			ADDON_INSTRUCTION=" (or ${LYELLOW}http://${WEBSITE_DOMAIN}:${APACHE_PORT}/${RESTORE} if you used a domain name)"
+			ADDON_INSTRUCTION=" (or ${LYELLOW}http://${WEBSITE_DOMAIN}:${APACHE_PORT}/${RESTORE})"
 			DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}@${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
 			DNS_INSTRUCTIONS+=("${LCYAN}A${RESTORE} record for '${LGREEN}www${RESTORE}' point to '${LYELLOW}${SERVER_IP}${RESTORE}'")
 		fi
@@ -893,7 +893,7 @@ EOM
 			sys_cmd "opendkim-genkey -s mail -d ${EMAIL_DOMAIN}"
 			sys_cmd "chown opendkim:opendkim mail.private"
 			DKIM_KEY=$(cat mail.txt | xargs | sed 's/.*(\s\(.*\)\s).*/\1/')
-			DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}mail._domainkey${RESTORE}' with text: ${LYELLOW}${DKIM_KEY}${RESTORE}")
+			DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}mail._domainkey${RESTORE}' with text: \n            ${LYELLOW}${DKIM_KEY}${RESTORE}")
 			sys_cmd "popd"
 			sys_cmd "popd"
 		fi
@@ -966,12 +966,13 @@ EOM
 
 install_ssl()
 {
-	info "Configuring Apache for SSL...this can take a few minutes"
-	sys_cmd "pushd /usr/local/sbin/"
-	sys_cmd "wget https://dl.eff.org/certbot-auto -O certbot-auto"
-	sys_cmd "chmod a+x /usr/local/sbin/certbot-auto"
 	if [[ -f /etc/apache2/sites-available/fiercephish.conf ]]
 		then
+		info "Downloading LetsEncrypt"
+		sys_cmd "pushd /usr/local/sbin/"
+		sys_cmd "wget https://dl.eff.org/certbot-auto -O certbot-auto"
+		sys_cmd "chmod a+x /usr/local/sbin/certbot-auto"
+		info "Installing and configuring LetsEncrypt...this can take a few minutes"
 		if [[ $VERBOSE = "true" ]]
 			then
 			resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1 | tee /dev/tty)
@@ -980,8 +981,9 @@ install_ssl()
 		fi
 		if [[ $resp =~ Failed ]]
 			then
-			error "Error creating SSL certificate!  Check to make sure the A record of your domain \"${SSL_DOMAIN}\" is properly set"
-			error "LetsEncrypt Error Message: ${resp}"
+			error "Error creating SSL certificate!  Check to make sure the A record of your domain \"${SSL_DOMAIN}\" is properly set."
+			error "Full error log is at ~/letsencrypt_error.log"
+			echo "${resp}" > ~/letsencrypt_error.log
 			exit 1;
 		elif [[ $resp =~ Congratulations ]]
 			then
