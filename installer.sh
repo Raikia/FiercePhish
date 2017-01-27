@@ -524,7 +524,7 @@ validate_vars_ssl()
 {
 	while [[ -z $SSL_DOMAIN ]]
 		do
-		prompt "Enter the domain you want configured for SSL (${LRED}This domain's A records must be set properly!${LYELLOW}"
+		prompt "Enter the domain you want configured for SSL (${LRED}This domain's A records must be set properly!${LYELLOW})"
 		SSL_DOMAIN=$(get_input "")
 		if [[ $SSL_DOMAIN = "" ]]
 			then
