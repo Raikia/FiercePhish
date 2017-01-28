@@ -91,3 +91,7 @@ tr.selected {
 .single_pointer {
   cursor: pointer;
 }
+
+.dataTables_wrapper>.row {
+  overflow-x: hidden !important;
+}
