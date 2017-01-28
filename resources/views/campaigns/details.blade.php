@@ -41,7 +41,7 @@
                         </tr>
                         <tr>
                             <td><b>Target List</b></td>
-                            <td><a href="{{ action('TargetsController@assign_index', ['id' => $campaign->target_list->id]) }}">{{ $campaign->target_list->name }}</a></td>
+                            <td><a href="{{ action('TargetsController@targetlists_details', ['id' => $campaign->target_list->id]) }}">{{ $campaign->target_list->name }}</a></td>
                         </tr>
                         <tr>
                             <td><b>Sender Name</b></td>
