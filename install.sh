@@ -767,6 +767,10 @@ directory=/var/www/fiercephish
 user=www-data
 redirect_stderr=true
 EOM
+		sys_cmd "supervisorctl reread"
+		sleep 2
+		sys_cmd "supervisorctl update"
+		sleep 2
 		sys_cmd "service supervisor start"
 		sleep 5
 		sys_cmd "supervisorctl reload"
