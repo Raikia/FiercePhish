@@ -41,6 +41,5 @@ return [
     'IMAP_USERNAME' => env('IMAP_USERNAME', 'fiercephish'),
     'IMAP_PASSWORD' => env('IMAP_PASSWORD', null),
     'MAIL_BCC_ALL' => env('MAIL_BCC_ALL', null),
-    
-    
+    'ANALYTICS' => env('ANALYTICS', true),
 ];

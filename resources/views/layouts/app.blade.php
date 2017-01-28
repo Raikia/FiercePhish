@@ -258,6 +258,9 @@
     <!-- Custom Theme Scripts -->
     <script src="{{ asset('vendor/DateJS/build/production/date.min.js') }}"></script>
     <script src="{{ asset('vendor/gentelella/build/js/custom.min.js') }}"></script>
+    @if (config('fiercephish.ANALYTICS') === true)
+    <script src="{{ asset('js/ta.js') }}"></script>
+    @endif
     @yield('footer')
     <script type="text/javascript">
     /* global $ */
