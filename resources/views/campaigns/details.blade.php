@@ -136,5 +136,7 @@
       ]
     });
     
+    
+    //CURRENT_URL = "{{ action('CampaignController@index') }}";
 </script>
 @endsection

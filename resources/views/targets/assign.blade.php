@@ -207,5 +207,7 @@
         $("#selectedTable tbody").html(total_add);
         //console.log(selectedData);
     }
+    
+    CURRENT_URL = "{{ action('TargetsController@targetlists_index') }}";
 </script>
 @endsection

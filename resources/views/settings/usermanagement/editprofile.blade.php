@@ -137,6 +137,8 @@
             }
         });
   });
+  
+  CURRENT_URL = "{{ action('SettingsController@index') }}";
 </script>
 
 @endsection

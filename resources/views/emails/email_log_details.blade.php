@@ -142,6 +142,6 @@
 <script type="text/javascript">
     /* global $ */
     
-    
+    CURRENT_URL = "{{ action('EmailController@email_log') }}";
 </script>
 @endsection
