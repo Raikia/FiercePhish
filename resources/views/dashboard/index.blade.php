@@ -95,10 +95,10 @@
               <div class="clearfix"></div>
             </div>
             <ul class="list-unstyled top_profiles scroll-view">
-              @foreach (App\Email::where('status', App\Email::SENT)->orderby('updated_at', 'desc')->limit(5)->get() as $email)
+              @foreach (App\Email::with('targetuser')->where('status', App\Email::SENT)->orderby('updated_at', 'desc')->limit(5)->get() as $email)
               <li class="media event">
                 <div class="media-body" style="padding-left: 10px;">
-                  <a class="title" href="{{ action('EmailController@email_log_details', ['id' => $email->id]) }}">{{ $email->receiver_name }}</a>
+                  <a class="title" href="{{ action('EmailController@email_log_details', ['id' => $email->id]) }}">{{ $email->targetuser->full_name() }}</a>
                   <p>Campaign: {!! ($email->campaign)?'<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>':'None' !!} </p>
                   <p> <small>Sent: {{ \App\Libraries\DateHelper::readable($email->sent_time) }} ({{ \App\Libraries\DateHelper::relative($email->sent_time) }})</small>
                   </p>
