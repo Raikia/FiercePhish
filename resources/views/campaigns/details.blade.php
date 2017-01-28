@@ -129,14 +129,20 @@
       columns: [
         { data: 'targetuser.full_name', name: 'targetuser.first_name'},
         { data: 'targetuser.email', name: 'targetuser.email'},
-        { data: 'uuid', name: 'uuid'},
+        { data: 'uuid', name: 'uuid', render: function ( data, type, row ) {
+            console.log("data: " + data + " , type: " + type+ " , row: " + row);
+            if (data)
+              return data.substr(0,10)+"...";
+            return "";
+          }},
         { data: 'status', name: 'status'},
         { data: 'planned_time', name: 'planned_time'},
         { data: 'sent_time', name: 'sent_time'},
       ]
     });
     
-    
-    //CURRENT_URL = "{{ action('CampaignController@index') }}";
+    @if ($campaign->status != \App\Campaign::WAITING && $campaign->status != \App\Campaign::SENDING)
+        CURRENT_URL = "{{ action('CampaignController@index') }}";
+    @endif
 </script>
 @endsection
