@@ -39,9 +39,10 @@ main()
     then
         show_header
         validate_vars_general
-        #check_install
+        check_install
         check_new_version
         self_update
+        exit 0
     else
         check_os
         run_update
