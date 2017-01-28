@@ -72,7 +72,7 @@ check_new_version()
 {
     info "Checking for new FiercePhish version"
     local current_version=$(cat VERSION)
-    local latest_version=$(curl -s https://raw.githubusercontent.com/Raikia/FiercePhish/updater/VERSION)
+    local latest_version=$(curl -s https://raw.githubusercontent.com/Raikia/FiercePhish/${GITHUB_BRANCH}/VERSION?nocache)
     
     if [[ $current_version == $latest_version ]]
         then
