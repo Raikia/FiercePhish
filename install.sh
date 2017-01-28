@@ -714,7 +714,7 @@ EOM
 	sys_cmd "touch storage/logs/laravel.log"
 	if [[ $OS = "Ubuntu" ]]
 		then
-		sys_cmd "chown -R www-data:www-data ."
+		sys_cmd "chown -R www-data:www-data /var/www/fiercephish"
 		sys_cmd "touch /var/log/apache2/error_fiercephish.log"
 		sys_cmd "touch /var/log/apache2/access_fiercephish.log"
 		sys_cmd "chown root:www-data /var/log/apache2/"
@@ -830,7 +830,7 @@ install_smtp_imap()
 		grep -q -F 'local_recipient_maps' /etc/postfix/main.cf || echo 'local_recipient_maps = ' >> /etc/postfix/main.cf
 		sys_cmd "sed -i 's/local_recipient_maps = .*$/local_recipient_maps = /' /etc/postfix/main.cf"
 		sys_cmd "touch /var/log/mail.log"
-		sys_cmd "chown www-data:www-data /var/log/mail.log"
+		sys_cmd "chown root:www-data /var/log/mail.log"
 		echo ${EMAIL_DOMAIN} > /etc/mailname
 		sys_cmd "postfix stop"
 		sys_cmd "postfix start"
@@ -913,7 +913,7 @@ EOM
 			sys_cmd "sed -i 's/^.*auth_mechanisms = .*$/auth_mechanisms = plain login/' /etc/dovecot/conf.d/10-auth.conf"
 			sys_cmd "sed -i 's/^#\?log_path =.*$/log_path = \/var\/log\/dovecot.log/' /etc/dovecot/conf.d/10-logging.conf"
 			sys_cmd "touch /var/log/dovecot.log"
-			sys_cmd "chown www-data:www-data /var/log/dovecot.log"
+			sys_cmd "chown root:www-data /var/log/dovecot.log"
 		fi
 	else
 		notice "Skipping OpenDKIM and Dovecot installs because you aren't sending email from your own domain"
