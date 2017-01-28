@@ -48,7 +48,7 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::get('campaigns', 'CampaignController@index');
 	Route::get('campaigns/create', 'CampaignController@create');
 	Route::post('campaigns/create', 'CampaignController@create_post');
-	Route::get('campaigns/{id}', 'CampaignController@campaign_details');
+	Route::get('campaigns/{id?}', 'CampaignController@campaign_details');
 	Route::post('campaigns/{id}/cancel', 'CampaignController@campaign_cancel');
 
 

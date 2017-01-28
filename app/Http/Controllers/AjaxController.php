@@ -242,7 +242,7 @@ class AjaxController extends Controller
                 return $email->getStatus();
             })->editColumn('campaign.name', function($email) {
                 if ($email->campaign !== null)
-                    return '<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>';
+                    return $email->campaign->name;
                 else
                     return 'None';
             })->editColumn('targetuser.full_name', function ($email) {

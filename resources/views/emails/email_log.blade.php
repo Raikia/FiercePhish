@@ -50,7 +50,7 @@
     window.location="{{ action('EmailController@email_log_details') }}/"+item.currentTarget.id.split('_')[1];
   });
   
-  
+  var a = "";
   var dt = $(".datatable").DataTable({
       language: {
         "emptyTable": "No Emails Found"
@@ -73,7 +73,26 @@
         { data: 'planned_time', name: 'planned_time'},
         { data: 'sent_time', name: 'sent_time'},
       ],
-      order: [[ 9, 'desc' ]]
+      order: [[ 9, 'desc' ]],
+      columnDefs: [
+        {
+          targets: 5,
+          "render": function ( data, type, row ) {
+            console.log("data: " + data + " , type: " + type+ " , row: " + row);
+            if (data)
+              return data.substr(0,10)+"...";
+            return "";
+          }
+        },
+        {
+          targets: 7,
+          render: function ( data, type, row ) {
+            if (data != "None")
+              return '<a href="{{ action('CampaignController@campaign_details') }}/'+row.campaign.id+'/">'+data+'</a>';
+            return data;
+          }
+        }
+      ]
     });
 </script>
 @endsection
