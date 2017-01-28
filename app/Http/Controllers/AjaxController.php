@@ -176,7 +176,7 @@ class AjaxController extends Controller
     
     public function campaign_emails_get(Request $request, $id)
     {
-        return Datatables::of(Campaign::findorfail($id)->emails()->with('targetuser'))->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
+        return Datatables::of(Campaign::findorfail($id)->emails()->with('targetuser')->select('emails.*'))->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
                 return $email->getStatus();
             })->editColumn('targetuser.full_name', function ($email) {
                 return $email->targetuser->full_name();
