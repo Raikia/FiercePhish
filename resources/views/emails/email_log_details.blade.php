@@ -79,57 +79,76 @@
         <table class="table table-striped table-bordered" style="width: 100%; margin-left: auto; margin-right: auto;">
           <tbody>
             <tr>
-              <td>Sender Name</td>
+              <td><b>Sender Name</b></td>
               <td>{{ $email->sender_name }}</td>
             </tr>
             <tr>
-              <td>Sender Email</td>
+              <td><b>Sender Email</b></td>
               <td>{{ $email->sender_email }}</td>
             </tr>
             <tr>
-              <td>Receiver Name</td>
+              <td><b>Receiver Name</b></td>
               <td>{{ $email->targetuser->full_name() }}</td>
             </tr>
             <tr>
-              <td>Receiver Email</td>
+              <td><b>Receiver Email</b></td>
               <td>{{ $email->targetuser->email }}</td>
             </tr>
             @if ($email->has_attachment)
               <tr>
-                <td>Attachment Name</td>
+                <td><b>Attachment Name</b></td>
                 <td>{{ $email->attachment_name }}</td>
               </tr>
               <tr>
-                <td>Attachment Mime Type</td>
+                <td><b>Attachment Mime Type</b></td>
                 <td>{{ $email->attachment_mime }}</td>
               </tr>
             @endif
             <tr>
-              <td>UUID</td>
+              <td><b>UUID</b></td>
               <td>{{ $email->uuid }}</td>
             </tr>
             <tr>
-              <td>Status</td>
+              <td><b>Status</b></td>
               <td>{{ $email->getStatus() }}</td>
             </tr>
             <tr>
-              <td>Associated Campaign</td>
+              <td><b>Associated Campaign</b></td>
               <td>{!! ($email->campaign)?'<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>':'None' !!}</td>
             </tr>
             <tr>
-              <td>Sent At</td>
+              <td><b>Planned Send At</b></td>
+              <td>{{ \App\Libraries\DateHelper::readable($email->planned_time) }}</td>
+            </tr>
+            <tr>
+              <td><b>Sent At</b></td>
               <td>{{ \App\Libraries\DateHelper::readable($email->sent_time) }}</td>
             </tr>
             <tr>
-              <td>Created At</td>
+              <td><b>Created At</b></td>
               <td>{{ \App\Libraries\DateHelper::readable($email->created_at) }}</td>
             </tr>
             <tr>
-              <td>Updated At</td>
+              <td><b>Updated At</b></td>
               <td>{{ \App\Libraries\DateHelper::readable($email->updated_at) }}</td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div style="text-align: center; margin-bottom: 20px;">
+        @if ($email->status == App\Email::SENT || $email->status == App\Email::CANCELLED || $email->status == App\Email::FAILED)
+          @if ($email->campaign == null || $email->campaign->status != App\Campaign::CANCELLED)
+            <form action="{{ action('EmailController@email_resend', ['id' => $email->id]) }}" method="post">
+              {{ csrf_field() }}
+              <input class="btn btn-primary" type="submit" value="Resend Email Immediately" />
+            </form>
+          @endif
+        @elseif ($email->status == App\Email::NOT_SENT || $email->status == App\Email::PENDING_RESEND)
+        <form action="{{ action('EmailController@email_cancel', ['id' => $email->id]) }}" method="post">
+          {{ csrf_field() }}
+          <input class="btn btn-danger" type="submit" value="Cancel Email" />
+        </form>
+        @endif
       </div>
     </div>
   </div>

@@ -82,6 +82,8 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::post('emails/simple/send', 'EmailController@send_simple_post');
 	Route::get('emails/log', 'EmailController@email_log');
 	Route::get('emails/log/{id?}', 'EmailController@email_log_details');
+	Route::post('emails/log/{id}/resend', 'EmailController@email_resend');
+	Route::post('emails/log/{id}/cancel', 'EmailController@email_cancel');
 	Route::get('inbox', 'EmailController@inbox_get');
 	Route::get('inbox/download/{id?}', 'EmailController@inbox_download_attachment');
 	

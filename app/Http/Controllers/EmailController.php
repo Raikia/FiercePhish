@@ -13,7 +13,9 @@ use App\ActivityLog;
 use App\ReceivedMail;
 use App\ReceivedMailAttachment;
 use App\TargetUser;
+use App\Campaign;
 use \Response;
+use Carbon\Carbon;
 use File;
 
 
@@ -219,5 +221,28 @@ class EmailController extends Controller
             'Content-Type' => 'application/octet-stream',
             'Content-Disposition' => 'attachment; filename="'.$attachment->name.'"',
         ]);
+    }
+    
+    public function email_resend(Request $request, $id)
+    {
+        $email = Email::findorfail($id);
+        if ($email->campaign != null && $email->campaign->status == Campaign::CANCELLED)
+            return back()->withErrors('Cannot resend an email for a cancelled campaign');
+        $new_email = $email->replicate();
+        $new_email->status = Email::PENDING_RESEND;
+        $new_email->planned_time = \App\Libraries\DateHelper::now()->addSeconds(5);
+        $new_email->sent_time = null;
+        $new_email->save();
+        $new_email->send($new_email->planned_time, 'medium');
+        return redirect()->action('EmailController@email_log_details', ['id' => $new_email->id])->with('success', 'Email has been queued for resending');
+    }
+    
+    public function email_cancel(Request $request, $id)
+    {
+        $email = Email::findorfail($id);
+        if ($email->status == Email::SENT || $email->status == Email::CANCELLED || $email->status == Email::FAILED)
+            return back()->withErrors("You can't cancel a completed email");
+        $email->cancel();
+        return back()->withSuccess('Email cancelled');
     }
 }
