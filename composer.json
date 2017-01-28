@@ -13,7 +13,7 @@
         "pragmarx/google2fa": "^1.0",
         "paragonie/constant_time_encoding": "^2.0",
         "bacon/bacon-qr-code": "^1.0",
-        "yajra/laravel-datatables-oracle": "~6.0"
+        "yajra/laravel-datatables-oracle": "~7.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
