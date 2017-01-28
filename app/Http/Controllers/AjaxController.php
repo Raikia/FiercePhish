@@ -50,65 +50,25 @@ class AjaxController extends Controller
     
     public function targetuser_list(Request $request, $id=null)
     {
+        $query = null;
         if ($id === null)
         {
-            return Datatables::of(TargetUser::where('hidden', false))->addColumn('list_of_membership', function ($user) {
-                    if (count($user->lists) == 0)
-                        return 'None';
-                    $lists = '<ul style="margin-bottom: 0px;">';
-                    foreach ($user->lists as $list)
-                        $lists .= '<li>'.$list->name.'</li>';
-                    $lists .= '</ul>';
-                    return $lists;
-                })->editColumn('notes', function($user) {
-                    if ($user->notes == '')
-                    {
-                        $notes = '<a href="#" class="editnotes editable-empty" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">Empty</a>';
-                    }
-                    else
-                    {
-                        $notes = '<a href="#" class="editnotes" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">'.$user->notes.'</a>';
-                    }
-                    return $notes;
-                })->make(true);
+            $query = TargetUser::where('hidden', false);
         }
         else
         {
-            return Datatables::of(TargetList::findOrFail($id)->availableUsers())->setRowId('row_{{ $id }}')->addColumn('list_of_membership', function ($user) {
-                    if (count($user->lists) == 0)
-                        return 'None';
-                    $lists = '<ul style="margin-bottom: 0px;">';
-                    foreach ($user->lists as $list)
-                        $lists .= '<li>'.$list->name.'</li>';
-                    $lists .= '</ul>';
-                    return $lists;
-                })->editColumn('notes', function($user) {
-                    if ($user->notes == '')
-                    {
-                        $notes = '<a href="#" class="editnotes editable-empty" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">Empty</a>';
-                    }
-                    else
-                    {
-                        $notes = '<a href="#" class="editnotes" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">'.$user->notes.'</a>';
-                    }
-                    return $notes;
-                })->make(true);
+            $query = TargetList::findOrFail($id)->availableUsers();
         }
+        return Datatables::of($query)->setRowId('row_{{ $id }}')->addColumn('list_of_membership', function ($user) {
+                return $user->lists()->pluck('name')->implode("-=|=-");
+            })->make(true);
     }
     
     public function targetuser_membership(Request $request, $id)
     {
-        return Datatables::of(TargetList::findOrFail($id)->users())->setRowId('row_{{ $target_user_id }}')->editColumn('notes', function($user) {
-                    if ($user->notes == '')
-                    {
-                        $notes = '<a href="#" class="editnotes editable-empty" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">Empty</a>';
-                    }
-                    else
-                    {
-                        $notes = '<a href="#" class="editnotes" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">'.$user->notes.'</a>';
-                    }
-                    return $notes;
-                })->make(true);
+        return Datatables::of(TargetList::findOrFail($id)->raw_users())->setRowId('row_{{ $id }}')->addColumn('list_of_membership', function ($user) {
+                return $user->lists()->pluck('name')->implode("-=|=-");
+        })->make(true);
     }
     
     public function get_emailtemplate_info(Request $request, $id='')

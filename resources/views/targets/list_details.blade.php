@@ -140,7 +140,17 @@
         { data: 'first_name', name: 'first_name'},
         { data: 'last_name', name: 'last_name'},
         { data: 'email', name: 'email'},
-        { data: 'notes', name: 'notes'},
+        { data: 'notes', name: 'notes', render: function(data, type, row) {
+                                                  var emptyClass = ' editable-empty';
+                                                  var noteValue = 'Empty';
+                                                  if (data != "")
+                                                  {
+                                                    emptyClass = "";
+                                                    noteValue = data;
+                                                  }
+                                                  return '<a href="#" class="editnotes' + emptyClass + '" data-type="text" data-pk="' + row.id + '" data-url="{{ action('AjaxController@edit_targetuser_notes') }}" data-title="Enter note">' + noteValue + '</a>';
+                                                }
+        },
         { data: 'delete', name: 'delete', orderable: false, searchable: false, sortable: false},
       ],
       columnDefs: [ {

@@ -183,8 +183,31 @@
         { data: 'first_name', name: 'first_name'},
         { data: 'last_name', name: 'last_name'},
         { data: 'email', name: 'email'},
-        { data: 'list_of_membership', name: 'list_of_membership', orderable: false, searchable: false},
-        { data: 'notes', name: 'notes'}
+        { data: 'list_of_membership', name: 'list_of_membership', render: function(data, type, row) {
+                                                                            var parts = data.split("-=|=-");
+                                                                            var ret = '<ul style="margin-bottom: 0px; padding-left: 25px;">';
+                                                                            for (var x=0; x < parts.length; ++x)
+                                                                            {
+                                                                              ret += '<li>' + parts[x] + '</li>';
+                                                                            }
+                                                                            ret += '</ul>';
+                                                                            if (parts.length == 0 || (parts.length == 1 && parts[0] == ""))
+                                                                            {
+                                                                              ret = 'None';
+                                                                            }
+                                                                            return ret;
+                                                                          }, orderable: false, searchable: false},
+        { data: 'notes', name: 'notes', render: function(data, type, row) {
+                                                  var emptyClass = ' editable-empty';
+                                                  var noteValue = 'Empty';
+                                                  if (data != "")
+                                                  {
+                                                    emptyClass = "";
+                                                    noteValue = data;
+                                                  }
+                                                  return '<a href="#" class="editnotes' + emptyClass + '" data-type="text" data-pk="' + row.id + '" data-url="{{ action('AjaxController@edit_targetuser_notes') }}" data-title="Enter note">' + noteValue + '</a>';
+                                                }
+        }
       ]
     });
     
