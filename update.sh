@@ -193,7 +193,8 @@ run_update()
 	sys_cmd "/usr/bin/env php artisan down"
 	backup_database
 	info "Pulling the latest version of FiercePhish"
-	sys_cmd "git pull origin ${GITHUB_BRANCH}"
+	sys_cmd "git fetch --all"
+	sys_cmd "git reset --hard origin/${GITHUB_BRANCH}"
 	info "Updating Composer"
 	sys_cmd "composer install"
 	info "Updating Bower"
