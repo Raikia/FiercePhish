@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\Disable2FA::class,
         Commands\CheckMail::class,
         Commands\LogPull::class,
+        Commands\CatchMissed::class,
     ];
 
     /**
@@ -29,6 +30,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('fp:checkmail')->everyMinute();
         $schedule->command('fp:logpull')->everyMinute();
+        $schedule->command('fp:catchmissedmail')->everyMinute();
     }
 
     /**

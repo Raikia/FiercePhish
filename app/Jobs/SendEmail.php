@@ -42,7 +42,7 @@ class SendEmail implements ShouldQueue
             $this->email->save();
             return;
         }
-        if ($this->email->status == Email::CANCELLED)
+        if ($this->email->status == Email::CANCELLED || $this->email->status == Email::SENDING || $this->email->status == Email::SENT || $this->email->status == Email::FAILED)
         {
             return;
         }
