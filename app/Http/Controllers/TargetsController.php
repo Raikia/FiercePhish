@@ -153,7 +153,7 @@ class TargetsController extends Controller
                 return back()->withErrors('Invalid selection');
         $list = TargetList::findOrFail($request->input('listSelection'));
         $list->users()->syncWithoutDetaching($ids);
-        ActivityLog::log("Added users to the list \"".$list->name."\", it now has " . count($list->users) ." users");
+        ActivityLog::log("Added users to the list \"".$list->name."\", it now has " . $list->users()->count() ." users");
         return redirect()->action('TargetsController@targetlists_details', ['id' => $list->id])->with('success', 'Users successfully added');
     }
     
