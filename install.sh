@@ -658,7 +658,7 @@ install_fiercephish()
 		then
 		sys_cmd "git clone https://github.com/Raikia/FiercePhish.git /var/www/fiercephish"
 		sys_cmd "pushd /var/www/fiercephish"
-		sys_cmd "git checkout laravel5.4"
+		sys_cmd "git checkout dev"
 		sys_cmd "popd"
 		sys_cmd "chown -R www-data:www-data /var/www/fiercephish"
 	fi
@@ -754,12 +754,12 @@ EOM
 		then
 		cat > /etc/supervisor/conf.d/fiercephish.conf <<- EOM
 [program:fiercephish]
-command=/usr/bin/php /var/www/fiercephish/artisan queue:listen --queue=high,medium,low,default --timeout=0
+command=/usr/bin/php /var/www/fiercephish/artisan queue:work --queue=high,medium,low,default --tries 1 --timeout=86100
 process_name = %(program_name)s-80%(process_num)02d
 stdout_logfile = /var/log/fiercephish-80%(process_num)02d.log
 stdout_logfile_maxbytes=100MB
 stdout_logfile_backups=10
-numprocs=6
+numprocs=10
 directory=/var/www/fiercephish
 stopwaitsecs=600
 user=www-data

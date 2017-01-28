@@ -180,9 +180,17 @@ check_os()
 
 run_update()
 {
+	info "Ensuring dependencies are properly installed"
+	sys_cmd "apt-get update"
+	sys_cmd "apt-get install -y git curl unzip"
 	sys_cmd "pushd /var/www/fiercephish/"
+	info "Updating Bower"
+	sys_cmd "/usr/bin/env npm cache clean"
+	sys_cmd "/usr/bin/env npm update -g bower"
+	info "Updating Composer"
+	sys_cmd "composer self-update"
 	info "Putting FiercePhish into maintenance mode"
-	sys_cmd "php artisan down"
+	sys_cmd "/usr/bin/env php artisan down"
 	backup_database
 	info "Pulling the latest version of FiercePhish"
 	sys_cmd "git pull origin ${GITHUB_BRANCH}"
@@ -191,10 +199,38 @@ run_update()
 	info "Updating Bower"
 	sys_cmd "bower install --allow-root"
 	info "Running migrations"
-	sys_cmd "php artisan migrate"
+	sys_cmd "/usr/bin/env php artisan migrate"
 	update_env
+	info "Updating cron job"
+	cron_command="/usr/bin/env php /var/www/fiercephish/artisan schedule:run >> /dev/null 2>&1"
+	cron_job="* * * * * $cron_command"
+	cat <(grep -i -F -v "$cron_command" <(crontab -u www-data -l 2>/dev/null)) <(echo "$cron_job") | crontab -u www-data -
+	info "Updating Supervisor for job processing"
+	if [[ $OS = "Ubuntu" ]]
+		then
+		cat > /etc/supervisor/conf.d/fiercephish.conf <<- EOM
+[program:fiercephish]
+command=/usr/bin/php /var/www/fiercephish/artisan queue:work --queue=high,medium,low,default --tries 1 --timeout=86100
+process_name = %(program_name)s-80%(process_num)02d
+stdout_logfile = /var/log/fiercephish-80%(process_num)02d.log
+stdout_logfile_maxbytes=100MB
+stdout_logfile_backups=10
+numprocs=10
+directory=/var/www/fiercephish
+stopwaitsecs=600
+user=www-data
+EOM
+		sys_cmd "service supervisor restart"
+		sleep 5
+		sys_cmd "supervisorctl reload"
+		sleep 10
+		sys_cmd "service supervisor restart"
+		sleep 5
+	fi
+	info "Restarting queue workers"
+	sys_cmd "/usr/bin/env php artisan queue:restart"
 	info "Turning off maintenance mode"
-	sys_cmd "php artisan up"
+	sys_cmd "/usr/bin/env php artisan up"
 	notice "Update complete!"
 	cleanup_backup
 	notice "Process complete! Enjoy the new FiercePhish"
@@ -215,7 +251,7 @@ update_env()
 	done
 	sys_cmd "rm .env_old"
 	info "Caching new configuration"
-	sys_cmd "php artisan config:cache"
+	sys_cmd "/usr/bin/env php artisan config:cache"
 }
 
 
