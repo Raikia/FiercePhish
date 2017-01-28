@@ -53,8 +53,9 @@
 <script type="text/javascript">
 /* global $ */
   $("#mainCampaignTable").DataTable({
-      language: {
-        "emptyTable": "No Campaigns Found"
-      });
+    language: {
+      "emptyTable": "No Campaigns Found"
+    }
+  });
 </script>
 @endsection
