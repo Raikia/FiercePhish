@@ -130,7 +130,6 @@
         { data: 'targetuser.full_name', name: 'targetuser.first_name'},
         { data: 'targetuser.email', name: 'targetuser.email'},
         { data: 'uuid', name: 'uuid', render: function ( data, type, row ) {
-            console.log("data: " + data + " , type: " + type+ " , row: " + row);
             if (data)
               return data.substr(0,10)+"...";
             return "";

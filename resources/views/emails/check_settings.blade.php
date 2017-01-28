@@ -141,7 +141,6 @@
         {
             listOfFunctions.push(tableRows[x].id.replace("_result",""));
         }
-        console.log(listOfFunctions);
         if ($("#domain").val() != '')
             $(".changeDomain").html($("#domain").val());
         errors = [];
@@ -161,7 +160,6 @@
         var first_process = listOfFunctions.shift();
         
         $.get("{{ action('AjaxController@email_check_commands') }}/"+first_process+"/"+$("#domain").val(), function(data) {
-            console.log(data);
             var k = Object.keys(data)[0];
             if (data[data.command])
             {

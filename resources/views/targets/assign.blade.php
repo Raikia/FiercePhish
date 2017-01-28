@@ -180,7 +180,6 @@
         if ( index === -1 ) {
             selected.push( id );
             selectedData[id.split('_')[1]] = [data.currentTarget.cells[0].innerHTML, data.currentTarget.cells[1].innerHTML, data.currentTarget.cells[2].innerHTML];
-            console.log(data.currentTarget);
             updateSelectedTable();
         } else {
             selected.splice( index, 1 );
@@ -228,7 +227,6 @@
         if (keys.length == 0)
             total_add += '<tr><td colspan="4" style="text-align: center;">None Selected</td></tr>';
         $("#selectedTable tbody").html(total_add);
-        //console.log(selectedData);
     }
     
     CURRENT_URL = "{{ action('TargetsController@targetlists_index') }}";

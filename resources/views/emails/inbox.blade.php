@@ -126,7 +126,6 @@
   
   function openMail(mail_id)
   {
-    console.log("searching for mail " + mail_id);
     $("#mailContent").unblock();
     $("#loading_modal").modal({
         show: true,
@@ -136,7 +135,6 @@
     $.get("{{ action('AjaxController@get_inbox_messages') }}/"+mail_id, function(raw) {
       $("#loading_modal").modal('hide');
       var data = raw['data'];
-      console.log(data);
       var str = '';
       //str += '<div class="col-sm-9 mail_view">';
       str += '<div class="inbox-body">';
@@ -219,7 +217,6 @@
   
   function deleteMessage(data)
   {
-    console.log("Delete: " + data.currentTarget.id);
     var id_to_delete = data.currentTarget.id.split("_")[1];
     bootbox.confirm("Are you sure you want to delete this email?", function(result) {
       if (result) {
