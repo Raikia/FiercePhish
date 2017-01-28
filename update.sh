@@ -211,7 +211,6 @@ update_env()
 		do 
 		eval tempVar=\$${envVars[$i]}
 		tempVar=${tempVar//\//\\/}
-		VERBOSE=true
 		sys_cmd "sed -i 's/${envVars[$i]}=.*$/${envVars[$i]}=${tempVar}/' .env"
 	done
 	sys_cmd "rm .env_old"
@@ -224,7 +223,7 @@ backup_database()
 {
 	source .env
 	info "Backing up the FiercePhish database"
-	mysqldump -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME"  --password="$DB_PASSWORD" "$DB_DATABASE" > $BACKUP_LOCATION
+	mysqldump -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME"  --password="$DB_PASSWORD" "$DB_DATABASE" > $BACKUP_LOCATION 2> /dev/null
 	info "Done backing up database"
 }
 
