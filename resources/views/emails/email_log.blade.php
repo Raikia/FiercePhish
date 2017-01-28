@@ -67,32 +67,24 @@
         { data: 'sender_name', name: 'sender_name'},
         { data: 'sender_email', name: 'sender_email'},
         { data: 'subject', name: 'subject'},
-        { data: 'uuid', name: 'uuid'},
-        { data: 'status', name: 'status'},
-        { data: 'campaign.name', name: 'campaign.name'},
-        { data: 'planned_time', name: 'planned_time'},
-        { data: 'sent_time', name: 'sent_time'},
-      ],
-      order: [[ 9, 'desc' ]],
-      columnDefs: [
-        {
-          targets: 5,
-          "render": function ( data, type, row ) {
+        { data: 'uuid', name: 'uuid', render: function ( data, type, row ) {
             console.log("data: " + data + " , type: " + type+ " , row: " + row);
             if (data)
               return data.substr(0,10)+"...";
             return "";
           }
         },
-        {
-          targets: 7,
-          render: function ( data, type, row ) {
+        { data: 'status', name: 'status'},
+        { data: 'campaign.name', name: 'campaign.name', render: function ( data, type, row ) {
             if (data != "None")
               return '<a href="{{ action('CampaignController@campaign_details') }}/'+row.campaign.id+'/">'+data+'</a>';
             return data;
           }
-        }
-      ]
+        },
+        { data: 'planned_time', name: 'planned_time'},
+        { data: 'sent_time', name: 'sent_time'},
+      ],
+      order: [[ 9, 'desc' ]]
     });
 </script>
 @endsection
