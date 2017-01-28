@@ -1,5 +1,5 @@
 @if (session('success'))
-    <div style="display: none; " class="alert alert-success">
+    <div style="display: none; " class="alertSlide alert alert-success">
         <strong>Success</strong>
         <br /><br />
         {{ session('success') }}
@@ -7,7 +7,7 @@
 @endif
 
 @if (isset($success))
-    <div class="alert alert-success" style="display: none; ">
+    <div class="alertSlide alert alert-success" style="display: none; ">
         <strong>Success</strong>
         <br /><br />
         {{ $success }}

@@ -1,15 +1,11 @@
 @if (session('warn'))
-    <div class="alert alert-warning" style="display: none; ">
-        <strong>Alert</strong>
-        <br /><br />
+    <div class="alertSlide alert alert-warning" style="display: none; ">
         {{ session('warn') }}
     </div>
 @endif
 
 @if (isset($warn))
-    <div class="alert alert-warning" style="display: none; ">
-        <strong>Alert</strong>
-        <br /><br />
+    <div class="alertSlide alert alert-warning" style="display: none; ">
         {{ $warn }}
     </div>
 @endif

@@ -230,6 +230,9 @@ EOM
 	fi
 	info "Restarting queue workers"
 	sys_cmd "/usr/bin/env php artisan queue:restart"
+	info "Clearing cache"
+	sys_cmd "/usr/bin/env php artisan cache:clear"
+	sys_cmd "/usr/bin/env php artisan clear-compiled"
 	info "Turning off maintenance mode"
 	sys_cmd "/usr/bin/env php artisan up"
 	notice "Update complete!"

@@ -211,7 +211,7 @@
         <!-- footer content -->
         <footer>
           <div class="pull-right">
-            <a href="https://github.com/Raikia/FiercePhish">FiercePhish</a> v{{ config('app.version') }}. Made by <a href="https://github.com/Raikia/">Chris King</a> (<a href="https://twitter.com/raikiasec">@raikiasec</a>). See <a href="https://github.com/Raikia/FiercePhish/issues">GitHub Issues</a> for bug reports or feature requests!. &nbsp;&nbsp;&nbsp;&nbsp;Page rendered in {{ number_format(microtime(true) - LARAVEL_START, 3) }} seconds
+            <a href="https://github.com/Raikia/FiercePhish">FiercePhish</a> v{{ $current_fiercephish_version }}. Made by <a href="https://github.com/Raikia/">Chris King</a> (<a href="https://twitter.com/raikiasec">@raikiasec</a>). See <a href="https://github.com/Raikia/FiercePhish/issues">GitHub Issues</a> for bug reports or feature requests!. &nbsp;&nbsp;&nbsp;&nbsp;Page rendered in {{ number_format(microtime(true) - LARAVEL_START, 3) }} seconds
           </div>
           <div class="clearfix"></div>
         </footer>
@@ -262,7 +262,7 @@
     <script type="text/javascript">
     /* global $ */
       $(document).ready(function() {
-        $(".alert").slideDown(1000).delay(10000).slideUp(1000);
+        $(".alertSlide").slideDown(1000).delay(10000).slideUp(1000);
         $(":input").inputmask();
         window.setInterval(grabJobs, 2000);
         window.setInterval(grabMail, 2000);

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Cache;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +15,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         view()->composer('layouts.app', function ($view) {
-            $view->with('layout_all_active_campaigns', \App\Campaign::where('status', \App\Campaign::WAITING)->orWhere('status', \App\Campaign::SENDING)->get());
+            $latest_version = \App\Libraries\CacheHelper::getLatestVersion();
+            $current_version = \App\Libraries\CacheHelper::getCurrentVersion();
+            $view->with('layout_all_active_campaigns', \App\Campaign::where('status', \App\Campaign::WAITING)->orWhere('status', \App\Campaign::SENDING)->get())
+                 ->with('latest_fiercephish_version', $latest_version)
+                 ->with('current_fiercephish_version', $current_version);
         });
     }
 
