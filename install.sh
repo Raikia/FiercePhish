@@ -24,6 +24,7 @@ WHITE='\033[01;37m'
 
 OS=""
 OS_VERSION=""
+GITHUB_BRANCH="dev"
 VERBOSE=false
 FIERCEPHISH_MYSQL_PASSWD=
 SERVER_IP=$(curl -s icanhazip.com)
@@ -658,7 +659,7 @@ install_fiercephish()
 		then
 		sys_cmd "git clone https://github.com/Raikia/FiercePhish.git /var/www/fiercephish"
 		sys_cmd "pushd /var/www/fiercephish"
-		sys_cmd "git checkout dev"
+		sys_cmd "git checkout ${GITHUB_BRANCH}"
 		sys_cmd "popd"
 		sys_cmd "chown -R www-data:www-data /var/www/fiercephish"
 	fi
