@@ -141,7 +141,9 @@
 
 
 
-    CKEDITOR.replace('bodyMsg');
+    CKEDITOR.replace('bodyMsg',  {
+      customConfig: '{{ asset("js/custom_ckeditor.js") }}'
+    });
     CKEDITOR.instances.bodyMsg.setData({!! json_encode(old('sbt_message', $newMessage)) !!});
     $("#send_email_form").submit(function() {
       var vars = ['sender_name', 'sender_email', 'receiver_name', 'receiver_email', 'subject'];

@@ -252,7 +252,9 @@
       }
     }
     
-    CKEDITOR.replace('templateData');
+    CKEDITOR.replace('templateData',  {
+      customConfig: '{{ asset("js/custom_ckeditor.js") }}'
+    });
     
     $(document).ready(function() {
       CKEDITOR.instances.templateData.on('change', redraw_message);
