@@ -177,7 +177,7 @@ class SettingsController extends Controller
         $storage_class = new \stdClass();
         $sql_dump = [];
         exec("mysqldump -h " .config('fiercephish.DB_HOST')." -P ".config('fiercephish.DB_PORT')." -u ".config('fiercephish.DB_USERNAME')." -p".config("fiercephish.DB_PASSWORD")." ".config('fiercephish.DB_DATABASE'), $sql_dump);
-        $storage_class->version = config('app.version');
+        $storage_class->version = \App\Libraries\CacheHelper::getCurrentVersion();
         $storage_class->sql_dump = implode("\n", $sql_dump);
         $storage_class->env = file_get_contents(base_path('.env'));
         return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition','attachment; filename="fiercephish_backup_'.date('Ymd_Gi').'.dat"');
@@ -205,10 +205,10 @@ class SettingsController extends Controller
         }
         
         $imported_version = explode('.', $storage_class->version);
-        $app_version = explode('.', config('app.version'));
+        $app_version = explode('.', \App\Libraries\CacheHelper::getCurrentVersion());
         if ($imported_version[0] != $app_version[0] || $imported_version[1] != $app_version[1])
         {
-            return back()->withErrors("Data import failed!  This is a data export of FiercePhish version " . $storage_class->version ." and you are running version " . config('app.version'));
+            return back()->withErrors("Data import failed!  This is a data export of FiercePhish version " . $storage_class->version ." and you are running version " . \App\Libraries\CacheHelper::getCurrentVersion());
         }
         \Artisan::call('migrate:reset');
         \Artisan::call('migrate');

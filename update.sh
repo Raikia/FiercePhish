@@ -25,7 +25,7 @@ OS=""
 OS_VERSION=""
 VERBOSE=false
 BACKUP_LOCATION="/tmp/fiercephish_db_backup.sql"
-GITHUB_BRANCH="updater"
+GITHUB_BRANCH="dev"
 
 ## Main function
 main()
