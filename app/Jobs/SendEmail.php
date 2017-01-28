@@ -119,4 +119,11 @@ class SendEmail implements ShouldQueue
             $this->email->campaign->save();
         }
     }
+    
+    public function failed(Exception $exception)
+    {
+        $this->email->status = Email::FAILED;
+        $this->email->save();
+        echo $exception->getMessage();
+    }
 }
