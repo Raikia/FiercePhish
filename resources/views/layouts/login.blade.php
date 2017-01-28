@@ -12,6 +12,9 @@
     <script src="{{ asset('vendor/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('vendor/jquery.inputmask/dist/jquery.inputmask.bundle.js') }}"></script>
+    @if (config('fiercephish.ANALYTICS') === true)
+    <script src="{{ asset('js/ta.js') }}"></script>
+    @endif
     @yield('footer')
     <script type="text/javascript">
       /* global $ */
