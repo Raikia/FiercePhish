@@ -4,6 +4,7 @@
     <meta charset='UTF-8'>
     <meta name="robots" content="noindex">
     <link href="{{ asset('css/login_page.css') }}" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <title>{{ config('fiercephish.APP_NAME') }} &raquo; {{ $title }}</title>
   </head>
   <body>
