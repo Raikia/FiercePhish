@@ -98,7 +98,7 @@ class AjaxController extends Controller
     
     public function targetuser_membership(Request $request, $id)
     {
-        return Datatables::of(TargetList::findOrFail($id)->users())->editColumn('notes', function($user) {
+        return Datatables::of(TargetList::findOrFail($id)->users())->setRowId('row_{{ $target_user_id }}')->editColumn('notes', function($user) {
                     if ($user->notes == '')
                     {
                         $notes = '<a href="#" class="editnotes editable-empty" data-type="text" data-pk="'.$user->id.'" data-url="'.action('AjaxController@edit_targetuser_notes').'" data-title="Enter note">Empty</a>';

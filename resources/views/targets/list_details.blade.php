@@ -32,6 +32,10 @@
                             <td>{{ \App\Libraries\DateHelper::readable($targetList->updated_at) }}</td>
                         </tr>
                         <tr>
+                            <td><b># of users</b></td>
+                            <td>{{ $targetList->users()->count() }}</td>
+                        </tr>
+                        <tr>
                             <td><b>Notes</b></td>
                             <td><a href="#" class="editnotes" data-type="text" data-pk="{{ $targetList->id }}" data-url="{{ action('AjaxController@edit_targetlist_notes') }}" data-title="Enter note">{{ $targetList->notes }}</a></td>
                         </tr>
@@ -90,6 +94,7 @@
                             <th>Last Name</th>
                             <th>Email</th>
                             <th>Notes</th>
+                            <th style="width: 1px;"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -135,8 +140,14 @@
         { data: 'first_name', name: 'first_name'},
         { data: 'last_name', name: 'last_name'},
         { data: 'email', name: 'email'},
-        { data: 'notes', name: 'notes'}
-      ]
+        { data: 'notes', name: 'notes'},
+        { data: 'delete', name: 'delete', orderable: false, searchable: false, sortable: false},
+      ],
+      columnDefs: [ {
+          "targets": 4,
+          "data": null,
+          "defaultContent": '<a class="removeUser single_pointer"><i style="color: #D9534F;" class="fa fa-times"></i></a>'
+      }]
     });
     
     $("#removeAllUsersForm").submit(function(e) {
@@ -171,5 +182,12 @@
             dt.rows().invalidate();
         }, 500);
     });
+    
+    $(document.body).on('click', '.removeUser', function() {
+        var id = $(this).parent().parent().attr('id').split('_')[1];
+        $('<form action="{{ action('TargetsController@removeUser', ['id' => $targetList->id]) }}/'+id+'" method="post"><input type="hidden" name="_token" value="{{ csrf_token() }}" /></form>').appendTo('body').submit();
+    });
+    
+    CURRENT_URL = "{{ action('TargetsController@targetlists_index') }}";
 </script>
 @endsection

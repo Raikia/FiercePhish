@@ -38,6 +38,7 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::post('targets/list/{id}/clear', 'TargetsController@clearList');
 	Route::post('targets/list/{id}/addall', 'TargetsController@addAlltoList');
 	Route::post('targets/list/{id}/addrandom', 'TargetsController@addRandomtoList');
+	Route::post('targets/list/removeuser/{id?}/{user_id?}', 'TargetsController@removeUser');
 	Route::get('targets/assign/{id}', 'TargetsController@assign_index');
 	Route::post('targets/assign/set', 'TargetsController@assignToLists');
 

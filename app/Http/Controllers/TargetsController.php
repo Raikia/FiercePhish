@@ -156,4 +156,15 @@ class TargetsController extends Controller
         ActivityLog::log("Added users to the list \"".$list->name."\", it now has " . count($list->users) ." users");
         return redirect()->action('TargetsController@targetlists_details', ['id' => $list->id])->with('success', 'Users successfully added');
     }
+    
+    public function removeUser(Request $request, $id='', $user_id='')
+    {
+        if (!is_numeric($id) || !is_numeric($user_id))
+        {
+            return back()->withErrors('Unknown user/list');
+        }
+        $list = TargetList::findOrFail($id);
+        $list->users()->detach($user_id);
+        return back()->with('success', 'Successfully removed user from list');
+    }
 }
