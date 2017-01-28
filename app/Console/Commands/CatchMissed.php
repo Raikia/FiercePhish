@@ -39,7 +39,7 @@ class CatchMissed extends Command
      */
     public function handle()
     {
-        $emails = Email::where('planned_time', '<', (\App\Libraries\DateHelper::now()))->where('status', Email::NOT_SENT)->get();
+        $emails = Email::where('planned_time', '<', (\App\Libraries\DateHelper::now()->subMinutes(5)))->where('status', Email::NOT_SENT)->get();
         foreach ($emails as $email)
         {
             $this->info("Queueing email " . $email->id);
