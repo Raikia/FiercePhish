@@ -760,10 +760,12 @@ process_name = %(program_name)s-80%(process_num)02d
 stdout_logfile = /var/log/fiercephish-80%(process_num)02d.log
 stdout_logfile_maxbytes=100MB
 stdout_logfile_backups=10
+autostart=true
+autorestart=true
 numprocs=10
 directory=/var/www/fiercephish
-stopwaitsecs=600
 user=www-data
+redirect_stderr=true
 EOM
 		sys_cmd "service supervisor start"
 		sleep 5
