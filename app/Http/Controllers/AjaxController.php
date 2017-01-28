@@ -158,7 +158,7 @@ class AjaxController extends Controller
             $resp = '';
             $response[$command] = DomainTools::is_IP_in_SPF_record($domain, $server_ip, $resp);
             $response['message'] = $resp;
-            if ($response[$command] === true)
+            if ($response[$command] == true)
                 $response['message'] = 'Success';
         }
         return Response::json($response, 200);
