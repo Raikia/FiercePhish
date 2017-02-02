@@ -72,7 +72,7 @@ check_new_version()
 {
     info "Checking for new FiercePhish version"
     local current_version=$(cat VERSION)
-    local latest_version=$(curl -s https://raw.githubusercontent.com/Raikia/FiercePhish/${GITHUB_BRANCH}/VERSION?nocache)
+    local latest_version=$(curl -s https://raw.githubusercontent.com/Raikia/FiercePhish/${GITHUB_BRANCH}/VERSION?${RANDOM})
     
     if [[ $current_version == $latest_version ]]
         then
@@ -109,7 +109,7 @@ self_update()
 {
     info "Pulling latest version from GitHub"
     sys_cmd "pushd /var/www/fiercephish/"
-    sys_cmd "wget --no-cache -O update.sh https://raw.githubusercontent.com/Raikia/FiercePhish/${GITHUB_BRANCH}/update.sh?nocache"
+    sys_cmd "wget --no-cache -O update.sh https://raw.githubusercontent.com/Raikia/FiercePhish/${GITHUB_BRANCH}/update.sh?${RANDOM}"
     info "Successfully pulled the latest updater!"
     info "Beginning update process"
     /usr/bin/env bash ./update.sh -r
