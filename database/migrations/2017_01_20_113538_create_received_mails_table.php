@@ -15,7 +15,7 @@ class CreateReceivedMailsTable extends Migration
     {
         Schema::create('received_mails', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('message_id')->unique();
+            $table->string('message_id', 191)->unique();
             $table->string('sender_name');
             $table->string('sender_email');
             $table->string('replyto_name');

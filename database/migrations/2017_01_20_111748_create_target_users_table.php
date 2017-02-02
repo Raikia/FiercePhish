@@ -15,9 +15,9 @@ class CreateTargetUsersTable extends Migration
     {
         Schema::create('target_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('first_name');
-            $table->string('last_name')->default('');
-            $table->string('email');
+            $table->string('first_name', 191);
+            $table->string('last_name', 191)->default('');
+            $table->string('email', 191);
             $table->boolean('hidden')->default(false)->index();
             $table->text('notes')->nullable();
             $table->unique(['first_name','last_name','email']);
