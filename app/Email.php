@@ -31,7 +31,7 @@ class Email extends Model
     public function send($delay=-1, $queue="high")
     {
         if ($delay === -1)
-            $delay = \App\Libraries\DateHelper::now()->addSeconds(1);
+            $delay = Carbon::now()->addSeconds(1);
         if ($this->status == Email::SENT)
             $this->status = Email::PENDING_RESEND;
         else

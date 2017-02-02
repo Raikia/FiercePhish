@@ -230,10 +230,10 @@ class EmailController extends Controller
             return back()->withErrors('Cannot resend an email for a cancelled campaign');
         $new_email = $email->replicate();
         $new_email->status = Email::PENDING_RESEND;
-        $new_email->planned_time = \App\Libraries\DateHelper::now()->addSeconds(5);
+        $new_email->planned_time = Carbon::now();
         $new_email->sent_time = null;
         $new_email->save();
-        $new_email->send($new_email->planned_time, 'medium');
+        $new_email->send(-1, 'medium');
         return redirect()->action('EmailController@email_log_details', ['id' => $new_email->id])->with('success', 'Email has been queued for resending');
     }
     

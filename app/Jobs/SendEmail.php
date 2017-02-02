@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Carbon\Carbon;
 
 class SendEmail implements ShouldQueue
 {
@@ -93,8 +94,9 @@ class SendEmail implements ShouldQueue
                 $this->delete();
             }
         }
-        $this->email->sent_time = date("Y-m-d h:i:s");
+        $this->email->sent_time = Carbon::now();
         $this->email->status = Email::SENT;
+        $this->email->save();
         if ($this->email->campaign != null)
         {
             ActivityLog::log("Sent an email to \"".$this->email->targetuser->email."\" for campaign \"".$this->email->campaign->name."\" (email ID ".$this->email->id.")", "SendEmail");
@@ -104,7 +106,6 @@ class SendEmail implements ShouldQueue
             ActivityLog::log("Sent an email (simple send) to \"".$this->email->targetuser->email."\" (email ID ".$this->email->id.")", "SendEmail");
         }
         
-        $this->email->save();
         
         if ($this->email->campaign != null)
         {
