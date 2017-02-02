@@ -217,7 +217,7 @@ class SettingsController extends Controller
         file_put_contents($temp_file, $storage_class->sql_dump);
         exec("mysql -h " .config('fiercephish.DB_HOST')." -P ".config('fiercephish.DB_PORT')." -u ".config('fiercephish.DB_USERNAME')." -p".config("fiercephish.DB_PASSWORD")." ".config('fiercephish.DB_DATABASE'). ' < '.$temp_file);
         unlink($temp_file);
-        $replace_new_with_old = ['APP_KEY', 'APP_URL', 'DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD', 'IMAP_USERNAME', 'IMAP_PASSWORD'];
+        $replace_new_with_old = ['APP_KEY', 'APP_URL', 'DB_CONNECTION', 'DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD', 'IMAP_HOST', 'IMAP_PORT', 'IMAP_USERNAME', 'IMAP_PASSWORD'];
         $new_env = $storage_class->env;
         foreach ($replace_new_with_old as $tag)
             $new_env = preg_replace('/'.$tag.'=.*$/m', $tag.'='.config('fiercephish.'.$tag), $new_env);
