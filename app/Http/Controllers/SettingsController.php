@@ -232,6 +232,7 @@ class SettingsController extends Controller
             $new_redir = str_replace('//','/', $new_redir);
         file_put_contents(base_path('.env'), $storage_class->env);
         \Artisan::call('config:cache');
+        \Artisan::call('queue:restart');
         sleep(5); // I know this is terrible, but we have to wait for the config to cache properly...
         ActivityLog::log('Imported settings from a previous FiercePhish install', 'Settings');
         $base = $request->root();
