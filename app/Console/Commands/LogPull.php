@@ -69,7 +69,7 @@ class LogPull extends Command
                     }
                     else
                     {
-                        $words = explode(" ", $currentLine);
+                        $words = preg_split("/\s+/", $currentLine);
                         if (count($words) < 3)
                             continue; // This means the log was being written to while pulling
                         $strtime = $words[0] . " " . $words[1] . " " . $words[2];
