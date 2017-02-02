@@ -150,6 +150,7 @@ class SettingsController extends Controller
             $new_redir = '/'.$new_uri.str_replace(config('fiercephish.URI_PREFIX'), '',action('SettingsController@get_config', [], false));
             ActivityLog::log("Application configuration has been edited", "Settings");
             \Artisan::call('config:cache');
+            \Artisan::call('queue:restart');
             
             sleep(5); // I know this is terrible, but we have to wait for the config to cache properly...
             while (strstr($new_redir, '//') !== false)
