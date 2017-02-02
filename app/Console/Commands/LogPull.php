@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use App\LogAggregate;
-use \Carbon;
+use Carbon\Carbon;
 use App\Email;
 
 class LogPull extends Command
@@ -73,14 +73,15 @@ class LogPull extends Command
                         if (count($words) < 3)
                             continue; // This means the log was being written to while pulling
                         $strtime = $words[0] . " " . $words[1] . " " . $words[2];
-                        $time = strtotime($strtime.' '.$timezone);
-                        $datetime = date("Y-m-d H:i:s", $time);
+                        //$time = strtotime($strtime.' '.$timezone);
+                        $time = Carbon::parse($strtime.' '.$timezone)->timezone("UTC");
+                        //$datetime = date("Y-m-d H:i:s", $time);
                         $words_arr = explode(": ", $currentLine, 2);
                         if (count($words_arr) < 2)
                             continue; // This means the log was being written to while pulling
                         $words = $words_arr[1];
                         $newlog = new LogAggregate();
-                        $newlog->log_time = $datetime;
+                        $newlog->log_time = $time;
                         $newlog->log_type = $type;
                         $newlog->data = $words;
                         $newlog->hash = LogAggregate::hash($newlog);
@@ -105,12 +106,12 @@ class LogPull extends Command
         }
         $this->info("Completed log aggregation.");
         $this->info("Searching for logs for emails");
-        $after_date = (new Carbon\Carbon())->subMinutes(5)->format('Y-m-d H:i:s');
-        $before_date = (new Carbon\Carbon())->addSeconds(30)->format('Y-m-d H:i:s');
+        $after_date = Carbon::now()->subMinutes(5);
+        $before_date = Carbon::now()->addSeconds(30);
         $emails = Email::where('status', Email::SENT)->where('sent_time', '<=', $before_date)->where('sent_time', '>=', $after_date)->get();
         foreach ($emails as $email)
         {
-            $logs = LogAggregate::getSurroundingLogs((new Carbon\Carbon($email->sent_time)), 2, 5, 'smtp');
+            $logs = LogAggregate::getSurroundingLogs($email->sent_time, 2, 5, 'smtp');
             $total_str = '';
             foreach ($logs as $log)
             {
@@ -122,8 +123,8 @@ class LogPull extends Command
                 $email->save();
             }
         }
-        $this->info("Purging logs 10 minutes old");
-        $before_date = (new Carbon\Carbon())->subMinutes(10)->format('Y-m-d H:i:s');
+        $this->info("Purging logs 20 minutes old");
+        $before_date = Carbon::now()->subMinutes(20);
         LogAggregate::where('log_time', '<=', $before_date)->delete();
         $this->info("Completed log aggregation.");
     }
