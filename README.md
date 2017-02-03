@@ -51,7 +51,7 @@ This method is probably the easiest way to install/configure everything. It is a
 
  2. Generate the configuration file:
 
-   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/master/install.sh | bash```
+   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/dev/install.sh | bash```
 
  3. This will create a configuration file located at "~/fiercephish.config".  You must edit this file before moving on!
 
@@ -59,7 +59,7 @@ This method is probably the easiest way to install/configure everything. It is a
 
  4. Once "CONFIGURED=true" is set in the configuration file, re-run the install script:
 
-   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/master/install.sh | bash```
+   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/dev/install.sh | bash```
 
  5. Sit and wait.  The installation could take anywhere from 5-15 minutes depending on your server's download speed.
 
@@ -76,7 +76,7 @@ This method is just as easy as method #1, but the install will prompt you as it 
  
  2. Download the configuration file:
 
-   ```wget https://raw.githubusercontent.com/Raikia/FiercePhish/master/install.sh```
+   ```wget https://raw.githubusercontent.com/Raikia/FiercePhish/dev/install.sh```
 
  3. Set the installer as executable:
 
