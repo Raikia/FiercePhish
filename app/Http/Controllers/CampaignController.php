@@ -59,9 +59,7 @@ class CampaignController extends Controller
         $campaign->save();
         $start_date = $request->input('starting_date') ?: \App\Libraries\DateHelper::now()->format('m/d/Y');
         $start_time = $request->input('starting_time') ?: \App\Libraries\DateHelper::now()->format('g:ia');
-        $seconds_offset_start = max(strtotime($start_date . " " . $start_time) - time(), 1);
-        $start_date = (new Carbon($start_date . ' ' . $start_time, config('fiercephish.APP_TIMEZONE')))->addSeconds(1);
-        //echo "STARTING OFFSET: " . $seconds_offset_start . "<br />";
+        $start_date = Carbon::parse($start_date . ' ' . $start_time, config('fiercephish.APP_TIMEZONE'))->addSeconds(1)->timezone('UTC');
         $send_num_emails = min((int)$request->input('send_num'),1000);
         $send_every_minutes = min((int)$request->input('send_every_x_minutes'), 1000);
         if ($request->input('sending_schedule') == 'all' || empty($request->input('send_num')) || empty($request->input('send_every_x_minutes')))
