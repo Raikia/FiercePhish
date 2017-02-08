@@ -28,7 +28,7 @@ class Email extends Model
     	return $this->belongsTo('App\Campaign');
     }
     
-    public function send($delay=-1, $queue="high")
+    public function send($delay=-1, $queue="email")
     {
         if ($delay === -1)
             $delay = Carbon::now()->addSeconds(1);
@@ -38,7 +38,7 @@ class Email extends Model
     	   $this->status = Email::NOT_SENT;
     	$this->planned_time = $delay;
     	$this->save();
-    	$job = (new SendEmail($this))->onQueue($queue)->delay($delay);
+    	$job = (new SendEmail(['title' => 'Send Email', 'description' => 'To: '.$this->receiver_name, 'icon' => 'envelope'], $this))->onQueue($queue)->delay($delay);
     	dispatch($job);
     }
     

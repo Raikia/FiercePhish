@@ -14,20 +14,21 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Carbon\Carbon;
 
-class SendEmail implements ShouldQueue
+class SendEmail extends Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     
     protected $email;
-    
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Email $email)
+    public function __construct($meta, Email $email)
     {
         $this->email = $email;
+        parent::__construct($meta);
     }
 
     /**
@@ -41,10 +42,12 @@ class SendEmail implements ShouldQueue
         {
             $this->email->status = Email::CANCELLED;
             $this->email->save();
+            $this->cleanup();
             return;
         }
         if ($this->email->status == Email::CANCELLED || $this->email->status == Email::SENDING || $this->email->status == Email::SENT || $this->email->status == Email::FAILED)
         {
+            $this->cleanup();
             return;
         }
         if ($this->email->campaign != null)
@@ -119,6 +122,7 @@ class SendEmail implements ShouldQueue
             }
             $this->email->campaign->save();
         }
+        $this->cleanup();
     }
     
     public function failed(Exception $exception)
@@ -126,5 +130,6 @@ class SendEmail implements ShouldQueue
         $this->email->status = Email::FAILED;
         $this->email->save();
         echo $exception->getMessage();
+        $this->cleanup();
     }
 }

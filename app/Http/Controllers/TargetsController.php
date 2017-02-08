@@ -8,7 +8,6 @@ use App\Http\Requests;
 use App\TargetUser;
 use App\TargetList;
 use App\ActivityLog;
-use App\ProcessingJob;
 use App\Jobs\ImportTargets;
 use App\Jobs\AddToList;
 
@@ -61,9 +60,7 @@ class TargetsController extends Controller
         $name = $request->file('import_file')->getClientOriginalName();
         $temp_path = '/tmp/fiercephish_importusers_'.rand().'.dat';
         file_put_contents($temp_path, $content);
-        $pj = new ProcessingJob(['name' => 'Import Target Users', 'description' => 'Filename: '.$name, 'progress' => 0, 'icon' => 'users']);
-        $pj->save();
-        $job = (new ImportTargets($pj, $temp_path))->onQueue('high')->delay(1);
+        $job = (new ImportTargets(['title' => 'Import Target Users', 'description' => 'Filename: '.$name, 'icon' => 'users'], $temp_path))->onQueue('operation')->delay(1);
         $this->dispatch($job);
         ActivityLog::log("Started Target User import job, (Filename: ".$name.")", "Target User");
         return back()->with('success', 'Started Target User import job');
@@ -110,9 +107,7 @@ class TargetsController extends Controller
     public function addAlltoList(Request $request, $id)
     {
         $list = TargetList::findOrFail($id);
-        $pjob = new ProcessingJob(['name' => 'Add users to list', 'description' => 'Type: All, List: "' . $list->name.'"', 'icon' => 'list']);
-        $pjob->save();
-        $job = (new AddToList($pjob, $list, -1, $request->has('unusedOnly')))->onQueue('high')->delay(1);
+        $job = (new AddToList(['title' => 'Add users to list', 'description' => 'Type: All, List: "' . $list->name.'"', 'icon' => 'list'], $list, -1, $request->has('unusedOnly')))->onQueue('operation')->delay(1);
         $this->dispatch($job);
         return back()->with('success', 'Add users to list job started successfully');
     }
@@ -121,9 +116,7 @@ class TargetsController extends Controller
     {
         $this->validate($request, ['numToSelect' => 'required|integer']);
         $list = TargetList::findOrFail($id);
-        $pjob = new ProcessingJob(['name' => 'Add users to list', 'description' => 'Type: '.$request->input('numToSelect').', Random, List: "' . $list->name.'"', 'icon' => 'list']);
-        $pjob->save();
-        $job = (new AddToList($pjob, $list, $request->input('numToSelect'), $request->has('unusedOnly')))->onQueue('high')->delay(1);
+        $job = (new AddToList(['title' => 'Add users to list', 'description' => 'Type: '.$request->input('numToSelect').', Random, List: "' . $list->name.'"', 'icon' => 'list'], $list, $request->input('numToSelect'), $request->has('unusedOnly')))->onQueue('operation')->delay(1);
         $this->dispatch($job);
         return back()->with('success', 'Add random users to list job started successfully');
     }

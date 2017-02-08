@@ -10,7 +10,6 @@ use App\TargetList;
 use App\Campaign;
 use App\Email;
 use App\ActivityLog;
-use App\ProcessingJob;
 use App\Jobs\StartCampaign;
 use Carbon\Carbon;
 
@@ -66,10 +65,7 @@ class CampaignController extends Controller
         {
             $send_num_emails = -1; // Send all emails at once
         }
-        
-        $pjob = new ProcessingJob(['name' => 'Create campaign', 'description' => 'Campaign: "' . $campaign->name.'"', 'icon' => 'play']);
-        $pjob->save();
-        $job = (new StartCampaign($pjob, $campaign, $list, $template, $send_num_emails, $send_every_minutes, $start_date))->onQueue('high')->delay(1);
+        $job = (new StartCampaign(['title' => 'Create campaign', 'description' => 'Campaign: "' . $campaign->name.'"', 'icon' => 'play'], $campaign, $list, $template, $send_num_emails, $send_every_minutes, $start_date))->onQueue('operation')->delay(1);
         $this->dispatch($job);
         ActivityLog::log("Created a create campaign job named \"".$campaign->name."\" to queue ".$list->users()->count()." emails for sending", "Campaign");
         return redirect()->action('CampaignController@campaign_details', ['id' => $campaign->id])->with('success', 'Job to create campaign has been launched successfully');

@@ -233,7 +233,7 @@ class EmailController extends Controller
         $new_email->planned_time = Carbon::now();
         $new_email->sent_time = null;
         $new_email->save();
-        $new_email->send(-1, 'medium');
+        $new_email->send(-1, 'email');
         return redirect()->action('EmailController@email_log_details', ['id' => $new_email->id])->with('success', 'Email has been queued for resending');
     }
     

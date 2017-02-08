@@ -3,6 +3,8 @@
 namespace App;
 
 use Auth;
+use DB;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class ActivityLog extends Model
@@ -64,5 +66,39 @@ class ActivityLog extends Model
     	}
     	$ret_text .= $username;
     	return $ret_text;
+    }
+    
+    public static function getJobList()
+    {
+        $all_jobs = \DB::table('jobs')->orderby('available_at', 'asc')->where('queue', '!=', 'campaign_email')->get();
+        $all_strs = ['html' => ''];
+        foreach ($all_jobs as $raw_job)
+        {
+            $j = unserialize(json_decode($raw_job->payload)->data->command);
+            $desc = '';
+            if ($j->description != '')
+                $desc = '<div style="margin-left: 23px;">'.$j->description.'</div>';
+            $all_strs['html'] .= '<li>
+                            <a>
+                              <span class="image"><i class="fa fa-'.$j->icon.'"></i></span>
+                              <span>
+                                <span style="margin-left: 5px;">'.$j->title.'</span>
+                                <span class="time">'.\App\Libraries\DateHelper::relative(Carbon::createFromTimestamp($raw_job->available_at)).'</span>
+                              </span>
+                              <span class="message">
+                               '.$desc.'
+                               <div class="progress" style="margin-top: 7px;">
+                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'.$j->getProgress().'" aria-valuemin="0" aria-valuemax="100" style="background-color: #FF4800; min-width: 2em; width: '.$j->getProgress().'%;">
+                                  '.$j->getProgress().'%
+                                </div>
+                              </div>
+                              </span>
+                            </a>
+                     </li>';
+        }
+        if ($all_strs['html'] == '')
+            $all_strs['html'] = '<li>No running jobs</li>';
+        $all_strs['num'] = count($all_jobs);
+        return $all_strs;
     }
 }

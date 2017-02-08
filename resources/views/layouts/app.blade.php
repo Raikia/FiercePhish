@@ -161,36 +161,13 @@
                   <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-tasks"></i>
                     <span id="hasBadge">
-                    @if (\App\ProcessingJob::count() != 0)
-                      <span class="badge bg-red">{{ \App\ProcessingJob::count() }}</span>
+                    @if ($current_jobs['num'] != 0)
+                      <span class="badge bg-red">{{ $current_jobs['num'] }}</span>
                     @endif
                     </span>
                   </a>
                   <ul id="jobMenu" class="dropdown-menu list-unstyled msg_list" style="max-height: 400px; overflow-y: auto;" role="menu">
-                    @foreach (\App\ProcessingJob::all() as $j)
-                      <li>
-                        <a>
-                          <span class="image"><i class="fa fa-{{ $j->icon }}"></i></span>
-                          <span>
-                            <span style="margin-left: 5px;">{{ $j->name }}</span>
-                            <span class="time">{{ \Carbon\Carbon::createFromTimeStamp(strtotime($j->created_at))->diffForHumans() }}</span>
-                          </span>
-                          <span class="message">
-                            @if ($j->description != '')
-                              <div style="margin-left: 23px;">{{ $j->description }}</div>
-                            @endif
-                           <div class="progress" style="margin-top: 7px;">
-                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ $j->progress }}" aria-valuemin="0" aria-valuemax="100" style="background-color: #FF4800; min-width: 2em; width: {{ $j->progress }}%;">
-                              {{ $j->progress }}%
-                            </div>
-                          </div>
-                          </span>
-                        </a>
-                      </li>
-                    @endforeach
-                    @if (\App\ProcessingJob::count() == 0)
-                      <li>No running jobs</li>
-                    @endif
+                    {{ $current_jobs['html'] }}
                   </ul>
                 </li>
               </ul>

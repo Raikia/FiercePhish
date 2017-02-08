@@ -12,11 +12,10 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class AddToList implements ShouldQueue
+class AddToList extends Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     
-    protected $processing_job;
     protected $targetlist;
     protected $num_to_add;
     protected $only_unassigned;
@@ -26,12 +25,12 @@ class AddToList implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($processing_job, $targetlist, $num_to_add, $only_unassigned)
+    public function __construct($meta, $targetlist, $num_to_add, $only_unassigned)
     {
-        $this->processing_job = $processing_job;
         $this->targetlist =  $targetlist;
         $this->num_to_add = $num_to_add;
         $this->only_unassigned = $only_unassigned;
+        parent::__construct($meta);
     }
 
     /**
@@ -44,25 +43,21 @@ class AddToList implements ShouldQueue
         // Add all to list
         if ($this->num_to_add < 0)
         {
-            $pjob = $this->processing_job;
             $list = $this->targetlist;
             $query = $this->targetlist->availableUsers();
             $totalNum = $query->count();
             $count = 0;
             if ($this->only_unassigned)
                 $query = $query->has('lists', '<', 1);
-            $query->chunk(1000, function($u) use($pjob, $list, $totalNum, &$count) {
+            $query->chunk(1000, function($u) use($list, $totalNum, &$count) {
                 $list->users()->syncWithoutDetaching($u->pluck('id')->toArray());
                 $count += 1000;
-                $pjob->progress = round(($count/$totalNum)*100);
-                $pjob->save();
+                $this->setProgress(round(($count/$totalNum)*100));
             });
-            $pjob->delete();
             ActivityLog::log("Added All Target Users to the Target List \"".$list->name."\" job completed", "Target List");
         }
         else
         {
-            $pjob = $this->processing_job;
             $list = $this->targetlist;
             $totalNum = $this->targetlist->availableUsers()->count();
             $count = 0;
@@ -76,11 +71,10 @@ class AddToList implements ShouldQueue
                 $list->users()->syncWithoutDetaching($query->pluck('id')->toArray());
                 $num_left -= $chunk;
                 $count += $chunk;
-                $pjob->progress = round(($count/$totalNum)*100);
-                $pjob->save();
+                $this->setProgress(round(($count/$totalNum)*100));
             }
-            $pjob->delete();
             ActivityLog::log("Added Random Target Users to the Target List \"".$list->name."\" job completed", "Target List");
         }
+        $this->cleanup();
     }
 }

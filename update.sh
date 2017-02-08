@@ -211,7 +211,7 @@ run_update()
 		then
 		cat > /etc/supervisor/conf.d/fiercephish.conf <<- EOM
 [program:fiercephish]
-command=/usr/bin/php /var/www/fiercephish/artisan queue:work --queue=high,medium,low,default --tries 1 --timeout=86100
+command=/usr/bin/php /var/www/fiercephish/artisan queue:work --queue=operation,email,campaign_email,default --tries 1 --timeout=86100
 process_name = %(program_name)s-80%(process_num)02d
 stdout_logfile = /var/log/fiercephish-80%(process_num)02d.log
 stdout_logfile_maxbytes=100MB

@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\TargetUser;
-use App\ProcessingJobs;
 use App\ActivityLog;
 
 use Illuminate\Bus\Queueable;
@@ -12,23 +11,24 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class ImportTargets implements ShouldQueue
+class ImportTargets extends Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $process_path;
-    protected $process_job;
     
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($job, $path)
+    public function __construct($meta, $path)
     {
-        $this->process_job = $job;
         $this->process_path = $path;
+        parent::__construct($meta);
     }
+
+    
 
     /**
      * Execute the job.
@@ -39,7 +39,7 @@ class ImportTargets implements ShouldQueue
     {
         if (!file_exists($this->process_path))
         {
-            $this->process_job->delete();
+            $this->cleanup();
             return;
         }
         $lines = explode("\n", file_get_contents($this->process_path));
@@ -82,15 +82,14 @@ class ImportTargets implements ShouldQueue
                 }
                 ++$processed;
                 $new_progress = round(($processed/$total)*100);
-                if ($this->process_job->progress != $new_progress)
+                if ($this->getProgress() != $new_progress)
                 {
-                    $this->process_job->progress = $new_progress;
-                    $this->process_job->save();
+                    $this->setProgress($new_progress);
                 }
             }
         }
-        ActivityLog::log("Target User import job completed (".$this->process_job->description.")", "Target User");
-        $this->process_job->delete();
+        ActivityLog::log("Target User import job completed (".$this->description.")", "Target User");
         unlink($this->process_path);
+        $this->cleanup();
     }
 }
