@@ -55,7 +55,7 @@ This method is probably the easiest way to install/configure everything. It is a
 
  2. Generate the configuration file:
 
-   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/dev/install.sh | bash```
+   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/master/install.sh | bash```
 
  3. This will create a configuration file located at "~/fiercephish.config".  You must edit this file before moving on!
 
