@@ -24,7 +24,7 @@ WHITE='\033[01;37m'
 
 OS=""
 OS_VERSION=""
-GITHUB_BRANCH="dev"
+GITHUB_BRANCH="master"
 VERBOSE=false
 FIERCEPHISH_MYSQL_PASSWD=
 SERVER_IP=$(curl -s icanhazip.com)

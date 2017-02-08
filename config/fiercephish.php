@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'APP_ENV' => env('APP_ENV', 'local'),
+    'APP_ENV' => env('APP_ENV', 'master'),
     'APP_DEBUG' => env('APP_DEBUG', false),
     'APP_LOG_LEVEL' => env('APP_LOG_LEVEL', 'debug'),
     'APP_TIMEZONE' => env('APP_TIMEZONE', 'America/Chicago'),

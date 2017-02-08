@@ -33,6 +33,8 @@ This is the preferred method of installing FiercePhish + SMTP + IMAP services.
 
 (Fresh installs are expected, but the installer should work on a used OS with no problems)
 
+(Ubuntu 14.04 support has been removed. To install FiercePhish on 14.04, [read these instructions](https://github.com/Raikia/FiercePhish/wiki/Ubuntu-14.04-Installation-Guide)
+
 _If you would like a different OS distribution supported, create a [Github issue](https://github.com/Raikia/FiercePhish/issues)_
 
 
@@ -59,7 +61,7 @@ This method is probably the easiest way to install/configure everything. It is a
 
  4. Once "CONFIGURED=true" is set in the configuration file, re-run the install script:
 
-   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/dev/install.sh | bash```
+   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/master/install.sh | bash```
 
  5. Sit and wait.  The installation could take anywhere from 5-15 minutes depending on your server's download speed.
 
@@ -76,7 +78,7 @@ This method is just as easy as method #1, but the install will prompt you as it 
  
  2. Download the configuration file:
 
-   ```wget https://raw.githubusercontent.com/Raikia/FiercePhish/dev/install.sh```
+   ```wget https://raw.githubusercontent.com/Raikia/FiercePhish/master/install.sh```
 
  3. Set the installer as executable:
 
@@ -88,12 +90,19 @@ This method is just as easy as method #1, but the install will prompt you as it 
 
    The installer will prompt you for the same information as is described in [the configuration file for method #1](https://github.com/Raikia/FiercePhish/wiki/Installation-Configuration-File).  See that wiki page for information on what to provide.
 
- 5. Sit and wait.  The installation could take anywhere from 5-15 minutes depending on your server's download speed. *It will prompt you periodically, so make sure you pay attention. If you want to hit install and go afk, use method #1*
+ 5. Sit and wait.  The installation could take anywhere from 5-15 minutes depending on your server's download speed.
 
  6. Once the installation completes, follow the instructions it prints out.  It will tell you what [DNS entries](https://github.com/Raikia/FiercePhish/wiki/DNS-Configurations) to set.
 
 
+### Updating
 
+As of FiercePhish v1.2.0, an update script is included.  Versions prior to 1.2.0 are **not** compatible with 1.2.0 and later, so you'll have to do a fresh install (or read the wiki).
+
+To update FiercePhish, simply run:
+   ```
+    sudo ./update.sh
+   ```
 ### Troubleshooting
 
 If you have errors with the installation script, you can safely rerun the script without messing anything up (even if you provide it different information). If you continue to have problems, set "VERBOSE=true" (for method #1) or run ```./install.sh -v``` (for method #2) to see the full log of everything running.  If you still have problems, [submit a bug report](https://github.com/Raikia/FiercePhish/wiki/Reporting-Bugs).
