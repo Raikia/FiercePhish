@@ -48,7 +48,7 @@ class AddToList extends Job implements ShouldQueue
             $totalNum = $query->count();
             $count = 0;
             if ($this->only_unassigned)
-                $query = $query->has('lists', '<', 1);
+                $query = $query->has('lists', '<', 1); // this doesnt need availableUsers then
             $query->chunk(1000, function($u) use($list, $totalNum, &$count) {
                 $list->users()->syncWithoutDetaching($u->pluck('id')->toArray());
                 $count += 1000;
@@ -58,6 +58,7 @@ class AddToList extends Job implements ShouldQueue
         }
         else
         {
+            // This looks wrong.  needs a review
             $list = $this->targetlist;
             $totalNum = $this->targetlist->availableUsers()->count();
             $count = 0;

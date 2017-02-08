@@ -77,12 +77,12 @@ class ActivityLog extends Model
             $j = unserialize(json_decode($raw_job->payload)->data->command);
             $desc = '';
             if ($j->description != '')
-                $desc = '<div style="margin-left: 23px;">'.$j->description.'</div>';
+                $desc = '<div style="margin-left: 23px;">'.e($j->description).'</div>';
             $all_strs['html'] .= '<li>
                             <a>
                               <span class="image"><i class="fa fa-'.$j->icon.'"></i></span>
                               <span>
-                                <span style="margin-left: 5px;">'.$j->title.'</span>
+                                <span style="margin-left: 5px;">'.e($j->title).'</span>
                                 <span class="time">'.\App\Libraries\DateHelper::relative(Carbon::createFromTimestamp($raw_job->available_at)).'</span>
                               </span>
                               <span class="message">

@@ -167,7 +167,7 @@
                     </span>
                   </a>
                   <ul id="jobMenu" class="dropdown-menu list-unstyled msg_list" style="max-height: 400px; overflow-y: auto;" role="menu">
-                    {{ $current_jobs['html'] }}
+                    {!! $current_jobs['html'] !!}
                   </ul>
                 </li>
               </ul>
