@@ -35,7 +35,7 @@ This is the preferred method of installing FiercePhish + SMTP + IMAP services.
 
 (Fresh installs are expected, but the installer should work on a used OS with no problems)
 
-(Ubuntu 14.04 support has been removed. To install FiercePhish on 14.04, [read these instructions](https://github.com/Raikia/FiercePhish/wiki/Ubuntu-14.04-Installation-Guide)
+(Ubuntu 14.04 support has been removed. To install FiercePhish on 14.04, [read these instructions](https://github.com/Raikia/FiercePhish/wiki/Ubuntu-14.04-Installation-Guide))
 
 _If you would like a different OS distribution supported, create a [Github issue](https://github.com/Raikia/FiercePhish/issues)_
 
