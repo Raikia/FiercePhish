@@ -9,6 +9,8 @@ FiercePhish is a full-fledged phishing framework to manage all phishing engageme
 
 # All Information is on the Wiki Pages
 
+[ChangeLog](https://github.com/Raikia/FiercePhish/wiki/Changelog)
+
 [Click here to go to the Wiki Pages](https://github.com/Raikia/FiercePhish/wiki)
 
 # Disclaimer
