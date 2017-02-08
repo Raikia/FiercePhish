@@ -45,34 +45,32 @@ class AddToList extends Job implements ShouldQueue
         {
             $list = $this->targetlist;
             $query = $this->targetlist->availableUsers();
-            $totalNum = $query->count();
             $count = 0;
             if ($this->only_unassigned)
-                $query = $query->has('lists', '<', 1); // this doesnt need availableUsers then
+                $query = TargetUser::doesntHave('lists');
+            $totalNum = $query->count();
             $query->chunk(1000, function($u) use($list, $totalNum, &$count) {
                 $list->users()->syncWithoutDetaching($u->pluck('id')->toArray());
-                $count += 1000;
+                $count += $u->count();
                 $this->setProgress(round(($count/$totalNum)*100));
             });
             ActivityLog::log("Added All Target Users to the Target List \"".$list->name."\" job completed", "Target List");
         }
         else
         {
-            // This looks wrong.  needs a review
             $list = $this->targetlist;
-            $totalNum = $this->targetlist->availableUsers()->count();
             $count = 0;
             $num_left = $this->num_to_add;
             while ($num_left > 0)
             {
                 $chunk = min($num_left, 1000);
-                $query = $list->availableUsers()->inRandomOrder()->take($chunk);
+                $query = $list->availableUsers();
                 if ($this->only_unassigned)
-                    $query = $query->has('lists', '<', 1);
-                $list->users()->syncWithoutDetaching($query->pluck('id')->toArray());
+                    $query = TargetUser::doesntHave('lists');
+                $list->users()->syncWithoutDetaching($query->inRandomOrder()->take($chunk)->pluck('id')->toArray());
                 $num_left -= $chunk;
                 $count += $chunk;
-                $this->setProgress(round(($count/$totalNum)*100));
+                $this->setProgress(round(($count/$this->num_to_add)*100));
             }
             ActivityLog::log("Added Random Target Users to the Target List \"".$list->name."\" job completed", "Target List");
         }
