@@ -87,6 +87,8 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::get('inbox', 'EmailController@inbox_get');
 	Route::get('inbox/download/{id?}', 'EmailController@inbox_download_attachment');
 	
+	// HostedFile Routes...
+	Route::get('/files/', 'HostedFileController@index');
 	
 	// Dashboard Routes...
 	Route::get('home', 'DashboardController@index');
@@ -110,3 +112,5 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::get('ajax/inbox/delete/{id?}', 'AjaxController@delete_inbox_message');
 	Route::get('ajax/inbox/{id?}', 'AjaxController@get_inbox_messages');
 });
+
+Route::get('{catchall}', 'HostedFileController@checkfile')->where('catchall', '(.*)');
