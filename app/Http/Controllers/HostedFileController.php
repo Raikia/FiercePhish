@@ -21,7 +21,7 @@ class HostedFileController extends Controller
         echo $request->decodedPath() . "<br />";
         echo var_dump($request->segments()) . "<br />";
         echo var_dump(\Route::has('ajax/targetlist/note')) . "<br />";
-        echo $request->url() . "<br />";
+        echo var_dump($request->all()) . "<br />";
         return;
     }
 }

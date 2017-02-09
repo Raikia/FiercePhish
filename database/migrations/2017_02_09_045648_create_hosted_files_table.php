@@ -15,9 +15,12 @@ class CreateHostedFilesTable extends Migration
     {
         Schema::create('hosted_files', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('route');
+            $table->string('path');
             $table->longtext('file_data');
+            $table->string('file_name');
+            $table->boolean('force_download');
             $table->integer('hosted_site_id')->nullable();
+            $table->string('uidvar')->nullable();
             $table->timestamps();
         });
     }

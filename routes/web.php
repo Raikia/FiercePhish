@@ -20,7 +20,7 @@ if (!empty(config('fiercephish.PROXY_SCHEMA')))
 
 Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	// Authentication Routes...
-	Route::get('login', 'Auth\LoginController@showLoginForm');
+	Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 	Route::post('login', 'Auth\LoginController@login');
 	Route::get('logout', 'Auth\LoginController@logout');
 	Route::get('2fa/validate', 'Auth\LoginController@getValidateToken');
