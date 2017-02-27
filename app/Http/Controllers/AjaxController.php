@@ -20,6 +20,7 @@ use App\ReceivedMailAttachment;
 use Datatables;
 use Carbon\Carbon;
 use DB;
+use App\HostedFile;
 
 class AjaxController extends Controller
 {
@@ -254,6 +255,16 @@ class AjaxController extends Controller
         $ret = ['data' => true];
         $mail = ReceivedMail::findOrFail($id);
         $mail->delete();
+        return Response::json($ret, 200);
+    }
+ 
+    public function check_route(Request $request)
+    {
+        $ret = ['data' => false];
+        if ($request->has('route'))
+        {
+            $ret['data'] = !HostedFile::path_already_exists($request->input('route'));
+        }
         return Response::json($ret, 200);
     }
     

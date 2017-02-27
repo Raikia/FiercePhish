@@ -3,25 +3,85 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\HostedFile;
 
 class HostedFileController extends Controller
 {
+    protected $fillable = ['path', 'file_data', 'file_name', 'file_mime', 'action', 'hosted_site_id', 'uidvar'];
+    
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => 'catchall']);
+    }
+    
     public function index()
     {
-        echo "index";
+        $files = HostedFile::whereNull('hosted_site_id')->get();
+        return view('files.index')->with('files', $files);
+    }
+    
+    public function catchall(Request $request)
+    {
+        $file = HostedFile::grab($request->path());
+        if ($file === null)
+        {
+            abort(404);
+        }
+        else
+        {
+            $file->logVisit($request);
+            $file->serve($request->all());
+        }
         return;
     }
     
-    public function checkfile(Request $request)
+    public function addfile(Request $request)
     {
-        echo $request->url() . "<br />";
-        echo $request->root() . "<br />";
-        echo $request->fullUrl() . "<br />";
-        echo $request->path() . "<br />";
-        echo $request->decodedPath() . "<br />";
-        echo var_dump($request->segments()) . "<br />";
-        echo var_dump(\Route::has('ajax/targetlist/note')) . "<br />";
-        echo var_dump($request->all()) . "<br />";
-        return;
+        $this->validate($request, [
+            'attachment' => 'required|file',
+            'action' => 'required|integer',
+        ]);
+        $path = '/';
+        if ($request->has('path'))
+            $path = $request->input('path');
+        if (HostedFile::path_already_exists($path))
+            return back()->withErrors('This route already exists! Choose another one');
+        $pathinfo = pathinfo($request->input('path'));
+        $dirname = '';
+        if (isset($pathinfo['dirname']) && $pathinfo['dirname'] != '.')
+            $dirname = $pathinfo['dirname'];
+        $file = $request->file('attachment');
+        $newfile = new HostedFile();
+        $newfile->route = $dirname;
+        $newfile->file_name = $pathinfo['basename'];
+        $newfile->action = $request->input('action');
+        $newfile->original_file_name = $file->getClientOriginalName();
+        $newfile->file_mime = $file->getMimeType();
+        if ($request->has('kill_switch') && $request->input('kill_switch') > 0)
+            $newfile->kill_switch = $request->input('kill_switch');
+        else
+            $newfile->kill_switch = null;
+        if ($request->has('uid_tracker') && $request->input('uid_tracker') != '')
+            $newfile->uidvar = $request->input('uid_tracker');
+        else
+            $newfile->uidvar = null;
+        $newfile->alert_invalid = $request->has('alert_tracker');
+        $newfile->disable_invalid = $request->has('disable_tracker');
+        $newfile->notify_access = $request->has('notify');
+        $newfile->hosted_site_id = null;
+        $newfile->local_path = $file->storeAs('hosted', sha1(time().''.rand()).'.dat');
+        $newfile->save();
+        return back()->with('success', 'File successfully hosted!');
+    }
+    
+    public function deletefile(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|integer'
+        ]);
+        $file = HostedFile::findorfail($request->input('file'));
+        unlink(storage_path('app/'.$file->local_path));
+        $file->delete();
+        return back()->with('success', 'File deleted successfully!');
     }
 }
