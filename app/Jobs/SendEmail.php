@@ -62,8 +62,12 @@ class SendEmail extends Job implements ShouldQueue
             try
             {
                 Mail::send(['layouts.email_html', 'layouts.email_plaintext'], ['data' => $this->email->message], function ($message) {
+                    echo "To: " . $this->email->targetuser->email.' - '.$this->email->targetuser->full_name();
+                    echo "\n";
+                    echo "From: " . $this->email->sender_email . ' - ' . $this->email->sender_name . "\n";
                     $message->from($this->email->sender_email, $this->email->sender_name);
-                    $message->to($this->email->targetuser->email, $this->email->targetuser->full_name());
+                    //$message->to($this->email->targetuser->email, $this->email->targetuser->full_name());
+                    $message->to($this->email->targetuser->email);
                     $message->subject($this->email->subject);
                     if (strstr(config('fiercephish.APP_URL'), '.') !== false)
                     {

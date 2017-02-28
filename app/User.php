@@ -9,13 +9,17 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    const NO_NOTIFICATION = 0;
+    const EMAIL_NOTIFICATION = 1;
+    const SMS_NOTIFICATION = 2;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','phone_number',
+        'name', 'email', 'password','phone_number','phone_isp', 'notify_pref'
     ];
 
     /**
@@ -26,4 +30,22 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token', 'google2fa_secret',
     ];
+    
+    
+    public static function getPhoneISPs()
+    {
+        return [
+            ''              => '',
+            'T-Mobile'      => 'tmomail.net',
+        ];
+    }
+    
+    public static function getNotifications()
+    {
+        return [
+            User::NO_NOTIFICATION => 'No notifications',
+            User::EMAIL_NOTIFICATION => 'Email notifications',
+            User::SMS_NOTIFICATION => 'SMS notifications',
+        ];
+    }
 }

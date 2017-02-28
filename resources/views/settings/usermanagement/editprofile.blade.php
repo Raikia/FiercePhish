@@ -36,6 +36,26 @@
               </div>
             </div>
             <div class="form-group">
+              <label for="phone_isp" class="control-label col-md-3 col-sm-3 col-xs-12">Phone Company</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <select name="phone_isp" class="form-control">
+                  @foreach (App\User::getPhoneISPs() as $name => $domain)
+                    <option value="{{ $domain }}"{{ ($domain == $user->phone_isp)?' selected':'' }}>{{ $name }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="notify_pref" class="control-label col-md-3 col-sm-3 col-xs-12">Notification Option</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <select name="notify_pref" class="form-control">
+                  @foreach (App\User::getNotifications() as $val => $name)
+                    <option value="{{ $val }}"{{ ($val==$user->notify_pref)?' selected':'' }}>{{ $name }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
               <label for="password" class="control-label col-md-3 col-sm-3 col-xs-12">New Password <span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">

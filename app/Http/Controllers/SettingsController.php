@@ -82,6 +82,7 @@ class SettingsController extends Controller
             'email' => 'required|email|max:255',
             'password' => 'sometimes|min:6|confirmed',
             'phone_number' => 'min:14|max:14',
+            'phone_isp' => 'max:255',
             'current_password' => 'sometimes|required',
             'user_id' => 'required|integer',
             ]);
@@ -98,6 +99,8 @@ class SettingsController extends Controller
         }
         $user->name = $request->input('name');
         $user->email = $request->input('email');
+        $user->phone_isp = $request->input('phone_isp');
+        $user->notify_pref = $request->input('notify_pref');
         if (!empty($request->input('password')))
             $user->password = Hash::make($request->input('password'));
         $user->phone_number = $request->input('phone_number');

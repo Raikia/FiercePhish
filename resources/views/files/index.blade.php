@@ -155,6 +155,35 @@
   <div class="col-md-6 col-sm-6 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
+        <h2><i class="fa fa-bell-o"></i> Users with notifications</h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Notification Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach (App\User::all() as $user)
+              <tr>
+                <td>{{ $user->name }}</td>
+                <td>{{ App\User::getNotifications()[$user->notify_pref] }}</td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+    
+    
+    
+    <div class="x_panel">
+      <div class="x_title">
         <h2><i class="fa fa-trash"></i> Delete File</h2>
         <div class="clearfix"></div>
       </div>
