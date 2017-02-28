@@ -96,6 +96,8 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	// Dashboard Routes...
 	Route::get('home', 'DashboardController@index');
 	Route::get('/', 'DashboardController@index');
+	
+	Route::get('/test', 'DashboardController@test');
 
 
 
