@@ -108,25 +108,16 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12">Alert on invalid tracker</label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Action on invalid tracker</label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="checkbox">
-                    <label>
-                    <input type="checkbox" name="alert_tracker" value="1">
-                    </label>
-                </div>
+              <select name="invalid_action" class="form-control">
+                @foreach (\App\HostedFile::getInvalidActions() as $val => $action)
+                  <option value="{{ $val }}">{{ $action }}</option>
+                @endforeach
+              </select>
             </div>
           </div>
-          <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12">Disable on invalid tracker</label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="checkbox">
-                    <label>
-                    <input type="checkbox" name="disable_tracker" value="1">
-                    </label>
-                </div>
-            </div>
-          </div>
+          
 
           <div class="form-group">
               <label for="phone_number" class="control-label col-md-3 col-sm-3 col-xs-12">Maximum # requests</label>

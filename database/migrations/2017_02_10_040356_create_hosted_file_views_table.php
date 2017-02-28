@@ -17,7 +17,10 @@ class CreateHostedFileViewsTable extends Migration
             $table->increments('id');
             $table->integer('hosted_file_id');
             $table->string('ip');
-            $table->boolean('alert');
+            $table->string('browser');
+            $table->string('browser_version');
+            $table->string('platform');
+            $table->string('useragent');
             $table->string('uuid');
             $table->timestamps();
         });

@@ -65,8 +65,7 @@ class HostedFileController extends Controller
             $newfile->uidvar = $request->input('uid_tracker');
         else
             $newfile->uidvar = null;
-        $newfile->alert_invalid = $request->has('alert_tracker');
-        $newfile->disable_invalid = $request->has('disable_tracker');
+        $newfile->invalid_action = $request->input('invalid_action');
         $newfile->notify_access = $request->has('notify');
         $newfile->hosted_site_id = null;
         $newfile->local_path = $file->storeAs('hosted', sha1(time().''.rand()).'.dat');

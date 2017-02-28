@@ -74,7 +74,7 @@ class HostedFile extends Model
     
     public function getPath()
     {
-        return $this->route . '/' . $this->file_name;
+        return str_replace('//', '/', '/' . $this->route . '/' . $this->file_name);
     }
     
     public function views()
@@ -82,11 +82,12 @@ class HostedFile extends Model
         return $this->hasMany('App\HostedFileView');
     }
     
-    public function logVisit(Request $request)
+    public function logVisit(Request $request) // This needs lots of help...
     {
-        $visit = new HostedFileView();
+        /*$visit = new HostedFileView();
         $visit->hosted_file_id = $this->id;
         $visit->ip = $request->ip();
+        $visit->browserDetection($request->header('User-Agent'));
         $visit->alert = $this->notify_access;
         $disable = false;
         if ($this->uidvar != null) // if uid tracker variable enabled
@@ -100,7 +101,7 @@ class HostedFile extends Model
                 }
                 else
                 {
-                    if ($this->alert_invalid)
+                    if ($this->invalid_action)
                     {
                         $visit->alert = true; // Invalid uuid
                     }
@@ -129,7 +130,7 @@ class HostedFile extends Model
             $this->action = HostedFile::DISABLED;
             $this->save();
         }
-        $visit->save();
+        $visit->save();*/
     }
     
     public static function getActions()
@@ -145,7 +146,9 @@ class HostedFile extends Model
     public static function getInvalidActions()
     {
         return [
-            
+            HostedFile::INVALID_ALLOW   => 'Allow invalid tracker',
+            HostedFile::INVALID_DENY    => '404 on invalid tracker',
+            HostedFile::INVALID_DISABLE => 'Disable on invalid tracker',
         ];
     }
     
@@ -156,13 +159,14 @@ class HostedFile extends Model
         if ($matched != null && $matched->uri == '{catchall}')
         {
             if (HostedFile::grab($path) === null)
-                return false;
-            return true;
+            {
+                if (!file_exists(public_path($path)))
+                {
+                    return false;
+                }
+            }
         }
-        else
-        {
-            return true;
-        }
+        return true;
     }
     
     public static function grab($path)

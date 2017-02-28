@@ -23,8 +23,7 @@ class CreateHostedFilesTable extends Migration
             $table->tinyInteger('action')->default(0);
             $table->integer('kill_switch')->nullable();
             $table->string('uidvar')->nullable();
-            $table->boolean('alert_invalid')->default(false);
-            $table->integer('invalid_action')->default(50);
+            $table->tinyInteger('invalid_action')->default(50);
             $table->boolean('notify_access')->default(false);
             $table->integer('hosted_site_id')->nullable();
             $table->timestamps();
