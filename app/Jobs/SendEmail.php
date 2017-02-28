@@ -66,8 +66,7 @@ class SendEmail extends Job implements ShouldQueue
                     echo "\n";
                     echo "From: " . $this->email->sender_email . ' - ' . $this->email->sender_name . "\n";
                     $message->from($this->email->sender_email, $this->email->sender_name);
-                    //$message->to($this->email->targetuser->email, $this->email->targetuser->full_name());
-                    $message->to($this->email->targetuser->email);
+                    $message->to($this->email->targetuser->email, $this->email->targetuser->full_name());
                     $message->subject($this->email->subject);
                     if (strstr(config('fiercephish.APP_URL'), '.') !== false)
                     {
