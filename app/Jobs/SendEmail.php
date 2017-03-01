@@ -13,6 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Carbon\Carbon;
+use App\Mail\PhishingEmail;
 
 class SendEmail extends Job implements ShouldQueue
 {
@@ -61,27 +62,7 @@ class SendEmail extends Job implements ShouldQueue
         {
             try
             {
-                Mail::send(['layouts.email_html', 'layouts.email_plaintext'], ['data' => $this->email->message], function ($message) {
-                    echo "To: " . $this->email->targetuser->email.' - '.$this->email->targetuser->full_name();
-                    echo "\n";
-                    echo "From: " . $this->email->sender_email . ' - ' . $this->email->sender_name . "\n";
-                    $message->from($this->email->sender_email, $this->email->sender_name);
-                    $message->to($this->email->targetuser->email, $this->email->targetuser->full_name());
-                    $message->subject($this->email->subject);
-                    if (strstr(config('fiercephish.APP_URL'), '.') !== false)
-                    {
-                        $id = explode('@',$message->getSwiftMessage()->getId());
-                        $domain = explode(':', str_replace(['http://','https://'],'', config('fiercephish.APP_URL')))[0];
-                        $message->getSwiftMessage()->setId($id[0].'@'.$domain);
-                       // $message->getSwiftMessage()->getHeaders()->addTextHeader('List-Unsubscribe', '<mailto:admin@'.$domain.'>');
-                    }
-                    if ($this->email->has_attachment)
-                    {
-                        $message->attachData(base64_decode($this->email->attachment), $this->email->attachment_name, ['mime' => $this->email->attachment_mime]);
-                    }
-                    if (config('fiercephish.MAIL_BCC_ALL') !== null)
-                        $message->bcc(config('fiercephish.MAIL_BCC_ALL'));
-                });
+                Mail::to($this->email->targetuser->email, $this->email->targetuser->full_name())->send(new PhishingEmail($this->email));
             }
             catch (\Exception $e)
             {
