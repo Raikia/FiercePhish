@@ -80,7 +80,7 @@ class SettingsController extends Controller
         $this->validate($request, [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255',
-            'password' => 'sometimes|min:6|confirmed',
+            'password' => 'sometimes|confirmed',
             'phone_number' => 'min:14|max:14',
             'phone_isp' => 'max:255',
             'current_password' => 'sometimes|required',
