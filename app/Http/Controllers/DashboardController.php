@@ -55,8 +55,8 @@ class DashboardController extends Controller
         return view('dashboard.index')->with('activitylog', ActivityLog::fetch())->with('sendEmailData', $sendEmailData)->with('errorEmailData', $errorEmailData)->with('emailStats', $statistics)->with('allActiveCampaigns', Campaign::where('status', Campaign::NOT_STARTED)->orWhere('status', Campaign::SENDING)->orWhere('status', Campaign::WAITING)->get());
     }
     
-    public function test()
+    public function test(Request $request)
     {
-    	echo "lol";
+    	echo $request->header('User-Agent');
     }
 }
