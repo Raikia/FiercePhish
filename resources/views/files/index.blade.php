@@ -155,7 +155,7 @@
   <div class="col-md-6 col-sm-6 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2><i class="fa fa-bell-o"></i> Users with notifications</h2>
+        <h2><i class="fa fa-bell-o"></i> User Notification Settings</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
@@ -170,7 +170,7 @@
           <tbody>
             @foreach (App\User::all() as $user)
               <tr>
-                <td>{{ $user->name }}</td>
+                <td><a href="{{ action('SettingsController@get_editprofile', ['id' => $user->id]) }}">{{ $user->name }}</a></td>
                 <td>{{ App\User::getNotifications()[$user->notify_pref] }}</td>
               </tr>
             @endforeach
@@ -199,7 +199,7 @@
                     <select class="form-control" style="width: 200px;" name="file">
                         <option></option>
                         @foreach ($files as $file)
-                            <option value="{{ $file->id }}">{{ $file->original_file_name }}</option>
+                            <option value="{{ $file->id }}">{{ $file->original_file_name }} - {{ $file->getPath() }}</option>
                         @endforeach
                     </select>
                 </div>
