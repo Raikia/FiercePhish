@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6a7c0da62984d9cb1b34a4ce57c0273a",
+    "content-hash": "7106772f3f563efe2fe89df1b7e01511",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -47,6 +47,76 @@
             "description": "BaconQrCode is a QR code generator for PHP.",
             "homepage": "https://github.com/Bacon/BaconQrCode",
             "time": "2016-01-09T22:55:35+00:00"
+        },
+        {
+            "name": "browscap/browscap-php",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/browscap/browscap-php.git",
+                "reference": "027e230295075298a63afa8dc05e931c2ddf9c85"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/browscap/browscap-php/zipball/027e230295075298a63afa8dc05e931c2ddf9c85",
+                "reference": "027e230295075298a63afa8dc05e931c2ddf9c85",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.2",
+                "mimmi20/wurflcache": "^1.3",
+                "monolog/monolog": "^1.7",
+                "php": "^5.6|^7.0",
+                "symfony/console": "^2.6|^3.0",
+                "symfony/filesystem": "^2.6|^3.0",
+                "symfony/finder": "^2.6|^3.0"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "^1.11",
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "^5.2",
+                "squizlabs/php_codesniffer": "^2.5"
+            },
+            "suggest": {
+                "browscap/browscap": "to update the source file without downloading, for PHP 5.6+",
+                "ext-curl": "to use curl requests to get the ini file"
+            },
+            "bin": [
+                "bin/browscap-php"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BrowscapPHP\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Stoppani",
+                    "email": "jonathan.stoppani@gmail.com"
+                },
+                {
+                    "name": "Thomas Mueller",
+                    "email": "t_mueller_stolzenhain@yahoo.de"
+                },
+                {
+                    "name": "James Titcumb",
+                    "email": "james@asgrim.com"
+                }
+            ],
+            "description": "Standalone replacement for php's native get_browser() function",
+            "homepage": "https://github.com/browscap/browscap-php",
+            "keywords": [
+                "browser",
+                "capabilities",
+                "get_browser",
+                "user agent"
+            ],
+            "time": "2016-07-12T10:51:44+00:00"
         },
         {
             "name": "christian-riesen/base32",
@@ -1183,6 +1253,114 @@
             "time": "2017-02-09T11:33:58+00:00"
         },
         {
+            "name": "mimmi20/wurfl-constants",
+            "version": "1.7.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mimmi20/wurfl-constants.git",
+                "reference": "d0bd0154120cb833dbdf8a8075d5f14bcc521e42"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mimmi20/wurfl-constants/zipball/d0bd0154120cb833dbdf8a8075d5f14bcc521e42",
+                "reference": "d0bd0154120cb833dbdf8a8075d5f14bcc521e42",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "^1.11",
+                "phpunit/phpunit": "^4.8|^5.0",
+                "squizlabs/php_codesniffer": "^2.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Wurfl\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1"
+            ],
+            "description": "the Constants extracted from Wurfl for PHP 5.3",
+            "homepage": "https://github.com/mimmi20/wurfl-constants",
+            "keywords": [
+                "Wurfl",
+                "browser",
+                "http",
+                "parser",
+                "user agent",
+                "user-agent"
+            ],
+            "time": "2016-04-23T18:18:10+00:00"
+        },
+        {
+            "name": "mimmi20/wurflcache",
+            "version": "1.7.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mimmi20/WurflCache.git",
+                "reference": "9fc307df74f782a879f4604ab99bf61ecfc165d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mimmi20/WurflCache/zipball/9fc307df74f782a879f4604ab99bf61ecfc165d4",
+                "reference": "9fc307df74f782a879f4604ab99bf61ecfc165d4",
+                "shasum": ""
+            },
+            "require": {
+                "mimmi20/wurfl-constants": "^1.7",
+                "php": ">=5.3.3",
+                "symfony/filesystem": "^2.8|^3.0"
+            },
+            "require-dev": {
+                "desarrolla2/cache": "^1.8",
+                "doctrine/cache": "^1.5",
+                "fabpot/php-cs-fixer": "^1.11",
+                "mikey179/vfsstream": "^1.3",
+                "phpunit/phpunit": "^4.8 || ^5.0",
+                "squizlabs/php_codesniffer": "^2.0",
+                "zendframework/zend-cache": "^2.5",
+                "zetacomponents/cache": "dev-master"
+            },
+            "suggest": {
+                "desarrolla2/cache": "to use other caches handled by desarrolla",
+                "doctrine/cache": "to use other caches handled by doctrine",
+                "zendframework/zend-cache": "to use other caches handled by zend",
+                "zetacomponents/cache": "to use other caches handled by zeta"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "WurflCache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Müller",
+                    "homepage": "https://github.com/mimmi20",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/mimmi20/WurflCache/graphs/contributors"
+                }
+            ],
+            "description": "the Cache Classes for the Wurfl PHP Library for PHP 5.3",
+            "homepage": "https://github.com/mimmi20/WurflCache",
+            "keywords": [
+                "Wurfl",
+                "cache"
+            ],
+            "time": "2016-08-06T11:25:21+00:00"
+        },
+        {
             "name": "monolog/monolog",
             "version": "1.22.0",
             "source": {
@@ -2116,6 +2294,55 @@
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
             "time": "2017-01-02T20:32:22+00:00"
+        },
+        {
+            "name": "symfony/filesystem",
+            "version": "v3.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/filesystem.git",
+                "reference": "a0c6ef2dc78d33b58d91d3a49f49797a184d06f4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/a0c6ef2dc78d33b58d91d3a49f49797a184d06f4",
+                "reference": "a0c6ef2dc78d33b58d91d3a49f49797a184d06f4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Filesystem\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Filesystem Component",
+            "homepage": "https://symfony.com",
+            "time": "2017-01-08T20:47:33+00:00"
         },
         {
             "name": "symfony/finder",

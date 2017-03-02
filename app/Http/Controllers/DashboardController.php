@@ -57,6 +57,10 @@ class DashboardController extends Controller
     
     public function test(Request $request)
     {
-    	echo $request->header('User-Agent');
+    	$bc = new \BrowscapPHP\Browscap();
+    	$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => storage_path('browscap_cache')]);
+    	$bc->setCache($adapter);
+    	$result = $bc->getBrowser($request->header('User-Agent'));
+    	dd($result);
     }
 }

@@ -1,0 +1,7 @@
+This cache is included with the main repository to prevent future deprecation. To update this cache, run the following commands:
+
+
+./vendor/bin/browscap-php browscap:fetch
+./vendor/bin/browscap-php browscap:convert --cache=<this folder path>
+
+Folder path can be found by running "storage_path('browscap_cache')" in Laravel's tinker.
