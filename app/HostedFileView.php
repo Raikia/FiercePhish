@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class HostedFileView extends Model
 {
-    protected $fillable = ['hosted_file_id', 'browser', 'browser_version', 'platform', 'useragent', 'uuid'];
+    protected $fillable = ['hosted_file_id', 'browser', 'browser_version', 'platform', 'useragent', 'uuid', 'referer'];
     
     public function hostfile()
     {
-        return $this->belongsTo('App\HostedFile');
+        return $this->belongsTo('App\HostedFile', 'hosted_file_id', 'id');
     }
     
     public function email()

@@ -29,8 +29,7 @@ class HostedFileController extends Controller
         }
         else
         {
-            $file->logVisit($request);
-            $file->serve($request->all());
+            $file->serve($request);
         }
         return;
     }
@@ -65,7 +64,9 @@ class HostedFileController extends Controller
             $newfile->uidvar = $request->input('uid_tracker');
         else
             $newfile->uidvar = null;
-        $newfile->invalid_action = $request->input('invalid_action');
+        $newfile->invalid_action = HostedFile::INVALID_ALLOW;
+        if ($request->has('invalid_action'))
+            $newfile->invalid_action = $request->input('invalid_action');
         $newfile->notify_access = $request->has('notify');
         $newfile->hosted_site_id = null;
         $newfile->local_path = $file->storeAs('hosted', sha1(time().''.rand()).'.dat');

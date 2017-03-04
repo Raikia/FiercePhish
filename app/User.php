@@ -48,4 +48,9 @@ class User extends Authenticatable
             User::SMS_NOTIFICATION => 'SMS notifications',
         ];
     }
+    
+    public static function getNotifiable()
+    {
+        return User::where('notify_pref', User::EMAIL_NOTIFICATION)->orWhere('notify_pref', User::SMS_NOTIFICATION)->get();
+    }
 }

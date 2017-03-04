@@ -61,6 +61,8 @@ class DashboardController extends Controller
     	$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => storage_path('browscap_cache')]);
     	$bc->setCache($adapter);
     	$result = $bc->getBrowser($request->header('User-Agent'));
-    	dd($result);
+    	//dd($result);
+    	echo '<a href="http://fiercephish-raikia.c9users.io/test">test</a>';
+    	dd($request->header('Referer'));
     }
 }

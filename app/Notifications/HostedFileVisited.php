@@ -15,15 +15,17 @@ class HostedFileVisited extends Notification
     use Queueable;
 
     public $visit;
+    public $invalid_tracker;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($visit)
+    public function __construct($visit, $invalid)
     {
         $this->visit = $visit;
+        $this->invalid_tracker = $invalid;
     }
 
     /**
@@ -47,12 +49,42 @@ class HostedFileVisited extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        $invalid_str = '';
+        if ($this->invalid_tracker)
+        {
+            $invalid_str = '(invalid tracker!!!)';
+        }
+        $by_user = '';
+        if ($this->visit->email !== null)
+        {
+            $by_user = ' by '.$this->visit->email->targetuser->full_name();
+        }
+        $obj = (new MailMessage)
                     ->from('fiercephish@raikia.com')
-                    ->greeting('Hosted File View Notification!')
-                    ->subject('FiercePhish Notification: ')
-                    ->line('Some notificaiton here')
-                    ->line('To disable these notifications, go to xyz');
+                    ->subject('FiercePhish: '.$this->visit->hostfile->getPath().' has been viewed'.$by_user.'! '.$invalid_str)
+                    ->greeting('Hosted File View Notification for "'.$this->visit->hostfile->file_name.'"'.$invalid_str.'!')
+                    ->line('Original filename: ' . $this->visit->hostfile->original_file_name)
+                    ->line('Hosted filename: ' . $this->visit->hostfile->getPath());
+        if ($this->visit->email !== null)
+        {
+            $user_notes = '';
+            if ($this->visit->email->targetuser->notes !== null)
+                $user_notes = ' (Note: '.$this->visit->email->targetuser->notes.')';
+            $obj = $obj->line('Related email: ' . $this->visit->email->subject)
+                        ->line('Related user: ' . $this->visit->email->targetuser->full_name() . ' ('.$this->visit->email->targetuser->email.')'.$user_notes);
+            
+        }
+        if ($this->visit->referer !== null)
+        {
+            $obj = $obj->line('Referer: ' . $this->visit->referer);
+        }
+        $obj = $obj->line('IP: ' . $this->visit->ip)
+                    ->line('Browser: ' . $this->visit->browser . ' v'.$this->visit->browser_version . ' (by ' . $this->visit->browser_maker . ')')
+                    ->line('Platform: ' . $this->visit->platform)
+                    ->line('Raw Useragent: ' . $this->visit->useragent)
+                    ->line('')
+                    ->line('To disable these notifications, go to '.action('SettingsController@get_editprofile'));
+        return $obj;
     }
 
     public function toSms($notifiable)

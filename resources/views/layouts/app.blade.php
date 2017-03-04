@@ -82,14 +82,13 @@
                       @endif
                       </span></a></li>
                     </ul>
-                  </li><!--
-                  <li><a><i class="fa fa-sitemap"></i>Sites <span class="fa fa-chevron-down"></span></a>
+                  </li>
+                  <li><a><i class="fa fa-sitemap"></i>Sites and Files<span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="#">View all sites</a></li>
-                      <li><a href="#">Site cloner</a></li>
-                      <li><a href="#">Site customizer</a></li>
+                      <li><a href="{{ action('HostedFileController@index') }}">View all hosted files</a></li>
+                      <li><a href="#">View all hosted sites</a></li>
                     </ul>
-                  </li>-->
+                  </li>
                   <li><a><i class="fa fa-gear"></i> Settings <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{ action('SettingsController@index') }}">User Management</a></li>

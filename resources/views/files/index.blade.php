@@ -107,7 +107,7 @@
                   </span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" id="action_on_invalid" style="display: none;">
             <label class="control-label col-md-3 col-sm-3 col-xs-12">Action on invalid tracker</label>
             <div class="col-md-6 col-sm-6 col-xs-12">
               <select name="invalid_action" class="form-control">
@@ -267,7 +267,7 @@
     
     $("#path").keyup(function() {
         var oldVal = $("#path").val();
-        oldVal = oldVal.replace(/^\/+/g, '').replace(/[^0-9a-zA-Z\.%\/]/g, '');
+        oldVal = oldVal.replace(/^\/+/g, '').replace(/[^0-9a-zA-Z_\.%\/]/g, '');
         $("#path").val(oldVal);
         updatePath();
         
@@ -288,6 +288,14 @@
         var oldVal = $("#uid_tracker").val();
         oldVal = oldVal.replace(/[^0-9a-zA-Z%]/g, '');
         $("#uid_tracker").val(oldVal);
+        if (oldVal.length == 0)
+        {
+          $("#action_on_invalid").slideUp();
+        }
+        else
+        {
+          $("#action_on_invalid").slideDown();
+        }
         updatePath();
     });
     
@@ -301,6 +309,6 @@
         }
         $("#currentPath").html(newUrl);
     }
-    $('#upload-file-info').html($(this).val())
+    
 </script>
 @endsection

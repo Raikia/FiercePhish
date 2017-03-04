@@ -17,7 +17,8 @@ class CreateHostedFileViewsTable extends Migration
             $table->increments('id');
             $table->integer('hosted_file_id');
             $table->string('ip');
-            $table->string('useragent');
+            $table->string('referer')->nullable();
+            $table->string('useragent')->nullable();
             $table->string('browser');
             $table->string('browser_version');
             $table->string('browser_maker');
