@@ -77,7 +77,7 @@ class SendEmail extends Job implements ShouldQueue
                     {
                         $message->attachData(base64_decode($this->email->attachment), $this->email->attachment_name, ['mime' => $this->email->attachment_mime]);
                     }
-                    if (config('fiercephish.MAIL_BCC_ALL') !== null)
+                    if (strpos(config('fiercephish.MAIL_BCC_ALL'), '@') !== false)
                         $message->bcc(config('fiercephish.MAIL_BCC_ALL'));
                 });
             }

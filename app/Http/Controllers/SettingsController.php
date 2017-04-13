@@ -130,7 +130,7 @@ class SettingsController extends Controller
                     $real_old_value = 'null';
                 
                 $real_new_value = $value;
-                if ($real_new_value === "")
+                if ($real_new_value === "" || $real_new_value === null)
                     $real_new_value = 'null';
                 if ($key == 'URI_PREFIX')
                 {
@@ -144,6 +144,8 @@ class SettingsController extends Controller
                 {
                     \Cache::forget('fp:checkmail_error');
                 }
+                echo "Old value: $real_old_value - New value: $real_new_value<br />";
+                return;
                 $file_contents = str_replace($key.'='.$real_old_value, $key.'='.$real_new_value, $file_contents);
             }
             file_put_contents($path, $file_contents);
