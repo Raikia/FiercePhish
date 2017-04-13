@@ -30,7 +30,7 @@
                       @foreach ($files as $file)
                           <tr>
                               <td><a href="">{{ str_limit($file->original_file_name,50) }}</a></td>
-                              <td><a href="{{ \Request::root().$file->getPath() }}">{{ str_limit($file->getPath(),50) }}</a></td>
+                              <td><a href="{{ \Request::root().$file->getPathWithVar() }}">{{ str_limit($file->getPathWithVar(),50) }}</a></td>
                               <td>{{ str_limit($file->file_mime,50) }}</td>
                               <td>{{ $file->getAction() }}</td>
                               <td>{{ $file->views()->count() }} / 

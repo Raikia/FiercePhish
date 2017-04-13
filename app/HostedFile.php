@@ -78,7 +78,16 @@ class HostedFile extends Model
     
     public function getPath()
     {
-        return str_replace('//', '/', '/' . $this->route . '/' . $this->file_name);
+        $str = str_replace('//', '/', '/' . $this->route . '/' . $this->file_name);
+        return $str;
+    }
+    
+    public function getPathWithVar()
+    {
+        $str = $this->getPath();
+        if ($this->uidvar != null)
+            $str .= '?'.$this->uidvar.'=fiercephishtest';
+        return $str;
     }
     
     public function views()
@@ -153,10 +162,10 @@ class HostedFile extends Model
     public static function getActions()
     {
         return [
-            HostedFile::DISABLED    => 'Disabled',
             HostedFile::SERVE       => 'Serve file',
             HostedFile::PARSE       => 'Parse as PHP',
             HostedFile::DOWNLOAD    => 'Force Download',
+            HostedFile::DISABLED    => 'Disabled',
         ];
     }
     

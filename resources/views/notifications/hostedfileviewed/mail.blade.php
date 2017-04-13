@@ -1,12 +1,37 @@
 @component('mail::message')
 # Hosted File View Notification for "{{ $visit->hostfile->file_name }}"
 
-@component('mail::table')
-| Attribute  |  Value  |
-| ---------- | ------- |
+@if ($invalid)
+## _**!!! This was an invalid tracker view !!!**_
+@endif
 
+### File Information:
+
+* **Original filename:** {{ $visit->hostfile->original_file_name }}
+* **Hosted filename:**  {{ $visit->hostfile->getPath() }}
+
+@if ($visit->email !== null)
+@component('mail::panel')
+### User information:
+
+* **User:** {{ $visit->email->targetuser->full_name() }}
+* **Email:** {{ $visit->email->targetuser->email }}
+@if ($visit->email->targetuser->notes !== null)
+* **Note:** {{ $visit->email->targetuser->notes }}
+@endif
 @endcomponent
+@endif
+
+### View Metadata
+
+* **IP Address:**  {{ $visit->ip }}  ([whois](https://whois.domaintools.com/{{ $visit->ip }}), [geolocate](http://ipinfo.io/{{ $visit->ip }}))
+* **Browser:**  {{ $visit->browser }} v{{ $visit->browser_version }} (by {{ $visit->browser_maker }})
+* **Platform:**  {{ $visit->platform }}
+* **Raw Useragent:**  {{ $visit->useragent }}
+@if ($visit->referer !== null)
+* **Referer:**  {{ \App\Libraries\GlobalHelper::makeUnclickableLink($visit->referer) }}
+@endif
 
 
-
+_'To disable these notifications, [click here]({{ action('SettingsController@get_editprofile') }})_
 @endcomponent

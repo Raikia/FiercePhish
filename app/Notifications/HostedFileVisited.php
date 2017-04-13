@@ -85,7 +85,10 @@ class HostedFileVisited extends Notification
                     ->line('')
                     ->line('To disable these notifications, go to '.action('SettingsController@get_editprofile'));
         */
-        $obj = (new MailMessage)->markdown('notifications.hostedfileviewed.mail', ['visit' => $this->visit]);
+        $obj = (new MailMessage)
+                    ->from('fiercephish@raikia.com')
+                    ->subject('FiercePhish: '.$this->visit->hostfile->getPath().' has been viewed'.$by_user.'! '.$invalid_str)
+                    ->markdown('notifications.hostedfileviewed.mail', ['visit' => $this->visit, 'invalid' => $this->invalid_tracker]);
         return $obj;
     }
 
