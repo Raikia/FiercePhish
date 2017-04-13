@@ -59,7 +59,7 @@ class HostedFileVisited extends Notification
         {
             $by_user = ' by '.$this->visit->email->targetuser->full_name();
         }
-        $obj = (new MailMessage)
+        /*$obj = (new MailMessage)
                     ->from('fiercephish@raikia.com')
                     ->subject('FiercePhish: '.$this->visit->hostfile->getPath().' has been viewed'.$by_user.'! '.$invalid_str)
                     ->greeting('Hosted File View Notification for "'.$this->visit->hostfile->file_name.'"'.$invalid_str.'!')
@@ -84,6 +84,8 @@ class HostedFileVisited extends Notification
                     ->line('Raw Useragent: ' . $this->visit->useragent)
                     ->line('')
                     ->line('To disable these notifications, go to '.action('SettingsController@get_editprofile'));
+        */
+        $obj = (new MailMessage)->markdown('notifications.hostedfileviewed.mail', ['visit' => $this->visit]);
         return $obj;
     }
 
