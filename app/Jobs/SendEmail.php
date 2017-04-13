@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class SendEmail extends Job implements ShouldQueue
@@ -84,6 +85,7 @@ class SendEmail extends Job implements ShouldQueue
             {
                 $this->email->status = Email::FAILED;
                 $this->email->save();
+                Log::error($e);
                 echo 'Error: '.$e->getMessage()."\n";
                 if ($this->email->campaign != null)
                 {
@@ -94,7 +96,9 @@ class SendEmail extends Job implements ShouldQueue
                     ActivityLog::log("Failed to send an email (simple send) to \"".$this->email->targetuser->email."\" (email ID ".$this->email->id.") (try #".$this->attempts().')', "SendEmail", true);
                 }
                 ActivityLog::log("Cancelling email due to failed sending attempt.  Check the log for the errors!", "SendEmail");
+                $this->checkCampaign();
                 $this->delete();
+                return;
             }
         }
         $this->email->sent_time = Carbon::now();
@@ -110,6 +114,23 @@ class SendEmail extends Job implements ShouldQueue
         }
         
         
+        $this->checkCampaign();
+        
+        $this->cleanup();
+    }
+    
+    public function failed(Exception $exception)
+    {
+        $this->email->status = Email::FAILED;
+        $this->email->save();
+        Log::error($e);
+        echo $exception->getMessage();
+        $this->cleanup();
+    }
+    
+    
+    public function checkCampaign()
+    {
         if ($this->email->campaign != null)
         {
             if ($this->email->campaign->emails()->where('status', Email::NOT_SENT)->count() == 0)
@@ -122,14 +143,5 @@ class SendEmail extends Job implements ShouldQueue
             }
             $this->email->campaign->save();
         }
-        $this->cleanup();
-    }
-    
-    public function failed(Exception $exception)
-    {
-        $this->email->status = Email::FAILED;
-        $this->email->save();
-        echo $exception->getMessage();
-        $this->cleanup();
     }
 }
