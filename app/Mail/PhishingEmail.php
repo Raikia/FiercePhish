@@ -38,7 +38,7 @@ class PhishingEmail extends Mailable
                     ->subject($this->email->subject);
         if ($this->email->has_attachment)
             $message = $message->attachData(base64_decode($this->email->attachment), $this->email->attachment_name, ['mime' => $this->email->attachment_mime]);
-        if (config('fiercephish.MAIL_BCC_ALL') !== null && strpos(config('fiercephish.MAIL_BCC_ALL'),'@') !== false)
+        if (strpos(config('fiercephish.MAIL_BCC_ALL'), '@') !== false)
             $message = $message->bcc(config('fiercephish.MAIL_BCC_ALL'));
         $message = $message->withSwiftMessage(function ($swiftmessage) {
             if (strstr(config('fiercephish.APP_URL'), '.') !== false)

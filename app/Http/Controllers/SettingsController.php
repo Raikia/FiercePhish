@@ -133,7 +133,7 @@ class SettingsController extends Controller
                     $real_old_value = 'null';
                 
                 $real_new_value = $value;
-                if ($real_new_value === "")
+                if ($real_new_value === "" || $real_new_value === null)
                     $real_new_value = 'null';
                 if ($key == 'URI_PREFIX')
                 {
