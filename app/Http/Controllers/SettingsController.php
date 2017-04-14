@@ -102,7 +102,7 @@ class SettingsController extends Controller
         $user->phone_isp = $request->input('phone_isp');
         $user->notify_pref = $request->input('notify_pref');
         $message_addendum = '';
-        if ($user->phone_isp === "" && $user->notify_pref == User::SMS_NOTIFICATION)
+        if ($user->phone_isp === null && $user->notify_pref == User::SMS_NOTIFICATION)
         {
             $user->notify_pref = User::NO_NOTIFICATION;
             $message_addendum = 'No Phone ISP selected, so you cannot select SMS notifications!';
