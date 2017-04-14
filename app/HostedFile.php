@@ -86,7 +86,7 @@ class HostedFile extends Model
     {
         $str = $this->getPath();
         if ($this->uidvar != null)
-            $str .= '?'.$this->uidvar.'=fiercephishtest';
+            $str .= '?'.$this->uidvar.'=[uid]';
         return $str;
     }
     
@@ -98,8 +98,7 @@ class HostedFile extends Model
     public function logVisit() 
     {
         $request = \Request::instance(); // Not type hinting in the arguments for later user scripting purposes
-        // Don't log if its in "emails/templates" or "emails/log" or "emails/simple" because that's us setting up the campaign (this could be done probably more exact)
-        if (strpos($request->header('Referer'), 'emails/templates') !== false || strpos($request->header('Referer'), 'emails/log') !== false || strpos($request->header('Referer'), 'emails/simple') !== false)
+        if (\Auth::check()) // Don't log the view if the user is logged in to FiercePhish
         {
             return true;
         }
