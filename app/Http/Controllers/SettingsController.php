@@ -154,15 +154,33 @@ class SettingsController extends Controller
                     $real_new_value = trim($real_new_value, '/');
                     $new_uri = $value;
                 }
-                if ($key == 'IMAP_HOST')
+                elseif ($key == 'IMAP_HOST')
                 {
                     \Cache::forget('fp:checkmail_error');
+                }
+                elseif ($key == 'DB_HOST')
+                {
+                    $host = $value;
+                    $port = $request->input('db_port');
+                    $uname = $request->input('db_username');
+                    $pword = $request->input('db_password');
+                    $db = $request->input('db_database');
+                    try
+                    {
+                        $dbh = new \PDO('mysql:host='.$host.';port='.$port.';dbname='.$db, $uname, $pword);
+                        $dbh = null;
+                    }
+                    catch (\PDOException $e)
+                    {
+                        return back()->withErrors('Error with DB connection: "'.$e->getMessage().'".  Changes were not saved');
+                    }
                 }
                 if (strpos($file_contents, $key.'=') !== false)
                     $file_contents = str_replace($key.'='.$real_old_value, $key.'='.$real_new_value, $file_contents);
                 else
                     $file_contents .= "\n".$key.'='.$real_new_value;
             }
+            return;
             file_put_contents($path, $file_contents);
             $new_redir = '/'.$new_uri.str_replace(config('fiercephish.URI_PREFIX'), '',action('SettingsController@get_config', [], false));
             ActivityLog::log("Application configuration has been edited", "Settings");
