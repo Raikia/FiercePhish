@@ -117,6 +117,18 @@ class SettingsController extends Controller
     
     public function post_config(Request $request)
     {
+        $this->validate($request, [
+            'app_debug' => 'in:true,false',
+            'uri_prefix' => 'nullable|regex:/^[a-zA-Z0-9\/]*$/',
+            'proxy_url' => 'url',
+            'db_port'   => 'numeric',
+            'mail_driver' => 'in:smtp,mailgun',
+            'mail_port' => 'numeric',
+            'test_email_job' => 'in:true,false',
+            'imap_port' => 'numeric',
+            'notifications_from' => 'email',
+            'notifications_login_link' => 'in:true,false',
+        ]);
         $all_updates = $request->except('_token');
         $path = base_path('.env');
         if (file_exists($path) && is_writable($path)) {
@@ -124,6 +136,7 @@ class SettingsController extends Controller
             $new_uri = config('fiercephish.URI_PREFIX');
             foreach ($all_updates as $key => $value)
             {
+                $key = strtoupper($key);
                 $real_old_value = config('fiercephish.'.$key);
                 if ($real_old_value === true)
                     $real_old_value = 'true';
@@ -137,8 +150,6 @@ class SettingsController extends Controller
                     $real_new_value = 'null';
                 if ($key == 'URI_PREFIX')
                 {
-                    if (!preg_match('/^[a-zA-Z0-9\/]*$/', $value))
-                        return back()->withErrors('Settings could not be saved. "Prefix of FiercePhish" must be alphanumeric and can only contain slashes (example: "hidden/link")');
                     $value = trim($value, '/');
                     $real_new_value = trim($real_new_value, '/');
                     $new_uri = $value;

@@ -98,8 +98,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'uri_prefix' => [
+            'regex' => 'URI Prefix must be alphanumeric and can only contain slashes (example: "hidden/link")',
         ],
     ],
 
