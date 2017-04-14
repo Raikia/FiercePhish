@@ -32,13 +32,18 @@
                               <td><a href="">{{ str_limit($file->original_file_name,50) }}</a></td>
                               <td><a href="{{ \Request::root().$file->getPathWithVar() }}">{{ str_limit($file->getPathWithVar(),50) }}</a></td>
                               <td>{{ str_limit($file->file_mime,50) }}</td>
-                              <td>{{ $file->getAction() }}</td>
-                              <td>{{ $file->views()->count() }} / 
+                              <td>{{ $file->getAction() }}
+                              @if ($file->notify_access)
+                                (<i class="fa fa-bell-o"></i>)
+                              @endif
+                              </td>
+                              <td data-order="{{ $file->views()->count() }}">{{ $file->views()->count() }} / 
                               @if ($file->kill_switch != null)
                                 {{ $file->kill_switch }}
                               @else 
                                 &infin;
-                              @endif</td>
+                              @endif
+                              </td>
                               <td>{{ \App\Libraries\DateHelper::readable($file->created_at) }}</td>
                           </tr>
                       @endforeach
