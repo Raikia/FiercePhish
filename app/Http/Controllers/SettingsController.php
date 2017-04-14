@@ -147,7 +147,10 @@ class SettingsController extends Controller
                 {
                     \Cache::forget('fp:checkmail_error');
                 }
-                $file_contents = str_replace($key.'='.$real_old_value, $key.'='.$real_new_value, $file_contents);
+                if (strpos($file_contents, $key.'=') !== false)
+                    $file_contents = str_replace($key.'='.$real_old_value, $key.'='.$real_new_value, $file_contents);
+                else
+                    $file_contents .= "\n".$key.'='.$real_new_value;
             }
             file_put_contents($path, $file_contents);
             $new_redir = '/'.$new_uri.str_replace(config('fiercephish.URI_PREFIX'), '',action('SettingsController@get_config', [], false));
