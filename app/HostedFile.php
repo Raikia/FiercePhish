@@ -95,8 +95,9 @@ class HostedFile extends Model
         return $this->hasMany('App\HostedFileView');
     }
     
-    public function logVisit(Request $request) 
+    public function logVisit() 
     {
+        $request = \Request::instance(); // Not type hinting in the arguments for later user scripting purposes
         // Don't log if its in "emails/templates" or "emails/log" or "emails/simple" because that's us setting up the campaign (this could be done probably more exact)
         if (strpos($request->header('Referer'), 'emails/templates') !== false || strpos($request->header('Referer'), 'emails/log') !== false || strpos($request->header('Referer'), 'emails/simple') !== false)
         {
@@ -105,17 +106,8 @@ class HostedFile extends Model
         $visit = new HostedFileView();
         $visit->hosted_file_id = $this->id;
         $visit->ip = $request->ip();
-        // Detect browser
-        $bc = new \BrowscapPHP\Browscap();
-    	$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => storage_path('browscap_cache')]);
-    	$bc->setCache($adapter);
-    	$result = $bc->getBrowser($request->header('User-Agent'));
-    	$visit->useragent = $request->header('User-Agent');
-    	$visit->referer = $request->header('Referer');
-    	$visit->browser = $result->browser;
-    	$visit->browser_version = $result->version;
-    	$visit->browser_maker = $result->browser_maker;
-    	$visit->platform = $result->platform;
+        $visit->referer = $request->header('Referer');
+        $visit->detectBrowser($request->header('User-Agent'));
     	
     	$invalid_tracker = false;
     	$continue = true;

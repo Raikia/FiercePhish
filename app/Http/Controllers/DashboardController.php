@@ -55,14 +55,9 @@ class DashboardController extends Controller
         return view('dashboard.index')->with('activitylog', ActivityLog::fetch())->with('sendEmailData', $sendEmailData)->with('errorEmailData', $errorEmailData)->with('emailStats', $statistics)->with('allActiveCampaigns', Campaign::where('status', Campaign::NOT_STARTED)->orWhere('status', Campaign::SENDING)->orWhere('status', Campaign::WAITING)->get());
     }
     
-    public function test(Request $request)
+    public function test()
     {
-    	$bc = new \BrowscapPHP\Browscap();
-    	$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => storage_path('browscap_cache')]);
-    	$bc->setCache($adapter);
-    	$result = $bc->getBrowser($request->header('User-Agent'));
-    	//dd($result);
-    	echo '<a href="http://fiercephish-raikia.c9users.io/test">test</a>';
-    	dd($request->header('Referer'));
+    	$request = \Request::instance();
+    	dd($request->input('test'));
     }
 }

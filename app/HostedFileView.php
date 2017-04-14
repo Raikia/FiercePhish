@@ -20,8 +20,17 @@ class HostedFileView extends Model
     
     // Add plugin detection as well
     
-    public function browserDetection($useragent)
+    public function detectBrowser($useragent)
     {
         $this->useragent = $useragent;
+        // Detect browser
+        $bc = new \BrowscapPHP\Browscap();
+    	$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => storage_path('browscap_cache')]);
+    	$bc->setCache($adapter);
+    	$result = $bc->getBrowser($useragent);
+    	$this->browser = $result->browser;
+    	$this->browser_version = $result->version;
+    	$this->browser_maker = $result->browser_maker;
+    	$this->platform = $result->platform;
     }
 }
