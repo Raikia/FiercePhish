@@ -323,6 +323,46 @@
                 </form>
             </div>
         </div>
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Notification Settings</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form class="form-horizontal form-label-left" method="post" action="{{ action('SettingsController@post_config') }}">
+                    {{ csrf_field() }}
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">From Email Address
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" name="NOTIFICATIONS_FROM" class="form-control col-md-7 col-xs-12" value="{{ config('fiercephish.NOTIFICATIONS_FROM') }}" />
+                        </div>
+                    </div>
+                    <div style="text-align: center;" class="form-group">
+                        Should the notifications contain a link in it to automatically log you in to view the alert?<br />
+                        This is useful for text message notifications if you don't want to go through the trouble of<br />
+                        logging in, but obviously it is less secure if your phone/email is compromised.
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Include Login Link
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select name="NOTIFICATIONS_LOGIN_LINK" class="form-control col-md-7 col-xs-12" title="">
+                                    <option value="false"{{ (config('fiercephish.NOTIFICATIONS_LOGIN_LINK')===false?' selected':'') }}>No</option>
+                                    <option value="true"{{ (config('fiercephish.NOTIFICATIONS_LOGIN_LINK')==true?' selected':'') }}>Yes</option>
+                                </select>
+                            </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <button type="submit" class="btn btn-success">Save Settings</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
