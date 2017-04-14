@@ -20,6 +20,7 @@
                       <th>Username</th>
                       <th>Email</th>
                       <th>Phone Number</th>
+                      <th>Notification Type</th>
                       <th>Created Date</th>
                   </tr>
               </thead>
@@ -29,7 +30,12 @@
                           <tr>
                               <td><a href="{{ action('SettingsController@get_editprofile', ['id' => $user->id ]) }}">{{ str_limit($user->name,50) }}</a></td>
                               <td>{{ str_limit($user->email,50) }}</td>
-                              <td>{{ str_limit($user->phone_number,50) }}</td>
+                              <td>{{ str_limit($user->phone_number,50) }}
+                              @if ($user->phone_isp !== "")
+                                ({{ array_search($user->phone_isp, \App\User::getPhoneISPs()) }})
+                              @endif
+                              </td>
+                              <td>{{ \App\User::getNotifications()[$user->notify_pref] }}</td>
                               <td>{{ \App\Libraries\DateHelper::readable($user->created_at) }}</td>
                           </tr>
                       @endforeach
