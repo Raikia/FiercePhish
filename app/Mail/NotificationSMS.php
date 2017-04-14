@@ -36,6 +36,6 @@ class NotificationSMS extends Mailable
         return $this->text('layouts.email_plaintext')
                     ->with('data', $this->data)
                     ->subject('FiercePhish Notification')
-                    ->from('fiercephish@raikia.com');
+                    ->from(config('fiercephish.NOTIFICATIONS_FROM'));
     }
 }

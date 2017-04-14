@@ -60,7 +60,7 @@ class HostedFileVisited extends Notification
             $by_user = ' by '.$this->visit->email->targetuser->full_name();
         }
         $obj = (new MailMessage)
-                    ->from('fiercephish@raikia.com')
+                    ->from(config('fiercephish.NOTIFICATIONS_FROM'))
                     ->subject('FiercePhish: '.$this->visit->hostfile->getPath().' has been viewed'.$by_user.'! '.$invalid_str)
                     ->markdown('notifications.hostedfileviewed.mail', ['visit' => $this->visit, 'invalid' => $this->invalid_tracker]);
         return $obj;
