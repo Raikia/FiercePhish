@@ -13,7 +13,7 @@ class SmsChannel
         $number = preg_replace("/[^0-9]/", "", $notifiable->phone_number);
         if ($notifiable->phone_isp === '')
             return;
-        echo "SENDING THING: " . $message->data;
+        \Log::info("Sending sms data: " . $message->data);
         Mail::to($number.'@'.$notifiable->phone_isp)->send($message);
     }
 }
