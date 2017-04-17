@@ -164,7 +164,9 @@
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
-
+        <div style="text-align: center;">
+          <p>Note: If you view the file while logged in to FiercePhish, no alert will be generated and your view will not be logged. To fully test the notification system, you must view the file in "incogneto" mode or while you are logged out of FiercePhish.</p>
+        </div>
         <table class="table table-striped table-bordered">
           <thead>
             <tr>
