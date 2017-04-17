@@ -186,7 +186,6 @@ class SettingsController extends Controller
                 else
                     $file_contents .= "\n".$key.'='.$real_new_value;
             }
-            return;
             file_put_contents($path, $file_contents);
             $new_redir = '/'.$new_uri.str_replace(config('fiercephish.URI_PREFIX'), '',action('SettingsController@get_config', [], false));
             ActivityLog::log("Application configuration has been edited", "Settings");
@@ -197,7 +196,8 @@ class SettingsController extends Controller
             while (strstr($new_redir, '//') !== false)
                 $new_redir = str_replace('//','/', $new_redir);
             $base = $request->root();
-            return redirect($base.$new_redir)->with('success', 'Settings successfully saved!');
+            $request->session()->flash('success', 'Settings successfully saved!');
+            return redirect($base.$new_redir);
         }
         else
         {
