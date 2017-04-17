@@ -15,7 +15,7 @@ class CreateHostedFileViewsTable extends Migration
     {
         Schema::create('hosted_file_views', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('hosted_file_id');
+            $table->integer('hosted_file_id')->index();
             $table->string('ip');
             $table->string('referer')->nullable();
             $table->string('useragent')->nullable();
@@ -23,7 +23,7 @@ class CreateHostedFileViewsTable extends Migration
             $table->string('browser_version');
             $table->string('browser_maker');
             $table->string('platform');
-            $table->string('uuid');
+            $table->string('uuid')->nullable()->index();
             $table->timestamps();
         });
     }

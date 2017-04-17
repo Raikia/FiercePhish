@@ -27,6 +27,7 @@ class CreateHostedFilesTable extends Migration
             $table->boolean('notify_access')->default(false);
             $table->integer('hosted_site_id')->nullable();
             $table->timestamps();
+            $table->index(['route', 'file_name']);
         });
     }
 
