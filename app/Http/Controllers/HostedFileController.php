@@ -81,6 +81,8 @@ class HostedFileController extends Controller
         ]);
         $file = HostedFile::findorfail($request->input('file'));
         unlink(storage_path('app/'.$file->local_path));
+        foreach ($file->views as $view)
+            $view->delete();
         $file->delete();
         return back()->with('success', 'File deleted successfully!');
     }
