@@ -74,9 +74,17 @@ class HostedFileVisited extends Notification
         $data .= "\n";
         if ($this->visit->email !== null)
         {
-            $data .= "User: ".$this->visit->email->targetuser->full_name()." (".$this->visit->targetuser->email.")"."\n";
-            $data .="User note: ".$this->visit->email->targetuser->notes."\n";
+            $data .= "User: ".$this->visit->email->targetuser->full_name()." (".$this->visit->email->targetuser->email.")"."\n";
+            $data .= "Campaign: ".$this->visit->email->campaign->name."\n";
+            if ($this->visit->email->targetuser->notes !== null)
+                $data .= "User note: ".$this->visit->email->targetuser->notes."\n";
+            if ($this->visit->email->campaign->target_list->notes !== null)
+                $data .= "Target List note: ".$this->visit->email->campaign->target_list->notes."\n";
             $data .= "\n";
+        }
+        if ($this->invalid_tracker)
+        {
+            $data .= "INVALID TRACKER!\n\n";
         }
         $data .= "IP: ".$this->visit->ip."\n";
         $data .= "System: ".$this->visit->platform." running ".$this->visit->browser." v".$this->visit->browser_version."\n";
