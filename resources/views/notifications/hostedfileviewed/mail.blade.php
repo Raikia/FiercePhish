@@ -16,8 +16,14 @@
 
 * **User:** {{ $visit->email->targetuser->full_name() }}
 * **Email:** {{ $visit->email->targetuser->email }}
+@if ($visit->email->campaign !== null)
+* **Campaign:** {{ $visit->email->campaign->name }}
+@endif
 @if ($visit->email->targetuser->notes !== null)
-* **Note:** {{ $visit->email->targetuser->notes }}
+* **User Note:** {{ $visit->email->targetuser->notes }}
+@endif
+@if ($visit->email->campaign->target_list->notes !== null)
+* **List Note:** {{ $visit->email->campaign->target_list->notes }}
 @endif
 @endcomponent
 @endif
