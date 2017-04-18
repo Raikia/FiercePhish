@@ -14,6 +14,7 @@ use App\ReceivedMail;
 use App\ReceivedMailAttachment;
 use App\TargetUser;
 use App\Campaign;
+use App\HostedFile;
 use \Response;
 use Carbon\Carbon;
 use File;
@@ -32,7 +33,8 @@ class EmailController extends Controller
         $currentTemplate = new EmailTemplate();
         if ($id !== '')
             $currentTemplate = EmailTemplate::findOrFail($id);
-        return view('emails.template_index')->with('allTemplates', $all_templates)->with('currentTemplate', $currentTemplate);
+        $allFiles = HostedFile::all();
+        return view('emails.template_index')->with('allTemplates', $all_templates)->with('currentTemplate', $currentTemplate)->with('hostedfiles', $allFiles);
     }
     
     public function addTemplate(Request $request)

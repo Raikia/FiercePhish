@@ -21,34 +21,6 @@
 
         <form class="form-horizontal form-label-left" method="post" id="addTemplateForm" action="{{ action('EmailController@addTemplate') }}">
           {{ csrf_field() }}
-          <!--<div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first_name">First Name <span class="required">*</span>
-            </label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="text" id="first_name" name="first_name" required="required" class="form-control col-md-7 col-xs-12">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last_name">Last Name <span class="required">*</span>
-            </label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="text" id="last_name" name="last_name" required="required" class="form-control col-md-7 col-xs-12">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Email <span class="required">*</span></label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <input id="email" class="form-control col-md-7 col-xs-12" required="required" type="text" name="email">
-            </div>
-          </div>
-
-          <div class="ln_solid"></div>
-          <div class="form-group">
-            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-              <button type="button" id="add_target_clear_btn" class="btn btn-primary">Clear</button>
-              <button type="submit" class="btn btn-success">Create Target</button>
-            </div>
-          </div>-->
           <select class="form-control" size="25" id="listOfTemplates">
             @foreach ($allTemplates as $template)
               <option value="{{ $template->id }}">{{ $template->name }}</option>
@@ -66,7 +38,35 @@
 
       </div>
     </div>
+    
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>List of Hosted Files</h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+          <div style="text-align: center;">
+            <p>Click on the file below to copy the full URL to your clipboard</p>
+          </div>
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>Hosted Filename</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach ($hostedfiles as $file)
+                <tr class="tt" title="{{ $file->original_file_name }} - {{ $file->file_name }} ({{ $file->views->count() }} views)">
+                  <td><a class="ttc" title="Copied to clipboard!" href="javascript:copyToClipboard('#file_{{ $file->id }}')">{{ str_limit($file->getPathWithVar(),30) }}</a> <span id="file_{{ $file->id }}" style="display: none;">{{ $file->getFullPath() }}</span></td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+      </div>
+    </div>
   </div>
+  
+  
 <div class="modal fade createnew-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
@@ -332,6 +332,19 @@
       });
     })
     
+    function copyToClipboard(element) {
+      var $temp = $("<input>");
+      $("body").append($temp);
+      $temp.val($(element).text()).select();
+      document.execCommand("copy");
+      $temp.remove();
+    }
     
+    $('.ttc').tooltipster({
+       animation: 'fade',
+       delay: 0,
+       trigger: 'click',
+       timer: 1000,
+    });
 </script>
 @endsection
