@@ -90,6 +90,12 @@ class HostedFile extends Model
         return $str;
     }
     
+    public function getFullPath()
+    {
+        $str = $this->getPathWithVar();
+        return \Request::root() . $str;
+    }
+    
     public function views()
     {
         return $this->hasMany('App\HostedFileView');
