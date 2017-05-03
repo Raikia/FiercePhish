@@ -91,6 +91,7 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::get('files', 'HostedFileController@index');
 	Route::post('files/add', 'HostedFileController@addfile');
 	Route::post('files/delete', 'HostedFileController@deletefile');
+	Route::get('files/{id}', 'HostedFileController@file_details');
 	
 	
 	// Dashboard Routes...

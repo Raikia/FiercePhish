@@ -86,4 +86,10 @@ class HostedFileController extends Controller
         $file->delete();
         return back()->with('success', 'File deleted successfully!');
     }
+    
+    public function file_details($id)
+    {
+        $file = HostedFile::findorfail($id);
+        return view('files.details')->with('file', $file);
+    }
 }
