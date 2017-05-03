@@ -35,7 +35,7 @@ class TargetsController extends Controller
         
         if (count($checkUser) == 0)
         {
-            TargetUser::create($request->all());
+            TargetUser::create(['first_name' => $request->input('first_name'), 'last_name' => (($request->input('last_name')!==null)?$request->input('last_name'):''), 'email' => $request->input('email')]);
             ActivityLog::log('Added new Target User ("'.$request->input('email').'")', "Target User");
             return back()->with('success', 'Target added successfully');
         }
