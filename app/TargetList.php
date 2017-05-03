@@ -18,7 +18,7 @@ class TargetList extends Model
     
     public function availableUsers()
     {
-        return TargetUser::whereDoesntHave('lists', function ($q) {
+        return TargetUser::where('hidden', false)->whereDoesntHave('lists', function ($q) {
             $q->where('target_list_id', '=', $this->id);
         });
     }
