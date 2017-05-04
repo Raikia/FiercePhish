@@ -2,7 +2,7 @@ This cache is included with the main repository to prevent future deprecation. T
 
 
 ./vendor/bin/browscap-php browscap:fetch
-rm -r storage/browscap_cache/cache/*
+rm -r ./storage/browscap_cache/cache/*
 ./vendor/bin/browscap-php browscap:convert --cache=storage/browscap_cache/cache/
 
 Folder path can be found by running "storage_path('browscap_cache')" in Laravel's tinker.
