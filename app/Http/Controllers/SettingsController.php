@@ -81,7 +81,7 @@ class SettingsController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255',
             'password' => 'sometimes|confirmed',
-            'phone_number' => 'min:14|max:14',
+            'phone_number' => 'nullable|regex:/\(\d{3}\)\s\d{3}-\d{4}/',
             'phone_isp' => 'max:255',
             'current_password' => 'sometimes|required',
             'user_id' => 'required|integer',
@@ -101,15 +101,18 @@ class SettingsController extends Controller
         $user->email = $request->input('email');
         $user->phone_isp = $request->input('phone_isp');
         $user->notify_pref = $request->input('notify_pref');
-        $message_addendum = '';
-        if ($user->phone_isp === null && $user->notify_pref == User::SMS_NOTIFICATION)
-        {
-            $user->notify_pref = User::NO_NOTIFICATION;
-            $message_addendum = 'No Phone ISP selected, so you cannot select SMS notifications!';
-        }
         if (!empty($request->input('password')))
             $user->password = Hash::make($request->input('password'));
         $user->phone_number = $request->input('phone_number');
+        $message_addendum = '';
+        if (($user->phone_number === null || $user->phone_isp === null) && $user->notify_pref == User::SMS_NOTIFICATION)
+        {
+            $user->notify_pref = User::NO_NOTIFICATION;
+            if ($user->phone_number === null)
+                $message_addendum = 'No Phone Number given, so you cannot select SMS notifications!';
+            else
+                $message_addendum = 'No Phone ISP selected, so you cannot select SMS notifications!';
+        }
         $user->save();
         if ($request->input('type') == 'diff')
             return redirect()->action('SettingsController@index')->with('success', 'Profile updated successfully.  '.$message_addendum);
