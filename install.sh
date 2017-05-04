@@ -33,7 +33,7 @@ FP_INSTRUCTIONS=()
 MAIL_INSTRUCTIONS=()
 DNS_INSTRUCTIONS=()
 
-read -d '' CONFIG_FILE_CONTENTS << EOF
+read -r -d '' CONFIG_FILE_CONTENTS << EOF
 #################################
 ### FiercePhish Configuration ###
 ###      By Chris King        ###
@@ -279,7 +279,7 @@ get_config_vars()
 			echo "$CONFIG_FILE_CONTENTS" > ~/fiercephish.config
 			exit 1
 		else
-			source ~/fiercephish.config
+			. ~/fiercephish.config
 			info "Found the fiercephish.config configuration file!"
 			if [[ -z $CONFIGURED || ! $CONFIGURED = "true" ]]
 				then
@@ -307,7 +307,7 @@ prompt_choice()
 		echo -e "        5. ${WHITE}Disable SSL${RESTORE}"
 	fi
 	echo -e ""
-	while [ true ]
+	while true 
 		do
 		prompt "Selection [1-5]"
 		INPUT_SELECTION=$(get_input "1")
@@ -349,7 +349,7 @@ validate_vars_general()
 	
 	mem=$(free -m | awk '/^Mem:/{print $2}')
 	swap=$(free -m | awk '/^Swap:/{print $2}')
-	total=$(($mem+$swap))
+	total=$((mem+swap))
 	if [[ $total -lt 600 ]]
 		then
 		error "System memory + swap is less than 600 MB (it has ${total} MB)!"
@@ -906,7 +906,7 @@ EOM
 			sys_cmd "pushd ${EMAIL_DOMAIN}"
 			sys_cmd "opendkim-genkey -s mail -d ${EMAIL_DOMAIN}"
 			sys_cmd "chown opendkim:opendkim mail.private"
-			DKIM_KEY=$(cat mail.txt | xargs | sed 's/.*(\s\(.*\)\s).*/\1/')
+			DKIM_KEY=$(xargs < mail.txt | sed 's/.*(\s\(.*\)\s).*/\1/')
 			DNS_INSTRUCTIONS+=("${LCYAN}TXT${RESTORE} record for '${LGREEN}mail._domainkey${RESTORE}' with text: \n            ${LYELLOW}${DKIM_KEY}${RESTORE}")
 			sys_cmd "popd"
 			sys_cmd "popd"
@@ -989,9 +989,9 @@ install_ssl()
 		info "Installing and configuring LetsEncrypt...this can take a few minutes"
 		if [[ $VERBOSE = "true" ]]
 			then
-			resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1 | tee /dev/tty)
+			resp=$(certbot-auto -n -d "${SSL_DOMAIN}" --agree-tos --email "${SSL_EMAIL}" --redirect --hsts --apache 2>&1 | tee /dev/tty)
 		else
-			resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1)
+			resp=$(certbot-auto -n -d "${SSL_DOMAIN}" --agree-tos --email "${SSL_EMAIL}" --redirect --hsts --apache 2>&1)
 		fi
 		if [[ $resp =~ Failed ]]
 			then
@@ -1050,7 +1050,7 @@ uninstall_ssl()
 
 random_str()
 {
-	cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1
+	tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 32 | head -n 1
 }
 
 get_input()
@@ -1058,11 +1058,11 @@ get_input()
 	local default=$1
 	if [[ $0 = "bash" ]]
 		then
-		echo $default
+		echo "$default"
 	else
 		local input_answer=""
-		read -e input_answer
-		echo $input_answer
+		read -r -e input_answer
+		echo "$input_answer"
 	fi
 }
 
@@ -1116,7 +1116,7 @@ valid_ip()
     if [[ $ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
         OIFS=$IFS
         IFS='.'
-        ip=($ip)
+        ip=("$ip")
         IFS=$OIFS
         [[ ${ip[0]} -le 255 && ${ip[1]} -le 255 \
             && ${ip[2]} -le 255 && ${ip[3]} -le 255 ]]

@@ -71,10 +71,12 @@ show_header()
 check_new_version()
 {
     info "Checking for new FiercePhish version"
-    local current_version=$(cat VERSION)
-    local latest_version=$(curl -s https://raw.githubusercontent.com/Raikia/FiercePhish/${GITHUB_BRANCH}/VERSION?${RANDOM})
+    local current_version
+    current_version=$(cat VERSION)
+    local latest_version
+    latest_version=$(curl -s https://raw.githubusercontent.com/Raikia/FiercePhish/${GITHUB_BRANCH}/VERSION?${RANDOM})
     
-    if [[ $current_version == $latest_version ]]
+    if [[ $current_version == "$latest_version" ]]
         then
         info "You are already running the latest version of FiercePhish (v${current_version})!"
         exit 0
@@ -119,7 +121,7 @@ validate_vars_general()
 {
 	mem=$(free -m | awk '/^Mem:/{print $2}')
 	swap=$(free -m | awk '/^Swap:/{print $2}')
-	total=$(($mem+$swap))
+	total=$((mem+swap))
 	CREATE_SWAPSPACE="false"
 	if [[ $total -lt 600 ]]
 		then
@@ -257,10 +259,10 @@ update_env()
 	local envVars=("APP_ENV" "APP_DEBUG" "APP_LOG_LEVEL" "APP_TIMEZONE" "APP_KEY" "APP_URL" "APP_NAME" "PROXY_URL" "PROXY_SCHEMA" "DB_CONNECTION" "DB_HOST" "DB_PORT" "DB_USERNAME" "DB_PASSWORD" "DB_DATABASE" "CACHE_DRIVER" "SESSION_DRIVER" "BROADCAST_DRIVER" "QUEUE_DRIVER" "REDIS_HOST" "REDIS_PASSWORD" "REDIS_PORT" "PUSHER_APP_ID" "PUSHER_APP_KEY" "PUSHER_APP_SECRET" "MAIL_DRIVER" "MAIL_HOST" "MAIL_PORT" "MAIL_USERNAME" "MAIL_PASSWORD" "MAIL_ENCRYPTION" "MAILGUN_DOMAIN" "MAILGUN_SECRET" "URI_PREFIX" "TEST_EMAIL_JOB" "IMAP_HOST" "IMAP_PORT" "IMAP_USERNAME" "IMAP_PASSWORD" "MAIL_BCC_ALL")
 	sys_cmd "mv .env .env_old"
 	sys_cmd "cp .env.example .env"
-	source .env_old
+	. .env_old
 	for i in "${!envVars[@]}"
 		do 
-		eval tempVar=\$${envVars[$i]}
+		tempVar=${!envVars[$i]}
 		tempVar=${tempVar//\//\\/}
 		sys_cmd "sed -i 's/${envVars[$i]}=.*$/${envVars[$i]}=${tempVar}/' .env"
 	done
@@ -272,7 +274,7 @@ update_env()
 
 backup_database()
 {
-	source .env
+	. .env
 	info "Backing up the FiercePhish database"
 	mysqldump -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME"  --password="$DB_PASSWORD" "$DB_DATABASE" > $BACKUP_LOCATION 2> /dev/null
 	info "Done backing up database"
@@ -300,11 +302,11 @@ get_input()
 	local default=$1
 	if [[ $0 = "bash" ]]
 		then
-		echo $default
+		echo "$default"
 	else
 		local input_answer=""
-		read -e input_answer
-		echo $input_answer
+		read -r -e input_answer
+		echo "$input_answer"
 	fi
 }
 
