@@ -25,7 +25,7 @@ class HostedFileView extends Model
         $this->useragent = $useragent;
         // Detect browser
         $bc = new \BrowscapPHP\Browscap();
-    	$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => storage_path('browscap_cache')]);
+    	$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => storage_path('browscap_cache/cache')]);
     	$bc->setCache($adapter);
     	$result = $bc->getBrowser($useragent);
     	$this->browser = $result->browser;
