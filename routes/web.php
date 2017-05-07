@@ -118,6 +118,7 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function() {
 	Route::get('ajax/inbox/delete/{id?}', 'AjaxController@delete_inbox_message');
 	Route::get('ajax/inbox/{id?}', 'AjaxController@get_inbox_messages');
 	Route::post('ajax/route/check', 'AjaxController@check_route');
+	Route::post('ajax/hostedfile/views/{id?}', 'AjaxController@hosted_file_view_table');
 });
 
 Route::get('{catchall}', 'HostedFileController@catchall')->where('catchall', '(.*)');

@@ -21,6 +21,7 @@ use Datatables;
 use Carbon\Carbon;
 use DB;
 use App\HostedFile;
+use App\HostedFileView;
 
 class AjaxController extends Controller
 {
@@ -268,4 +269,20 @@ class AjaxController extends Controller
         return Response::json($ret, 200);
     }
     
+    
+    public function hosted_file_view_table(Request $request, $id)
+    {
+        return Datatables::of(HostedFile::findorfail($id)->views()->with('email.targetuser', 'email.campaign'))->setRowId('row_{{ $id }}')->editColumn('email.targetuser.full_name', function ($view) {
+                    if ($view->email !== null)
+                        return $view->email->targetuser->full_name();
+                    return '';
+                })->filterColumn('targetuser.first_name', function ($query, $keyword) {
+                    $query->whereRaw("(select count(1) from target_users where target_users.id = target_user_id and CONCAT(target_users.first_name,' ',target_users.last_name) like ?) >= 1", ["%{$keyword}%"]);
+                })->editColumn('viewed_time', function ($view) {
+                    return \App\Libraries\DateHelper::print($view->created_at);
+                })->filterColumn('viewed_time', function($query, $keyword) {
+                    $query->whereRaw('CAST(CONVERT_TZ(created_at, "+00:00", "'.\App\Libraries\DateHelper::getOffset(config('fiercephish.APP_TIMEZONE')).'") as char) like ?', ["%{$keyword}%"]);
+                })
+                ->make(true);
+    }
 }
