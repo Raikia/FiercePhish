@@ -94,6 +94,10 @@
               <td><b>Receiver Email</b></td>
               <td>{{ $email->targetuser->email }}</td>
             </tr>
+            <tr>
+              <td><b>Note about Receiver</b></td>
+              <td>{{ $email->targetuser->note }}</td>
+            </tr>
             @if ($email->has_attachment)
               <tr>
                 <td><b>Attachment Name</b></td>
@@ -116,6 +120,20 @@
               <td><b>Associated Campaign</b></td>
               <td>{!! ($email->campaign)?'<a href="'.action('CampaignController@campaign_details', ['id' => $email->campaign->id]).'">'.e($email->campaign->name).'</a>':'None' !!}</td>
             </tr>
+            @if ($email->campaign !== null)
+              <tr>
+                <td><b>Associated TargetList</b></td>
+                <td>{{ $email->campaign->target_list->name }}</td>
+              </tr>
+              <tr>
+                <td><b>Associated TargetList Note</b></td>
+                <td>{{ $email->campaign->target_list->notes }}</td>
+              </tr>
+              <tr>
+                <td><b>Associated Email Template</b></td>
+                <td>{{ $email->campaign->email_template->name }}</td>
+              </tr>
+            @endif
             <tr>
               <td><b>Planned Send At</b></td>
               <td>{{ \App\Libraries\DateHelper::readable($email->planned_time) }}</td>
