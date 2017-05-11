@@ -92,9 +92,7 @@ class CheckMail extends Command
                     $mail->receiver_email = $email_header->to[0]->mailbox.'@'.$email_header->to[0]->host;
                     $mail->subject = $email_header->subject;
                     $mail->received_date = date("Y-m-d H:i:s", strtotime($email_header->date));
-                    $mail->message = imap_fetchbody($imap, $x, 1.1);
-                    if ($mail->message == '')
-                        $mail->message = imap_fetchbody($imap, $x, 1);
+                    $mail->message = $this->get_body($imap, $x);
                     $mail->seen = false;
                     $mail->save();
                     $attachments = $this->getAttachments($imap, $x);
@@ -166,4 +164,45 @@ class CheckMail extends Command
         return $attachments;
     }
     
+    /* Taken from http://stackoverflow.com/questions/4272551/extract-body-text-from-email-php */
+    function format_html($str) {
+        // Convertit tous les caractères éligibles en entités HTML en convertissant les codes ASCII 10 en $lf
+        $str = htmlentities($str, ENT_COMPAT, "UTF-8");
+        $str = str_replace(chr(10), "<br>", $str);
+        return $str;
+    }
+    
+    
+    function get_body($imapLink, $num)
+    {
+        $obj_structure = imap_fetchstructure($imapLink, $num);
+        
+        $obj_section = $obj_structure;
+        $section = "1";
+        for ($i = 0 ; $i < 10 ; $i++) {
+            if ($obj_section->type == 0) {
+                break;
+            } else {
+                $obj_section = $obj_section->parts[0];
+                $section.= ($i > 0 ? ".1" : "");
+            }
+        }
+        $text = imap_fetchbody($imapLink, $num, $section);
+        
+        if ($obj_section->encoding == 3) {
+            $text = imap_base64($text);
+        } else if ($obj_section->encoding == 4) {
+            $text = imap_qprint($text);
+        }
+        
+        foreach ($obj_section->parameters as $obj_param) {
+            if (($obj_param->attribute == "charset") && (mb_strtoupper($obj_param->value) != "UTF-8")) {
+                $text = utf8_encode($text);
+                break;
+            }
+        }
+        
+        return $text;
+    }
+
 }
