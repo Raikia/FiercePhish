@@ -215,6 +215,7 @@ class AjaxController extends Controller
                 if (empty($all_mails[$x]->sender_name))
                     $all_mails[$x]->sender_name = e($all_mails[$x]->sender_email);
                 $all_mails[$x]->sub_msg = e($all_mails[$x]->sub_msg);
+                $all_mails[$x]->formatted_date = \App\Libraries\DateHelper::readable($all_mails[$x]->received_date);
             }
             $ret['data'] = $all_mails;
         }
@@ -232,6 +233,7 @@ class AjaxController extends Controller
             $message->replyto_email = e($message->replyto_email);
             $message->receiver_name = e($message->receiver_name);
             $message->receiver_email = e($message->receiver_email);
+            $message->formatted_date = \App\Libraries\DateHelper::readable($message->received_date);
             $message->subject = e($message->subject);
             $message->message = e($message->message);
             

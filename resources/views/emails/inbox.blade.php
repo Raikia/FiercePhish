@@ -104,7 +104,7 @@
           str += '<i class="fa fa-paperclip"></i>';
         str += '<i class="fa"></i></div>';
         str += '<div class="right">';
-        str += '<h3>'+data[x].sender_name+' <small>'+data[x].received_date+'</small></h3>';
+        str += '<h3>'+data[x].sender_name+' <small>'+data[x].formatted_date+'</small></h3>';
         var text = data[x].sub_msg.split("\n")[0].substr(0,50);
         if (text != data[x].sub_msg)
           text += "...";
@@ -147,7 +147,7 @@
       str += '</div>';
       str += '</div>';
       str += '<div class="col-md-4 text-right">';
-      str += '<p class="date"> ' + data.received_date +'</p>';
+      str += '<p class="date"> ' + data.formatted_date +'</p>';
       str += '</div>';
       str += '<div class="col-md-12">';
       str += '<h4><span class="badge" style="margin-bottom: 2px;">Subject</span> ' + data.subject + '</h4>';
