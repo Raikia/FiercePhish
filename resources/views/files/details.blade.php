@@ -11,10 +11,10 @@
 <div class="clearfix"></div>
 
 <div class="row">
-  <div class="col-md-6 col-sm-6 col-xs-6">
+  <div class="col-md-4 col-sm-4 col-xs-4">
     <div class="x_panel">
       <div class="x_title">
-        <h2><i class="fa fa-file"></i> File Settings</h2>
+        <h2><i class="fa fa-info-circle"></i> File Settings</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
@@ -26,7 +26,7 @@
               </tr>
               <tr>
                 <td><b>File Path</b></td>
-                <td>{{ $file->getPathWithVar() }}</td>
+                <td><a href="{{ $file->getFullPath() }}">{{ $file->getPathWithVar() }}</a></td>
               </tr>
               <tr>
                 <td><b>Local Path</b></td>
@@ -38,7 +38,11 @@
               </tr>
               <tr>
                 <td><b>Action</b></td>
-                <td>{{ $file->getAction() }}</td>
+                @if ($file->getAction() == "Disabled")
+                  <td><font style="color: #FF0000;">Disabled</font></td>
+                @else
+                  <td>{{ $file->getAction() }}</td>
+                @endif
               </tr>
               <tr>
                 <td><b>Notifications</b></td>
@@ -67,6 +71,39 @@
               </tr>
             </tbody>
           </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-sm-6 col-xs-6">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><i class="fa fa-area-chart"></i> View History</h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <div id="viewGraph" style="height: 301px;"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2 col-sm-2 col-xs-2">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><i class="fa fa-tasks"></i> Actions</h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+          <table>
+            <tbody>
+              <tr>
+                <td><button style="width: 200px;" class="btn btn-primary">Download File</button></td>
+              </tr>
+              <tr>
+                <td><button style="width: 200px;" class="btn btn-danger">Disable File</button></td>
+              </tr>
+            </tbody>
+          </table>
+          
+          
       </div>
     </div>
   </div>
@@ -132,6 +169,70 @@
       ],
       order: [[ 5, 'desc' ]]
     });
+    
+    var dataView = [
+      @foreach ($file->views as $view)
+        [new Date("{{ $view->created_at }}"), 1],
+      @endforeach
+    ];
+    
+    var dataset = [
+      {
+        label:"# of Views",
+        data: dataView,
+        color: "#000000",
+        points: {show: true},
+        lines: {show:true}
+      },
+    ];
+    
+    var options = {
+    xaxis: {
+      label: "Views",
+      mode: "time",
+      minTickSize: [1, "day"],
+      timeformat: "%m/%e/%Y"
+    },
+    yaxis: {
+      minTickSize: 1,
+      tickDecimals: 0,
+    },
+    grid: {
+      show: true,
+      aboveData: true,
+      color: "#3f3f3f",
+      labelMargin: 10,
+      axisMargin: 0,
+      borderWidth: 0,
+      borderColor: null,
+      minBorderMargin: 5,
+      clickable: true,
+      hoverable: true,
+      autoHighlight: true,
+      mouseActiveRadius: 100
+    },
+    series: {
+      lines: {
+        show: true,
+        fill: true,
+        lineWidth: 2,
+        steps: false
+      },
+      points: {
+        show: true,
+        radius: 4.5,
+        symbol: "circle",
+        lineWidth: 3.0
+      }
+    },
+  };
+    
+    var plot = $.plot($("#viewGraph"), dataset, options);
+    
+    
+    
+    
+    
     
     CURRENT_URL = "{{ action('HostedFileController@index') }}";
 </script>
