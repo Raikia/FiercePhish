@@ -191,7 +191,7 @@
     if ($("#sending_schedule").prop('checked'))
       $("input[name=sending_schedule]").val('all');
     
-    var required_fields = { 'campaign_name': 'Campaign Name', 'campaign_description': 'Campaign Description', 'email_template': 'Email Template', 'target_list': 'Target List', 'sender_name': 'Sender Name', 'sender_email': 'Sender Email' };
+    var required_fields = { 'campaign_name': 'Campaign Name', 'email_template': 'Email Template', 'target_list': 'Target List', 'sender_name': 'Sender Name', 'sender_email': 'Sender Email' };
     var keys_fields = Object.keys(required_fields);
     for (var x=0; x < keys_fields.length; ++x)
     {

@@ -38,7 +38,6 @@ class CampaignController extends Controller
         
         $this->validate($request, [
             'campaign_name' => 'required',
-            'campaign_description' => 'required',
             'email_template' => 'required|integer',
             'target_list' => 'required|integer',
             'sender_name' => 'required',
@@ -51,7 +50,7 @@ class CampaignController extends Controller
         $campaign->name = $request->input('campaign_name');
         $campaign->from_name = $request->input('sender_name');
         $campaign->from_email = $request->input('sender_email');
-        $campaign->description = $request->input('campaign_description');
+        $campaign->description = ($request->input('campaign_description')!==null)?$request->input('campaign_description'):'';
         $campaign->status = Campaign::NOT_STARTED;
         $campaign->target_list_id = $request->input('target_list');
         $campaign->email_template_id = $request->input('email_template');
