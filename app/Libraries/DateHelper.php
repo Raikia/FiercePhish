@@ -51,4 +51,9 @@ class DateHelper
     {
         return Carbon::now()->timezone(config('fiercephish.APP_TIMEZONE'));
     }
+    
+    public static function convert($date)
+    {
+        return $date->timezone(config('fiercephish.APP_TIMEZONE'));
+    }
 }
