@@ -93,4 +93,33 @@ class HostedFileController extends Controller
 	    $viewGraphData = \App\Libraries\GlobalHelper::generateGraphData($file->views(), 'created_at');
         return view('files.details')->with('file', $file)->with('viewGraphData', $viewGraphData);
     }
+    
+    public function file_details_disable(Request $request)
+    {
+        $file = HostedFile::findorfail($request->input('id'));
+        $file->action = HostedFile::DISABLED;
+        $file->save();
+        return back()->with('success', 'Hosted file has been disabled successfully');
+    }
+    
+    public function file_details_download($id)
+    {
+        $file = HostedFile::findorfail($id);
+        $path = storage_path('app/'.$file->local_path);
+        header("Content-Type: application/octet-stream");
+        header('Content-Disposition: attachment; filename="'.$file->original_file_name.'"');
+        echo \File::get($path);
+        return;
+    }
+    
+    public function file_details_toggle_notify($id)
+    {
+        $file = HostedFile::findorfail($id);
+        $file->notify_access = !$file->notify_access;
+        $file->save();
+        $notify = 'Notifications have been enabled!';
+        if ($file->notify_access == false)
+            $notify = 'Notifications have been disabled!';
+        return back()->with('success', $notify);
+    }
 }

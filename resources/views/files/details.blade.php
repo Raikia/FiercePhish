@@ -4,7 +4,13 @@
 
 <div class="page-title">
   <div class="title_left">
-    <h3>Hosted File Summary</h3>
+    <h3>Hosted File Summary - {{ $file->original_file_name }} - 
+    @if ($file->action == App\HostedFile::DISABLED)
+      <font style="color: #FF0000;"><b>DISABLED</b></font>
+    @else 
+      <font style="color: #00BB00;">ACTIVE</font>
+    @endif
+    </h3>
   </div>
 </div>
 
@@ -38,10 +44,10 @@
               </tr>
               <tr>
                 <td><b>Action</b></td>
-                @if ($file->getAction() == "Disabled")
+                @if ($file->action == App\HostedFile::DISABLED)
                   <td><font style="color: #FF0000;">Disabled</font></td>
                 @else
-                  <td>{{ $file->getAction() }}</td>
+                  <td><font style="color: #00BB00;">{{ $file->getAction() }}</font></td>
                 @endif
               </tr>
               <tr>
@@ -95,11 +101,20 @@
           <table>
             <tbody>
               <tr>
-                <td><button style="width: 200px;" class="btn btn-primary">Download File</button></td>
+                <td style="padding-bottom:30px;"><a style="width: 200px;" class="btn btn-primary" href="{{ action('HostedFileController@file_details_download', ['id' => $file->id]) }}">Download File</a></td>
               </tr>
               <tr>
-                <td><button style="width: 200px;" class="btn btn-danger">Disable File</button></td>
+                @if ($file->notify_access)
+                  <td><a style="width: 200px;" class="btn btn-warning" href="{{ action('HostedFileController@file_details_toggle_notify', ['id' => $file->id]) }}">Turn notifications <b>OFF</b></a></td>
+                @else
+                  <td><a style="width: 200px;" class="btn btn-warning" href="{{ action('HostedFileController@file_details_toggle_notify', ['id' => $file->id]) }}">Turn notifications <b>ON</b></a></td>
+                @endif
               </tr>
+              @if ($file->action != App\HostedFile::DISABLED)
+                <tr>
+                  <td style="padding-top:30px;"><form id="disableForm" action="{{ action('HostedFileController@file_details_disable') }}" method="post">{{ csrf_field() }}<input type="hidden" name="id" value="{{ $file->id }}" /><button style="width: 200px;" class="btn btn-danger" id="disableBtn" type="button">Disable File</button></form></td>
+                </tr>
+              @endif
             </tbody>
           </table>
           
@@ -234,6 +249,13 @@
     
     
     
+    
+    $("#disableBtn").click(function() {
+        bootbox.confirm("Are you sure you want to disable this file? This cannot be undone and you will have to rehost the file if you want it again!", function(result) {
+            if (result)
+                $("#disableForm").submit();
+        });
+    });
     
     
     CURRENT_URL = "{{ action('HostedFileController@index') }}";
