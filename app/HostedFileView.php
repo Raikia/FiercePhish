@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class HostedFileView extends Model
 {
-    protected $fillable = ['hosted_file_id', 'browser', 'browser_version', 'platform', 'useragent', 'uuid', 'referer'];
+    protected $fillable = ['hosted_file_id', 'browser', 'browser_version', 'platform', 'useragent', 'uuid', 'referer', 'ip'];
     
     public function hostfile()
     {
