@@ -185,13 +185,13 @@ $(document).ready(function() {
 /* Plot the graph for sent emails */
   var dataSent = [
   @foreach ($sendEmailData as $email)
-    [new Date("{{ $email->date }}"), {{ $email->numEmails }}],
+    [new Date("{{ $email[0] }}"), {{ $email[1] }}],
   @endforeach
   ];
 
   var dataError = [
   @foreach ($errorEmailData as $email)
-    [new Date("{{ $email->date }}"), {{ $email->numEmails }}],
+    [new Date("{{ $email[0] }}"), {{ $email[1] }}],
   @endforeach
   ];
 

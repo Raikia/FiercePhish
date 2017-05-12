@@ -21,29 +21,9 @@ class DashboardController extends Controller
     public function index()
     {
     	// Get sent email stats
-    	$rawSendEmailData = DB::table('emails')->select(DB::raw('DATE(CONVERT_TZ(sent_time, "+00:00", "'.\App\Libraries\DateHelper::getOffset().'")) as date'), DB::raw('count(*) as numEmails'))->groupBy('date')->where('status', Email::SENT)->get();
-    	// Fill in the gaps of dates where no emails were sent
-    	$sendEmailData = [];
-    	if (count($rawSendEmailData) > 0)
-    	{
-	    	$sendEmailData = [$rawSendEmailData[0]];
-	    	for ($x=1; $x<count($rawSendEmailData); ++$x)
-	    	{
-	    		$curDate = Carbon::parse($rawSendEmailData[$x-1]->date)->addDay(1)->format('Y-m-d');
-	    		while ($curDate != $rawSendEmailData[$x]->date)
-	    		{
-	    			$obj = new \stdClass();
-	    			$obj->date = $curDate;
-	    			$obj->numEmails = "0";
-	    			$sendEmailData[] = $obj;
-	    			$curDate = Carbon::parse($curDate)->addDay(1)->format('Y-m-d');
-	    		}
-	    		$sendEmailData[] = $rawSendEmailData[$x];
-	    	}
-	    }
-
+    	$sendEmailData = \App\Libraries\GlobalHelper::generateGraphData(Email::where('status', Email::SENT), 'sent_time');
     	// Get error emails
-    	$errorEmailData = DB::table('emails')->select(DB::raw('DATE(CONVERT_TZ(updated_at, "+00:00", "'.\App\Libraries\DateHelper::getOffset().'")) as date'), DB::raw('count(*) as numEmails'))->groupBy('date')->where('status', Email::CANCELLED)->get();
+    	$errorEmailData = \App\Libraries\GlobalHelper::generateGraphData(Email::where('status', Email::CANCELLED), 'updated_at');
 
     	// Get Statistics
     	$statistics = [
