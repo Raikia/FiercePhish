@@ -154,7 +154,9 @@
         type: "POST"
       },
       columns: [
-        { data: 'ip', name: 'ip'},
+        { data: 'ip', name: 'ip', render: function(data, type, row) {
+          return data + ' (<a target="_blank" href="https://ipinfo.io/'+data+'">whois</a>)';
+        }},
         { data: 'browser', name: 'browser'},
         { data: 'browser_maker', name: 'browser_maker'},
         { data: 'platform', name: 'platform'},
@@ -171,8 +173,8 @@
     });
     
     var dataView = [
-      @foreach ($file->views as $view)
-        [new Date("{{ $view->created_at }}"), 1],
+      @foreach ($viewGraphData as $view)
+        [new Date("{{ $view[0] }}"), {{ $view[1] }}],
       @endforeach
     ];
     
@@ -180,7 +182,7 @@
       {
         label:"# of Views",
         data: dataView,
-        color: "#000000",
+        color: "#00FF00",
         points: {show: true},
         lines: {show:true}
       },
@@ -191,7 +193,7 @@
       label: "Views",
       mode: "time",
       minTickSize: [1, "day"],
-      timeformat: "%m/%e/%Y"
+      timeformat: "%m/%d/%Y"
     },
     yaxis: {
       minTickSize: 1,

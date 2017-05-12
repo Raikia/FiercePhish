@@ -90,6 +90,26 @@ class HostedFileController extends Controller
     public function file_details($id)
     {
         $file = HostedFile::findorfail($id);
-        return view('files.details')->with('file', $file);
+        $viewGraphData = [];
+        /*$views = $file->views()->orderby('created_at','desc')->get();
+        if ($file->views()->count() > 0)
+    	{
+	    	$viewGraphData = [$views[0]];
+	    	for ($x=1; $x<count($views); ++$x)
+	    	{
+	    		$curDate = Carbon::parse($views[$x-1]->created_at)->addDay(1)->format('Y-m-d');
+	    		while ($curDate != $rawSendEmailData[$x]->created_at)
+	    		{
+	    			$obj = new \stdClass();
+	    			$obj->date = $curDate;
+	    			$obj->numEmails = "0";
+	    			$sendEmailData[] = $obj;
+	    			$curDate = Carbon::parse($curDate)->addDay(1)->format('Y-m-d');
+	    		}
+	    		$sendEmailData[] = $rawSendEmailData[$x];
+	    	}
+	    }*/
+	    $viewGraphData = \App\Libraries\GlobalHelper::generateGraphData($file->views());
+        return view('files.details')->with('file', $file)->with('viewGraphData', $viewGraphData);
     }
 }
