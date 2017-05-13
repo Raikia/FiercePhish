@@ -91,7 +91,14 @@ class HostedFileController extends Controller
     {
         $file = HostedFile::findorfail($id);
 	    $viewGraphData = \App\Libraries\GlobalHelper::generateGraphData($file->views(), 'created_at');
-        return view('files.details')->with('file', $file)->with('viewGraphData', $viewGraphData);
+	    
+	    $viewsWithGeolocate = $file->views()->whereHas('geolocate')->get();
+	    $geoData = [];
+	    foreach ($viewsWithGeolocate as $geo)
+	    {
+	        $geoData[$geo->geolocate->ip] = $geo->geolocate;
+	    }
+        return view('files.details')->with('file', $file)->with('viewGraphData', $viewGraphData)->with('geoData' ,$geoData);
     }
     
     public function file_details_disable(Request $request)

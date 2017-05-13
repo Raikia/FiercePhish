@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         Commands\CheckMail::class,
         Commands\LogPull::class,
         Commands\CatchMissed::class,
+        Commands\Geolocate::class,
     ];
 
     /**
@@ -31,6 +32,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('fp:checkmail')->everyMinute();
         $schedule->command('fp:logpull')->everyMinute();
         $schedule->command('fp:catchmissedmail')->everyMinute();
+        $schedule->command('fp:geolocate')->everyMinute();
     }
 
     /**

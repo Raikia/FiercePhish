@@ -152,12 +152,79 @@
 </div>
 
 
+
+<div class="modal fade geolocate-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Geolocation of <span id="geolocate_modal_ip"></span></h4>
+      </div>
+      <div class="modal-body">
+        <div style="width: 500px; margin-left: auto; margin-right: auto; overflow: hidden; height: 320px; margin-bottom:30px; border: 1px solid black;" id="geolocate_gmaps_container">
+        <iframe
+          width="500"
+          height="620"
+          id="geolocate_gmaps"
+          frameborder="0" style="border:0px;margin-top: -150px;"
+          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCKsOvH7ZnhQaiEqDOEV3RZBws2Jy_Qfaw&zoom=9&q=0.0,0.0">
+        </iframe>
+        </div>
+        <table class="table table-bordered" style="width: 500px; margin-left: auto; margin-right: auto;">
+          <tbody>
+            <tr>
+              <td style="width: 120px;"><b>IP</b></td>
+              <td><span style="line-height: normal;" id="geolocate_modal_table_ip"></span></td>
+            </tr>
+            <tr>
+              <td><b>Country Name</b></td>
+              <td><span style="line-height: normal;" id="geolocate_modal_table_country_name"></span></td>
+            </tr>
+            <tr>
+              <td><b>Region Name</b></td>
+              <td><span style="line-height: normal;" id="geolocate_modal_table_region_name"></span></td>
+            </tr>
+            <tr>
+              <td><b>City</b></td>
+              <td><span style="line-height: normal;" id="geolocate_modal_table_city"></span></td>
+            </tr>
+            <tr>
+              <td><b>Zip Code</b></td>
+              <td><span style="line-height: normal;" id="geolocate_modal_table_zip_code"></span></td>
+            </tr>
+            <tr>
+              <td><b>Latitude</b></td>
+              <td><span style="line-height: normal;" id="geolocate_modal_table_latitude"></span></td>
+            </tr>
+            <tr>
+              <td><b>Longitude</b></td>
+              <td><span style="line-height: normal;" id="geolocate_modal_table_longitude"></span></td>
+            </tr>
+            <tr>
+              <td><b>Timezone</b></td>
+              <td><span style="line-height: normal;" id="geolocate_modal_table_time_zone"></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
 @endsection
 
 @section('footer')
 <script type="text/javascript">
     /* global $ */
-    var test;
+    var test = [];
     var dt = $(".datatable").DataTable({
       language: {
         "emptyTable": "No Files Found"
@@ -170,13 +237,17 @@
       },
       columns: [
         { data: 'ip', name: 'ip', render: function(data, type, row) {
-          return data + ' (<a target="_blank" href="https://ipinfo.io/'+data+'">whois</a>)';
+          var geolocate = "";
+          if (row.geolocate != "")
+          {
+            geolocate = '  (<a href="javascript:void()" class="geolocatepopup" id="'+row.id+'_'+row.geolocate.ip+'">geolocate</a>)';
+          }
+          return data + ' (<a target="_blank" href="https://ipinfo.io/'+data+'">whois</a>)'+geolocate;
         }},
         { data: 'browser', name: 'browser'},
         { data: 'browser_maker', name: 'browser_maker'},
         { data: 'platform', name: 'platform'},
         { data: 'email.targetuser.full_name', name: 'email.targetuser.first_name', render: function(data, type, row) {
-            test = row;
             if (data == '')
               return 'N/A';
             return data + " (" + row.email.campaign.name + ")";
@@ -257,6 +328,46 @@
         });
     });
     
+    var geolocate_data = {!! json_encode($geoData) !!};
+    
+    $(document).on('click', '.geolocatepopup', function(e) {
+      var id = $(e.currentTarget).attr('id');
+      var ip = id.split("_")[1];
+      
+      if (geolocate_data[ip] === undefined)
+      {
+        bootbox.alert("The geolocation information for that IP address was not found.  Please refresh the page and try again");
+      }
+      else
+      {
+        var displayData = ['ip', 'country_name', 'region_name', 'city', 'zip_code', 'latitude', 'longitude', 'time_zone'];
+        $("#geolocate_modal_ip").html(ip);
+        if (geolocate_data[ip]["latitude"] === 0 || geolocate_data[ip]["longitude"] === 0)
+        {
+          $("#geolocate_gmaps_container").hide();
+        }
+        else
+        {
+          $("#geolocate_gmaps").attr('src', 'https://www.google.com/maps/embed/v1/place?key=AIzaSyCKsOvH7ZnhQaiEqDOEV3RZBws2Jy_Qfaw&zoom=9&q='+geolocate_data[ip]["latitude"]+','+geolocate_data[ip]["longitude"]);
+          $("#geolocate_gmaps_container").show();
+        }
+        for (var x=0; x<displayData.length; ++x)
+        {
+          var dataToWrite = geolocate_data[ip][displayData[x]];
+          if (dataToWrite == "" || dataToWrite == "0")
+          {
+            dataToWrite = "Unknown";
+          }
+          if (displayData[x] == "ip")
+          {
+            dataToWrite +=' (<a target="_blank" href="https://ipinfo.io/'+ip+'">whois</a>)';
+          }
+          $("#geolocate_modal_table_"+displayData[x]).html(dataToWrite);
+        }
+        $(".geolocate-modal").modal('show');
+      }
+      return false;
+    });
     
     CURRENT_URL = "{{ action('HostedFileController@index') }}";
 </script>

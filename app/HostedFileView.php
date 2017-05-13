@@ -18,6 +18,11 @@ class HostedFileView extends Model
         return $this->hasOne('App\Email', 'uuid', 'uuid');
     }
     
+    public function geolocate()
+    {
+        return $this->hasOne('App\Geolocation', 'ip', 'ip');
+    }
+    
     // Add plugin detection as well
     
     public function detectBrowser($useragent)
