@@ -70,7 +70,12 @@ class CheckMail extends Command
             $n_msgs = imap_num_msg($imap);
             $this->info("Found " . $n_msgs . " emails!");
             if ($n_msgs == 0)
+            {
+                imap_alerts();
+                imap_errors();
+                imap_close($imap);
                 return;
+            }
             for ($x=1; $x<= $n_msgs; ++$x)
             {
                 $email_header = imap_header($imap, $x);
