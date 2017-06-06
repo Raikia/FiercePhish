@@ -1,8 +1,8 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
-    "license": "MIT",
+    "name": "raikia/fiercephish",
+    "description": "FiercePhish Phishing Framework",
+    "keywords": ["security", "phishing", "netsec", "hacking", "email"],
+    "license": "GPL-3.0",
     "type": "project",
     "require": {
         "php": ">=5.6.4",

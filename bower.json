@@ -1,12 +1,12 @@
 {
   "name": "fiercephish",
   "description": "",
-  "main": "",
+  "main": "FiercePhish Phishing Framework",
   "authors": [
-    "Raikia <chrisking517@gmail.com>"
+    "Raikia <raikiasec@gmail.com>"
   ],
-  "license": "MIT",
-  "homepage": "https://raikia.com",
+  "license": "GPL-3.0",
+  "homepage": "https://fiercephish.com",
   "ignore": [
     "**/.*",
     "node_modules",
