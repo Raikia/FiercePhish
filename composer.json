@@ -12,7 +12,7 @@
         "guzzlehttp/guzzle": "^6.2",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
-        "paragonie/constant_time_encoding": "^1|^2",
+        "paragonie/constant_time_encoding": "^1",
         "pragmarx/google2fa": "^1.0",
         "yajra/laravel-datatables-oracle": "^7.0"
     },
