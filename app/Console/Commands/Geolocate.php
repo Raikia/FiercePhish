@@ -45,9 +45,9 @@ class Geolocate extends Command
             $this->info("We are blocked from the geolocate service, so we need to wait...");
             return;
         }
-        $all_unknown = HostedFileView::whereDoesntHave('geolocate')->get();
-        $this->info("Starting Geolocation on ".count($all_unknown)." IPs!");
-        foreach ($all_unknown as $view)
+        $all_unknown_count = HostedFileView::whereDoesntHave('geolocate')->count();
+        $this->info("Starting Geolocation on ".$all_unknown_count." IPs!");
+        while (($view = HostedFileView::whereDoesntHave('geolocate')->first()) !== null)  // Keep pulling individually like this to avoid primary key issues
         {
             $this->line('Geolocating ' . $view->ip.'...');
             $content = @file_get_contents('http://freegeoip.net/json/'.$view->ip);
