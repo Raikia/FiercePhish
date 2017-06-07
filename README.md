@@ -3,6 +3,17 @@
 # FiercePhish
 
 
+| master | dev |
+| :------: | :------: |
+| [![Build Status](https://travis-ci.org/Raikia/FiercePhish.svg?branch=master)](https://travis-ci.org/Raikia/FiercePhish)   | [![Build Status](https://travis-ci.org/Raikia/FiercePhish.svg?branch=dev)](https://travis-ci.org/Raikia/FiercePhish) |
+|  [![Coverage Status](https://coveralls.io/repos/github/Raikia/FiercePhish/badge.svg?branch=master)](https://coveralls.io/github/Raikia/FiercePhish?branch=master)   |    [![Coverage Status](https://coveralls.io/repos/github/Raikia/FiercePhish/badge.svg?branch=dev)](https://coveralls.io/github/Raikia/FiercePhish?branch=dev)    |
+| [![StyleCI](https://styleci.io/repos/77753786/shield?branch=master)](https://styleci.io/repos/77753786) | [![StyleCI](https://styleci.io/repos/77753786/shield?branch=dev)](https://styleci.io/repos/77753786) |
+| ![Latest Version](https://img.shields.io/github/release/raikia/fiercephish.svg) | - |
+
+
+
+![GPL-3](https://img.shields.io/github/license/raikia/fiercephish.svg)
+
 FiercePhish is a full-fledged phishing framework to manage all phishing engagements.  It allows you to track separate phishing campaigns, schedule sending of emails, and much more. The features will continue to be expanded and will include website spoofing, click tracking, and extensive notification options.
 
 **Note: As of 1/6/2017, FirePhish has been renamed FiercePhish. Screenshots may still show FirePhish logo**

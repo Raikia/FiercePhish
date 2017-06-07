@@ -1,21 +1,41 @@
 language: php
 
+os:
+  - linux
+
 services:
   - mysql
   
 php:
   - 5.6.4
   - 7.0
+  - 7.1
 
 before_script:
   - cp .env.travis .env
-  - composer self-update
-  - composer install --no-interaction
-  - npm install -g bower
-  - bower install --allow-root
+  - travis_retry composer self-update
+  - travis_retry composer install --no-interaction
+  - travis_retry npm install -g bower
+  - travis_retry bower install --allow-root
   - mysql -e 'create database fiercephish;'
   - php artisan key:generate
   - php artisan migrate
+  # Install coveralls.phar
+  - wget -c -nc --retry-connrefused --tries=0 https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar
+  - chmod +x coveralls.phar
+  - php coveralls.phar --version
+  - mkdir -p build/logs
+  - ls -al
+
 
 script:
-  - vendor/bin/phpunit
+  - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+  
+after_success:
+  - travis_retry php coveralls.phar -v
+  
+  
+notifications:
+  email:
+    on_success: never
+    on_failure: always
