@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Email;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class CatchMissed extends Command
 {
@@ -40,8 +40,7 @@ class CatchMissed extends Command
     public function handle()
     {
         $emails = Email::where('planned_time', '<', (Carbon::now()->subMinutes(5)))->where('status', Email::NOT_SENT)->get();
-        foreach ($emails as $email)
-        {
+        foreach ($emails as $email) {
             $this->info("Queueing email " . $email->id);
             $email->send();
         }

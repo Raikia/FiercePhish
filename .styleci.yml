@@ -4,7 +4,11 @@ risky: false
 
 enabled:
   - no_empty_comment
+  - alpha_ordered_imports
 
+disabled:
+  - length_ordered_imports
+  - no_whitespace_in_blank_line
   
 finder:
   exclude:

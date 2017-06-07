@@ -19,8 +19,7 @@ class ActivityLog extends Model
         $a->is_error = $error;
         if (Auth::check()) {
             $a->user = Auth::user()->name;
-        }
-        else {
+        } else {
             $a->user = null;
         }
         $a->save();
@@ -71,7 +70,7 @@ class ActivityLog extends Model
             $username = '  ('.$this->user.')';
         }
         $ret_text .= $username;
-        
+
         return $ret_text;
     }
 
@@ -79,7 +78,7 @@ class ActivityLog extends Model
     {
         $all_jobs = \DB::table('jobs')->orderby('available_at', 'asc')->where('queue', '!=', 'campaign_email')->get();
         $all_strs = ['html' => ''];
-        foreach ($all_jobs as $raw_job){ 
+        foreach ($all_jobs as $raw_job) { 
             $j = unserialize(json_decode($raw_job->payload)->data->command);
             $desc = '';
             if ($j->description != '') {
