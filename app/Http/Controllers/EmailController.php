@@ -33,7 +33,7 @@ class EmailController extends Controller
         $currentTemplate = new EmailTemplate();
         if ($id !== '')
             $currentTemplate = EmailTemplate::findOrFail($id);
-        $allFiles = HostedFile::all();
+        $allFiles = HostedFile::where('action', '!=', HostedFile::DISABLED)->get();
         return view('emails.template_index')->with('allTemplates', $all_templates)->with('currentTemplate', $currentTemplate)->with('hostedfiles', $allFiles);
     }
     

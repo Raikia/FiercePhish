@@ -55,11 +55,13 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($hostedfiles as $file)
+              @forelse ($hostedfiles as $file)
                 <tr class="tt" title="{{ $file->original_file_name }} - {{ $file->file_name }} ({{ $file->views->count() }} views)">
                   <td><a class="ttc" title="Copied to clipboard!" href="javascript:copyToClipboard('#file_{{ $file->id }}')">{{ str_limit($file->getPathWithVar(),30) }}</a> <span id="file_{{ $file->id }}" style="display: none;">{{ $file->getFullPath() }}</span></td>
                 </tr>
-              @endforeach
+              @empty 
+                <tr><td style="text-align: center">None enabled</td></tr>
+              @endforelse
             </tbody>
           </table>
       </div>
