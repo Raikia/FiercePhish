@@ -5,7 +5,7 @@ use Carbon\Carbon;
 
 class DateHelper
 {
-    public static function print($date)
+    public static function printable($date)
     {
         if (DateHelper::isNull($date))
             return "N/A";
