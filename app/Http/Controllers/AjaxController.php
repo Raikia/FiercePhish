@@ -86,7 +86,7 @@ class AjaxController extends Controller
     
     
     
-    public function email_check_commands (Request $request, $command='', $domain='')
+    public function email_check_commands(Request $request, $command='', $domain='')
     {
         $response = [$command => false, 'command' => $command, 'message' => ''];
         if (empty($command) || empty($domain)) {
@@ -153,7 +153,7 @@ class AjaxController extends Controller
     
     public function campaign_emails_get(Request $request, $id)
     {
-        return Datatables::of(Campaign::findorfail($id)->emails()->with('targetuser')->select('emails.*'))->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
+        /*return Datatables::of(Campaign::findorfail($id)->emails()->with('targetuser')->select('emails.*'))->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
                 return $email->getStatus();
             })->editColumn('targetuser.full_name', function ($email) {
                 return $email->targetuser->full_name();
@@ -169,7 +169,8 @@ class AjaxController extends Controller
                 $query->whereRaw("(select count(1) from target_users where target_users.id = target_user_id and target_users.email like ?) >= 1", ["%{$keyword}%"]);
             })->filterColumn('targetuser.first_name', function ($query, $keyword) {
                 $query->whereRaw("(select count(1) from target_users where target_users.id = target_user_id and CONCAT(target_users.first_name,' ',target_users.last_name) like ?) >= 1", ["%{$keyword}%"]);
-            })->make(true);
+            })->make(true);*/
+        return [];
     }
     
     
