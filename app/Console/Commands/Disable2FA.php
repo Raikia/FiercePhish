@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\User;
 use App\ActivityLog;
+use App\User;
+use Illuminate\Console\Command;
 
 class Disable2FA extends Command
 {
@@ -42,25 +42,29 @@ class Disable2FA extends Command
     public function handle()
     {
         $username = $this->argument('username');
-        if ($username == null)
+        if ($username == null) {
             $username = $this->ask('Enter a username');
+        }
         $user = User::where('name', $username)->first();
-        if ($user === null)
-        {
+        if ($user === null) {
             $this->error('User "'.$username.'" was not found');
+            
             return;
         }
-        if ($user->google2fa_secret == null)
-        {
+        if ($user->google2fa_secret == null) {
             $this->error('User "'.$username.'" does not have 2FA enabled');
+            
             return;
         }
-        if (!$this->option('confirm'))
-            if (!$this->confirm("Are you sure you want to disable the 2FA for this account? "))
+        if (! $this->option('confirm')) {
+            if (! $this->confirm('Are you sure you want to disable the 2FA for this account? ')) {
+                
                 return;
+            }
+        }
         $user->google2fa_secret = null;
         $user->save();
-        ActivityLog::log("Disabled 2FA for user named \"".$user->name."\" (via artisan)", "Settings");
-        $this->info("2FA disabled successfully!");
+        ActivityLog::log('Disabled 2FA for user named "'.$user->name.'" (via artisan)', 'Settings');
+        $this->info('2FA disabled successfully!');
     }
 }

@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Http\Requests;
-use App\EmailTemplate;
-use App\TargetList;
+use App\ActivityLog;
 use App\Campaign;
 use App\Email;
-use App\ActivityLog;
+use App\EmailTemplate;
+use App\Http\Requests;
 use App\Jobs\StartCampaign;
+use App\TargetList;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class CampaignController extends Controller
 {
@@ -23,6 +22,7 @@ class CampaignController extends Controller
     public function index()
     {
         $all_campaigns = Campaign::all();
+        
         return view('campaigns.index')->with('all_campaigns', $all_campaigns);
     }
     
@@ -35,7 +35,6 @@ class CampaignController extends Controller
     
     public function create_post(Request $request)
     {
-        
         $this->validate($request, [
             'campaign_name' => 'required',
             'email_template' => 'required|integer',
@@ -43,7 +42,6 @@ class CampaignController extends Controller
             'sender_name' => 'required',
             'sender_email' => 'required|email',
         ]);
-        
         $template = EmailTemplate::findOrFail($request->input('email_template'));
         $list = TargetList::findOrFail($request->input('target_list'));
         $campaign = new Campaign();
@@ -57,16 +55,16 @@ class CampaignController extends Controller
         $campaign->save();
         $start_date = $request->input('starting_date') ?: \App\Libraries\DateHelper::now()->format('m/d/Y');
         $start_time = $request->input('starting_time') ?: \App\Libraries\DateHelper::now()->format('g:ia');
-        $start_date = Carbon::parse($start_date . ' ' . $start_time, config('fiercephish.APP_TIMEZONE'))->addSeconds(1)->timezone('UTC');
-        $send_num_emails = min((int)$request->input('send_num'),1000);
+        $start_date = Carbon::parse($start_date.' '.$start_time, config('fiercephish.APP_TIMEZONE'))->addSeconds(1)->timezone('UTC');
+        $send_num_emails = min((int)$request->input('send_num'), 1000);
         $send_every_minutes = min((int)$request->input('send_every_x_minutes'), 1000);
-        if ($request->input('sending_schedule') == 'all' || empty($request->input('send_num')) || empty($request->input('send_every_x_minutes')))
-        {
+        if ($request->input('sending_schedule') == 'all' || empty($request->input('send_num')) || empty($request->input('send_every_x_minutes'))) {
             $send_num_emails = -1; // Send all emails at once
         }
-        $job = (new StartCampaign(['title' => 'Create campaign', 'description' => 'Campaign: "' . $campaign->name.'"', 'icon' => 'play'], $campaign, $list, $template, $send_num_emails, $send_every_minutes, $start_date))->onQueue('operation')->delay(1);
+        $job = (new StartCampaign(['title' => 'Create campaign', 'description' => 'Campaign: "'.$campaign->name.'"', 'icon' => 'play'], $campaign, $list, $template, $send_num_emails, $send_every_minutes, $start_date))->onQueue('operation')->delay(1);
         $this->dispatch($job);
-        ActivityLog::log("Created a create campaign job named \"".$campaign->name."\" to queue ".$list->users()->count()." emails for sending", "Campaign");
+        ActivityLog::log('Created a create campaign job named "'.$campaign->name.'" to queue '.$list->users()->count().' emails for sending', 'Campaign');
+        
         return redirect()->action('CampaignController@campaign_details', ['id' => $campaign->id])->with('success', 'Job to create campaign has been launched successfully');
     }
     
@@ -74,6 +72,7 @@ class CampaignController extends Controller
     public function campaign_details($id)
     {
         $campaign = Campaign::findOrFail($id);
+        
         return view('campaigns.details')->with('campaign', $campaign);
     }
     
@@ -81,7 +80,8 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findOrFail($id);
         $campaign->cancel();
-        ActivityLog::log("Cancelled the \"".$campaign->name."\" campaign", "Campaign");
+        ActivityLog::log('Cancelled the "'.$campaign->name.'" campaign', 'Campaign');
+        
         return back()->with('success', 'Campaign was cancelled successfully');
     }
 }

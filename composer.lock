@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0f5881c41540a2a7f37b1758168c9165",
+    "content-hash": "527bb1439277af564a92fe3b438e118c",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -983,16 +983,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.4.24",
+            "version": "v5.4.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "ec8548db26c1b147570f661128649e98f3ac0f29"
+                "reference": "6bcc9b1f542b3deed16d51f6aa1fe318ab407c2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/ec8548db26c1b147570f661128649e98f3ac0f29",
-                "reference": "ec8548db26c1b147570f661128649e98f3ac0f29",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/6bcc9b1f542b3deed16d51f6aa1fe318ab407c2a",
+                "reference": "6bcc9b1f542b3deed16d51f6aa1fe318ab407c2a",
                 "shasum": ""
             },
             "require": {
@@ -1108,7 +1108,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2017-05-30T12:44:32+00:00"
+            "time": "2017-06-07T13:35:12+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -2325,7 +2325,6 @@
             "require": {
                 "php": ">=5.5.9"
             },
-
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -3072,16 +3071,16 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v7.6.0",
+            "version": "v7.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "f742ef931e9a5e5d2cf9330e5927a36650905585"
+                "reference": "edf2d782cc0b340876ecf6851a8f0de1c0e15a76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/f742ef931e9a5e5d2cf9330e5927a36650905585",
-                "reference": "f742ef931e9a5e5d2cf9330e5927a36650905585",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/edf2d782cc0b340876ecf6851a8f0de1c0e15a76",
+                "reference": "edf2d782cc0b340876ecf6851a8f0de1c0e15a76",
                 "shasum": ""
             },
             "require": {
@@ -3129,7 +3128,7 @@
                 "jquery",
                 "laravel"
             ],
-            "time": "2017-05-30T05:56:50+00:00"
+            "time": "2017-06-07T05:28:09+00:00"
         }
     ],
     "packages-dev": [
@@ -4611,7 +4610,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.6.4"
+        "php": ">=7.0"
     },
     "platform-dev": []
 }

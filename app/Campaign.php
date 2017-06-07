@@ -32,26 +32,26 @@ class Campaign extends Model
 
     public function getStatus()
     {
-    	switch ($this->status) {
-    		case Campaign::NOT_STARTED:
-    			return 'Not started';
-    		case Campaign::SENDING:
-    			return 'Sending emails';
-    		case Campaign::WAITING:
-    			return 'Running';
-    		case Campaign::FINISHED:
-    			return 'Completed';
-    		case Campaign::CANCELLED:
-    			return 'Cancelled';
-    		default:
-    			return 'Unknown status';
-    	}
+        switch ($this->status) {
+            case self::NOT_STARTED:
+                return 'Not started';
+            case self::SENDING:
+                return 'Sending emails';
+            case self::WAITING:
+                return 'Running';
+            case self::FINISHED:
+                return 'Completed';
+            case self::CANCELLED:
+                return 'Cancelled';
+            default:
+                return 'Unknown status';
+        }
     }
 
     public function cancel()
     {
-        if ($this->status != Campaign::FINISHED && $this->status != Campaign::CANCELLED) {
-            $this->status = Campaign::CANCELLED;
+        if ($this->status != self::FINISHED && $this->status != self::CANCELLED) {
+            $this->status = self::CANCELLED;
             $this->save();
         }
         $this->emails()->where('status', '!=', Email::SENT)->where('status', '!=', Email::CANCELLED)->where('status', '!=', Email::FAILED)->update(['status' => Email::CANCELLED]);

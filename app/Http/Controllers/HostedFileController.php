@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\HostedFile;
+use Illuminate\Http\Request;
 
 class HostedFileController extends Controller
 {
@@ -23,15 +23,11 @@ class HostedFileController extends Controller
     public function catchall(Request $request)
     {
         $file = HostedFile::grab($request->path());
-        if ($file === null)
-        {
+        if ($file === null) {
             abort(404);
-        }
-        else
-        {
+        } else {
             $file->serve($request);
         }
-        return;
     }
     
     public function addfile(Request $request)
@@ -41,14 +37,17 @@ class HostedFileController extends Controller
             'action' => 'required|integer',
         ]);
         $path = '/';
-        if ($request->has('path'))
+        if ($request->has('path')) {
             $path = $request->input('path');
-        if (HostedFile::path_already_exists($path))
+        }
+        if (HostedFile::path_already_exists($path)) {
             return back()->withErrors('This route already exists! Choose another one');
+        }
         $pathinfo = pathinfo($request->input('path'));
         $dirname = '';
-        if (isset($pathinfo['dirname']) && $pathinfo['dirname'] != '.')
+        if (isset($pathinfo['dirname']) && $pathinfo['dirname'] != '.') {
             $dirname = $pathinfo['dirname'];
+        }
         $file = $request->file('attachment');
         $newfile = new HostedFile();
         $newfile->route = $dirname;
@@ -56,21 +55,25 @@ class HostedFileController extends Controller
         $newfile->action = $request->input('action');
         $newfile->original_file_name = $file->getClientOriginalName();
         $newfile->file_mime = $file->getMimeType();
-        if ($request->has('kill_switch') && $request->input('kill_switch') > 0)
+        if ($request->has('kill_switch') && $request->input('kill_switch') > 0) {
             $newfile->kill_switch = $request->input('kill_switch');
-        else
+        } else {
             $newfile->kill_switch = null;
-        if ($request->has('uid_tracker') && $request->input('uid_tracker') != '')
+        }
+        if ($request->has('uid_tracker') && $request->input('uid_tracker') != '') {
             $newfile->uidvar = $request->input('uid_tracker');
-        else
+        } else {
             $newfile->uidvar = null;
+        }
         $newfile->invalid_action = HostedFile::INVALID_ALLOW;
-        if ($request->has('invalid_action'))
+        if ($request->has('invalid_action')) {
             $newfile->invalid_action = $request->input('invalid_action');
+        }
         $newfile->notify_access = $request->has('notify');
         $newfile->hosted_site_id = null;
         $newfile->local_path = $file->storeAs('hosted', sha1(time().''.rand()).'.dat');
         $newfile->save();
+        
         return back()->with('success', 'File successfully hosted!');
     }
     
@@ -81,9 +84,11 @@ class HostedFileController extends Controller
         ]);
         $file = HostedFile::findorfail($request->input('file'));
         unlink(storage_path('app/'.$file->local_path));
-        foreach ($file->views as $view)
+        foreach ($file->views as $view) {
             $view->delete();
+        }
         $file->delete();
+        
         return back()->with('success', 'File deleted successfully!');
     }
     
@@ -91,13 +96,12 @@ class HostedFileController extends Controller
     {
         $file = HostedFile::findorfail($id);
 	    $viewGraphData = \App\Libraries\GlobalHelper::generateGraphData($file->views(), 'created_at');
-	    
 	    $viewsWithGeolocate = $file->views()->whereHas('geolocate')->get();
 	    $geoData = [];
-	    foreach ($viewsWithGeolocate as $geo)
-	    {
+	    foreach ($viewsWithGeolocate as $geo) {
 	        $geoData[$geo->geolocate->ip] = $geo->geolocate;
 	    }
+	    
         return view('files.details')->with('file', $file)->with('viewGraphData', $viewGraphData)->with('geoData' ,$geoData);
     }
     
@@ -106,6 +110,7 @@ class HostedFileController extends Controller
         $file = HostedFile::findorfail($request->input('id'));
         $file->action = HostedFile::DISABLED;
         $file->save();
+        
         return back()->with('success', 'Hosted file has been disabled successfully');
     }
     
@@ -113,10 +118,9 @@ class HostedFileController extends Controller
     {
         $file = HostedFile::findorfail($id);
         $path = storage_path('app/'.$file->local_path);
-        header("Content-Type: application/octet-stream");
+        header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="'.$file->original_file_name.'"');
         echo \File::get($path);
-        return;
     }
     
     public function file_details_toggle_notify($id)
@@ -125,8 +129,9 @@ class HostedFileController extends Controller
         $file->notify_access = !$file->notify_access;
         $file->save();
         $notify = 'Notifications have been enabled!';
-        if ($file->notify_access == false)
+        if ($file->notify_access == false) {
             $notify = 'Notifications have been disabled!';
+        }
         return back()->with('success', $notify);
     }
 }

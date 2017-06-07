@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Email;
+use Illuminate\Database\Eloquent\Model;
 
 class EmailTemplate extends Model
 {
@@ -14,10 +14,10 @@ class EmailTemplate extends Model
         '[first_name]' => 'The first name of the person (example: "John")',
         '[last_name]' => 'The last name of the person (example: "Doe")',
         '[username]' => 'Username of the person (example: In "john.doe@domain.com", it would be "john.doe")',
-        '[email]' => 'Email of the target person (example: "john.doe@domain.com")', 
-        '[uid]' => 'A unique identifier for this user. This is useful in links to identify who clicked on a specific link', 
-        '[from_name]' => 'Name of the person sending the email', 
-        '[from_email]' => 'Email of the person sending the email', 
+        '[email]' => 'Email of the target person (example: "john.doe@domain.com")',
+        '[uid]' => 'A unique identifier for this user. This is useful in links to identify who clicked on a specific link',
+        '[from_name]' => 'Name of the person sending the email',
+        '[from_email]' => 'Email of the person sending the email',
         '[extra]' => 'Extra data a campaign might like to customize (such as a signature with titles) - UNUSED CURRENTLY',
     ];
         
@@ -39,17 +39,18 @@ class EmailTemplate extends Model
         $text = str_replace('[name]', $targetUser->full_name(), $text);
         $text = str_replace('[first_name]', $targetUser->first_name, $text);
         $text = str_replace('[last_name]', $targetUser->last_name, $text);
-        $text = str_replace('[username]', explode("@",$targetUser->email)[0], $text);
+        $text = str_replace('[username]', explode('@',$targetUser->email)[0], $text);
         $text = str_replace('[email]', $targetUser->email, $text);
         $text = str_replace('[uid]', $targetUser->uuid($campaign), $text);
         $text = str_replace('[from_name]', $campaign->from_name, $text);
         $text = str_replace('[from_email]', $campaign->from_email, $text);
         $text = str_replace('[extra]', '', $text);
+        
         return $text;
     }
     
     public function craft_email($campaign, $targetUser)
-   { 
+    {
         $email = new Email();
         $email->sender_name = $campaign->from_name;
         $email->sender_email = $campaign->from_email;
@@ -62,6 +63,7 @@ class EmailTemplate extends Model
         $email->status = Email::NOT_SENT;
         $email->uuid = $targetUser->uuid($campaign);
         $email->save();
+        
         return $email;
     }
 }

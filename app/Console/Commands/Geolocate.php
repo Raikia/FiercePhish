@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Cache;
-use App\HostedFileView;
 use App\Geolocation;
+use App\HostedFileView;
+use Cache;
+use Illuminate\Console\Command;
 
 class Geolocate extends Command
 {
@@ -40,30 +40,25 @@ class Geolocate extends Command
      */
     public function handle()
     {
-        if (Cache::has('pause_geolocate'))
-        {
-            $this->info("We are blocked from the geolocate service, so we need to wait...");
+        if (Cache::has('pause_geolocate')) {
+            $this->info('We are blocked from the geolocate service, so we need to wait...');
+            
             return;
         }
         $all_unknown_count = HostedFileView::whereDoesntHave('geolocate')->count();
-        $this->info("Starting Geolocation on ".$all_unknown_count." IPs!");
-        while (($view = HostedFileView::whereDoesntHave('geolocate')->first()) !== null)  // Keep pulling individually like this to avoid primary key issues
-        {
-            $this->line('Geolocating ' . $view->ip.'...');
+        $this->info('Starting Geolocation on '.$all_unknown_count.' IPs!');
+        while (($view = HostedFileView::whereDoesntHave('geolocate')->first()) !== null) {  // Keep pulling individually like this to avoid primary key issues
+            $this->line('Geolocating '.$view->ip.'...');
             $content = @file_get_contents('http://freegeoip.net/json/'.$view->ip);
-            if ($content === false)
-            {
+            if ($content === false) {
                 $this->error('Unable to get geolocation!');
                 $headers = @get_headers('http://freegeoip.net/json/'.$view->ip);
                 $code = substr($headers[0], 9, 3);
-                if ($code == 403)
-                {
-                    $this->error("We are temporarily blocked!  Waiting for 10 minutes...");
+                if ($code == 403) {
+                    $this->error('We are temporarily blocked!  Waiting for 10 minutes...');
                     Cache::store('pause_geolocate', 10);
-                }
-                elseif ($code == 404)
-                {
-                    $this->error("This IP apparently doesn't have any geolocation information.  Setting to blank");
+                } elseif ($code == 404) {
+                    $this->error('This IP apparently doesn\'t have any geolocation information.  Setting to blank');
                     $geo = new Geolocation();
                     $geo->ip = $view->ip;
                     $geo->country_code = '';
@@ -80,7 +75,6 @@ class Geolocate extends Command
                 }
             }
             $json = json_decode($content);
-            
             $geo = new Geolocation();
             $geo->ip = $json->ip;
             $geo->country_code = $json->country_code;
@@ -94,8 +88,8 @@ class Geolocate extends Command
             $geo->longitude = $json->longitude;
             $geo->metro_code = $json->metro_code;
             $geo->save();
-            $this->line("Found geolocation!");
+            $this->line('Found geolocation!');
         }
-        $this->info("Done geolocations");
+        $this->info('Done geolocations');
     }
 }

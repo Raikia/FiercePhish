@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\User;
 use App\ActivityLog;
+use App\User;
+use Illuminate\Console\Command;
 
 class CreateUser extends Command
 {
@@ -44,20 +44,26 @@ class CreateUser extends Command
     public function handle()
     {
         $username = $this->argument('username');
-        if ($username == null)
+        if ($username == null) {
             $username = $this->ask('Enter a username');
+        }
         $email = $this->argument('email');
-        if ($email == null)
+        if ($email == null) {
             $email = $this->ask('Enter an email address');
+        }
         $password = $this->argument('password');
-        if ($password == null)
+        if ($password == null) {
             $password = $this->secret('Enter a password');
-        if (!$this->option('confirm'))
-            if (!$this->confirm("Are you sure you want to create this account? "))
+        }
+        if (! $this->option('confirm')) {
+            if (! $this->confirm('Are you sure you want to create this account? ')) {
+                
                 return;
-        if (User::where('name', $username)->count() != 0)
-        {
-            $this->error("User already exists!");
+            }
+        }
+        if (User::where('name', $username)->count() != 0) {
+            $this->error('User already exists!');
+            
             return;
         }
         $newUser = new User([
@@ -66,7 +72,7 @@ class CreateUser extends Command
             'password' => bcrypt($password),
             ]);
         $newUser->save();
-        ActivityLog::log("Added a new user named \"".$newUser->name."\" (via artisan)", "Settings");
-        $this->info("User created successfully!");
+        ActivityLog::log('Added a new user named "'.$newUser->name.'" (via artisan)', 'Settings');
+        $this->info('User created successfully!');
     }
 }

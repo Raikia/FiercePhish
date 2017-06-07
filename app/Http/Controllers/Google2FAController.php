@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Controllers\Controller;
 use Crypt;
 use Google2FA;
-use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use \ParagonIE\ConstantTime\Base32;
 
@@ -34,12 +34,14 @@ class Google2FAController extends Controller
         $user = $request->user();
         $user->google2fa_secret = null;
         $user->save();
+        
         return redirect()->action('SettingsController@get_editprofile')->with('success', 'Google 2FA has been disabled');
     }
     
     private function generateSecret()
     {
         $randomBytes = random_bytes(10);
+        
         return Base32::encodeUpper($randomBytes);
     }
 }

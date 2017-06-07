@@ -78,7 +78,7 @@ class ActivityLog extends Model
     {
         $all_jobs = \DB::table('jobs')->orderby('available_at', 'asc')->where('queue', '!=', 'campaign_email')->get();
         $all_strs = ['html' => ''];
-        foreach ($all_jobs as $raw_job) { 
+        foreach ($all_jobs as $raw_job) {
             $j = unserialize(json_decode($raw_job->payload)->data->command);
             $desc = '';
             if ($j->description != '') {
