@@ -9,31 +9,39 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActivityLog extends Model
 {
-    public static function log($msg, $type="General", $error=false)
+    public static function log($msg, $type = 'General', $error = false)
     {
         if (empty($msg))
+        {
             return;
-        $a = new ActivityLog();
+        }
+        $a = new self();
         $a->log = $msg;
         $a->type = $type;
         $a->is_error = $error;
         if (Auth::check())
+        {
             $a->user = Auth::user()->name;
+        }
         else
+        {
             $a->user = null;
+        }
         $a->save();
+        
         return $a;
     }
 
     public static function fetch()
     {
-        return ActivityLog::orderby('id', 'desc')->get();
+        return self::orderby('id', 'desc')->get();
     }
 
     public function set_ref_id($id)
     {
         $this->ref_id = $id;
         $this->save();
+        
         return $this;
     }
 
@@ -41,6 +49,7 @@ class ActivityLog extends Model
     {
         $this->ref_text = $text;
         $this->save();
+        
         return $this;
     }
 
@@ -48,6 +57,7 @@ class ActivityLog extends Model
     {
         $this->is_error = $bool;
         $this->save();
+        
         return $this;
     }
 
@@ -56,7 +66,9 @@ class ActivityLog extends Model
         $ret_text = '';
         $ret_text = '['.\App\Libraries\DateHelper::format($this->created_at, 'm/d/Y - H:i:s').'] ';
         if ($this->is_error)
+        {
             $ret_text .= '!!!! ERROR !!!! - ';
+        }
         $ret_text .= '{'.$this->type.'} ';
         $ret_text .= $this->log;
         $username = '';
@@ -65,9 +77,10 @@ class ActivityLog extends Model
             $username = '  ('.$this->user.')';
         }
         $ret_text .= $username;
+        
         return $ret_text;
     }
-    
+
     public static function getJobList()
     {
         $all_jobs = \DB::table('jobs')->orderby('available_at', 'asc')->where('queue', '!=', 'campaign_email')->get();
@@ -77,7 +90,9 @@ class ActivityLog extends Model
             $j = unserialize(json_decode($raw_job->payload)->data->command);
             $desc = '';
             if ($j->description != '')
+            {
                 $desc = '<div style="margin-left: 23px;">'.e($j->description).'</div>';
+            }
             $all_strs['html'] .= '<li>
                             <a>
                               <span class="image"><i class="fa fa-'.$j->icon.'"></i></span>
@@ -97,8 +112,11 @@ class ActivityLog extends Model
                      </li>';
         }
         if ($all_strs['html'] == '')
+        {
             $all_strs['html'] = '<li>No running jobs</li>';
+        }
         $all_strs['num'] = count($all_jobs);
+        
         return $all_strs;
     }
 }
