@@ -1,0 +1,13 @@
+preset: laravel
+
+risky: false
+
+enabled:
+  - no_empty_comment
+
+  
+finder:
+  exclude:
+    - "tests"
+  name:
+    - "*.php"
