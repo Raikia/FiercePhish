@@ -166,6 +166,7 @@
             placeholder: "Select a Phone ISP",
             allowClear: true
           });
+    $("#phone_number").inputmask();
   });
 </script>
 
