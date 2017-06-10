@@ -243,7 +243,6 @@
     /* global $ */
       $(document).ready(function() {
         $(".alertSlide").slideDown(1000).delay(10000).slideUp(1000);
-        $(":input").inputmask();
         window.setInterval(grabJobs, 2000);
         window.setInterval(grabMail, 2000);
         $(".tt").tooltipster({

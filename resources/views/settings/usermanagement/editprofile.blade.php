@@ -139,6 +139,11 @@
   });
   
   CURRENT_URL = "{{ action('SettingsController@index') }}";
+  
+  
+  $(document).ready(function() {
+    $("#phone_number").inputmask();
+  });
 </script>
 
 @endsection
