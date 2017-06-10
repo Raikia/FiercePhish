@@ -15,8 +15,6 @@ class LogAggregate extends Model
         return md5($log->log_time.'-'.$log->log_type.'-'.$log->data);
     }
     
-    
-    
     public static function getSurroundingLogs($carbon_date, $before_num_secs = '20', $after_num_secs = '20', $type = null)
     {
         $adate = $carbon_date->copy()->subSeconds($before_num_secs);

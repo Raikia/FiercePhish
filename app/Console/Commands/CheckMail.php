@@ -191,5 +191,4 @@ class CheckMail extends Command
         
         return $text;
     }
-
 }

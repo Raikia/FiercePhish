@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\ActivityLog;
-use App\TargetList;
 use App\TargetUser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -48,10 +47,10 @@ class AddToList extends Job implements ShouldQueue
                 $query = TargetUser::doesntHave('lists');
             }
             $totalNum = $query->count();
-            $query->chunk(1000, function ($u) use($list, $totalNum, &$count) {
+            $query->chunk(1000, function ($u) use ($list, $totalNum, &$count) {
                 $list->users()->syncWithoutDetaching($u->pluck('id')->toArray());
                 $count += $u->count();
-                $this->setProgress(round(($count/$totalNum)*100));
+                $this->setProgress(round(($count / $totalNum) * 100));
             });
             ActivityLog::log('Added All Target Users to the Target List "'.$list->name.'" job completed', 'Target List');
         } else {
@@ -67,7 +66,7 @@ class AddToList extends Job implements ShouldQueue
                 $list->users()->syncWithoutDetaching($query->inRandomOrder()->take($chunk)->pluck('id')->toArray());
                 $num_left -= $chunk;
                 $count += $chunk;
-                $this->setProgress(round(($count / $this->num_to_add)*100));
+                $this->setProgress(round(($count / $this->num_to_add) * 100));
             }
             ActivityLog::log('Added Random Target Users to the Target List "'.$list->name.'" job completed', 'Target List');
         }

@@ -191,7 +191,7 @@ class SettingsController extends Controller
             
             sleep(5); // I know this is terrible, but we have to wait for the config to cache properly...
             while (strstr($new_redir, '//') !== false) {
-                $new_redir = str_replace('//','/', $new_redir);
+                $new_redir = str_replace('//', '/', $new_redir);
             }
             $base = $request->root();
             $request->session()->flash('success', 'Settings successfully saved!');
@@ -206,6 +206,7 @@ class SettingsController extends Controller
     {
         return view('settings.configs.import_export');
     }
+    
     public function post_export_data()
     {
         if (config('fiercephish.DB_CONNECTION') != 'mysql')
@@ -215,10 +216,11 @@ class SettingsController extends Controller
         ActivityLog::log('FiercePhish Settings exported', 'Settings');
         $storage_class = new \stdClass();
         $sql_dump = [];
-        exec("mysqldump -h " .config('fiercephish.DB_HOST')." -P ".config('fiercephish.DB_PORT')." -u ".config('fiercephish.DB_USERNAME')." -p".config("fiercephish.DB_PASSWORD")." ".config('fiercephish.DB_DATABASE'), $sql_dump);
+        exec('mysqldump -h '.config('fiercephish.DB_HOST').' -P '.config('fiercephish.DB_PORT').' -u '.config('fiercephish.DB_USERNAME').' -p'.config("fiercephish.DB_PASSWORD").' '.config('fiercephish.DB_DATABASE'), $sql_dump);
         $storage_class->version = \App\Libraries\CacheHelper::getCurrentVersion();
         $storage_class->sql_dump = implode("\n", $sql_dump);
         $storage_class->env = file_get_contents(base_path('.env'));
+        
         return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition','attachment; filename="fiercephish_backup_'.date('Ymd_Gi').'.dat"');
     }
     public function post_import_data(Request $request)
@@ -249,7 +251,7 @@ class SettingsController extends Controller
         \Artisan::call('migrate');
         $temp_file = '/tmp/fiercephish_import_'.rand().'.dat';
         file_put_contents($temp_file, $storage_class->sql_dump);
-        exec('mysql -h '.config('fiercephish.DB_HOST').' -P '.config('fiercephish.DB_PORT').' -u '.config('fiercephish.DB_USERNAME').' -p'.config('fiercephish.DB_PASSWORD')." ".config('fiercephish.DB_DATABASE'). ' < '.$temp_file);
+        exec('mysql -h '.config('fiercephish.DB_HOST').' -P '.config('fiercephish.DB_PORT').' -u '.config('fiercephish.DB_USERNAME').' -p'.config('fiercephish.DB_PASSWORD').' '.config('fiercephish.DB_DATABASE'). ' < '.$temp_file);
         unlink($temp_file);
         $replace_new_with_old = ['APP_KEY', 'APP_URL', 'DB_CONNECTION', 'DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD', 'IMAP_HOST', 'IMAP_PORT', 'IMAP_USERNAME', 'IMAP_PASSWORD'];
         $new_env = $storage_class->env;
@@ -264,9 +266,9 @@ class SettingsController extends Controller
         if ($new_uri == 'null') {
             $new_uri = '';
         }
-        $new_redir = '/'.$new_uri.str_replace(config('fiercephish.URI_PREFIX'), '',action('SettingsController@get_import_export', [], false));
+        $new_redir = '/'.$new_uri.str_replace(config('fiercephish.URI_PREFIX'), '', action('SettingsController@get_import_export', [], false));
         while (strstr($new_redir, '//') !== false) {
-            $new_redir = str_replace('//','/', $new_redir);
+            $new_redir = str_replace('//', '/', $new_redir);
         }
         file_put_contents(base_path('.env'), $storage_class->env);
         \Artisan::call('config:cache');

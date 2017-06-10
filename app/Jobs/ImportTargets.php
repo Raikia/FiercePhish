@@ -49,13 +49,13 @@ class ImportTargets extends Job implements ShouldQueue
                 continue;
             }
             $parts = str_getcsv($line, ',', '"');
-            for ($x=0; $x<count($parts); ++$x) {
-                $parts[$x] = trim(trim($parts[$x]),'"');
+            for ($x = 0; $x < count($parts); ++$x) {
+                $parts[$x] = trim(trim($parts[$x]), '"');
             }
             if (count($parts) < 3) {
                 continue;
             }
-            if (strpos($parts[2],'@') !== false) {
+            if (strpos($parts[2], '@') !== false) {
                 $t = new TargetUser();
                 $t->first_name = $parts[0];
                 $t->last_name = $parts[1];

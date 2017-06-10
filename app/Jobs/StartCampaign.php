@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\ActivityLog;
-use App\Jobs\Job;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -57,7 +56,7 @@ class StartCampaign extends Job implements ShouldQueue
         $original_send_num_emails = $send_num_emails;
         $numUsers = $list->users()->count();
         $numSent = 0;
-        $list->users()->chunk(1000, function ($users) use($send_all_immediately, &$send_num_emails, $original_send_num_emails, &$counter, &$numSent, $campaign, $template, &$start_date, $send_every_minutes, $numUsers) {
+        $list->users()->chunk(1000, function ($users) use ($send_all_immediately, &$send_num_emails, $original_send_num_emails, &$counter, &$numSent, $campaign, $template, &$start_date, $send_every_minutes, $numUsers) {
             foreach ($users as $user) {
                 $new_email = $template->craft_email($campaign, $user);
                 if ($send_all_immediately) {

@@ -61,7 +61,6 @@ class TargetsController extends Controller
         return back()->with('success', 'Started Target User import job');
     }
     
-    
     public function targetlists_index()
     {
         $targetLists = TargetList::orderBy('name')->get();
@@ -75,14 +74,11 @@ class TargetsController extends Controller
             'name' => 'required|max:255',
         ]);
         $checkList = TargetList::where('name', $request->input('name'))->get();
-        if (count($checkList) == 0)
-        {
+        if (count($checkList) == 0) {
             $t = TargetList::create($request->all());
-            ActivityLog::log("Added new Target List named \"" . $request->input('name') . "\"", "Target List");
+            ActivityLog::log('Added new Target List named "'.$request->input('name').'"', 'Target List');
             return redirect()->action('TargetsController@targetlists_details', ['id' => $t->id])->with('success', 'List added successfully');
-        }
-        else
-        {
+        } else {
             return back()->withErrors('List already exists');
         }
     }
@@ -105,7 +101,7 @@ class TargetsController extends Controller
     public function addAlltoList(Request $request, $id)
     {
         $list = TargetList::findOrFail($id);
-        $job = (new AddToList(['title' => 'Add users to list', 'description' => 'Type: All, List: "' . $list->name.'"', 'icon' => 'list'], $list, -1, $request->has('unusedOnly')))->onQueue('operation')->delay(1);
+        $job = (new AddToList(['title' => 'Add users to list', 'description' => 'Type: All, List: "'.$list->name.'"', 'icon' => 'list'], $list, -1, $request->has('unusedOnly')))->onQueue('operation')->delay(1);
         $this->dispatch($job);
         
         return back()->with('success', 'Add users to list job started successfully');
@@ -115,7 +111,7 @@ class TargetsController extends Controller
     {
         $this->validate($request, ['numToSelect' => 'required|integer']);
         $list = TargetList::findOrFail($id);
-        $job = (new AddToList(['title' => 'Add users to list', 'description' => 'Type: '.$request->input('numToSelect').', Random, List: "' . $list->name.'"', 'icon' => 'list'], $list, $request->input('numToSelect'), $request->has('unusedOnly')))->onQueue('operation')->delay(1);
+        $job = (new AddToList(['title' => 'Add users to list', 'description' => 'Type: '.$request->input('numToSelect').', Random, List: "'.$list->name.'"', 'icon' => 'list'], $list, $request->input('numToSelect'), $request->has('unusedOnly')))->onQueue('operation')->delay(1);
         $this->dispatch($job);
         
         return back()->with('success', 'Add random users to list job started successfully');
@@ -146,7 +142,7 @@ class TargetsController extends Controller
         }
         $ids = explode(',', $request->input('rowsToAdd'));
         foreach ($ids as $id) {
-            if (!is_numeric($id)) {
+            if (! is_numeric($id)) {
                 return back()->withErrors('Invalid selection');
             }
         }
@@ -159,7 +155,7 @@ class TargetsController extends Controller
     
     public function removeUser(Request $request, $id = '', $user_id = '')
     {
-        if (!is_numeric($id) || !is_numeric($user_id)) {
+        if (! is_numeric($id) || ! is_numeric($user_id)) {
             return back()->withErrors('Unknown user/list');
         }
         $list = TargetList::findOrFail($id);

@@ -16,7 +16,7 @@ class DomainTools
     
     
     // TODO: Is $forWhatHost even needed?  I don't think so...
-    public static function is_IP_an_A_record($domainToParse, $ipToLookFor, $forWhatHost = '', &$response = NULL)
+    public static function is_IP_an_A_record($domainToParse, $ipToLookFor, $forWhatHost = '', &$response = null)
     {
         $ret_val = false;
         $response = 'Failed';
@@ -27,7 +27,7 @@ class DomainTools
         if (is_array($records)) {
             $response = 'An A record for "'.$forWhatHost.'" does not exist pointing to the IP '.$ipToLookFor;
             foreach ($records as $host => $ips) {
-                if ($host == $forWhatHost && in_array($ipToLookFor,$ips)) {
+                if ($host == $forWhatHost && in_array($ipToLookFor, $ips)) {
                     $response = 'Success';
                     $ret_val = true;
                     break;
@@ -40,7 +40,7 @@ class DomainTools
         return $ret_val;
     }
     
-    public static function is_IP_an_MX_record($domainToParse, $ipToLookFor, &$response = NULL)
+    public static function is_IP_an_MX_record($domainToParse, $ipToLookFor, &$response = null)
     {
         $ret_val = false;
         $response = 'Failed';
@@ -75,7 +75,7 @@ class DomainTools
         $return = [];
         foreach ($results as $record) {
             if ($record['type'] == 'A') {
-                if (!isset($return[$record['host']])) {
+                if (! isset($return[$record['host']])) {
                     $return[$record['host']] = [];
                 }
                 $return[$record['host']][] = $record['ip'];
@@ -94,7 +94,7 @@ class DomainTools
         $return = [];
         foreach ($results as $record) {
             if ($record['type'] == 'TXT') {
-                if (!isset($return[$record['host']])) {
+                if (! isset($return[$record['host']])) {
                     $return[$record['host']] = [];
                 }
                 $return[$record['host']][] = $record['txt'];
@@ -135,6 +135,7 @@ class DomainTools
                 return $record;
             }
         }
+        
         return '';
     }
     
@@ -150,7 +151,7 @@ class DomainTools
         } elseif (strpos($part_to_check, 'ip4:') === 0) {
             //echo "Checking IP CIDR because found '".$part_to_check."'...<br />";
             $ip = explode(':', $part_to_check)[1];
-            $ret= self::cidr_match($searchIP, $ip);
+            $ret = self::cidr_match($searchIP, $ip);
             //echo "CIDR Result: " . ($ret?'true':'false')."<br />";
             return $ret;
         } elseif (strpos($part_to_check, 'a:') === 0) {
@@ -198,14 +199,12 @@ class DomainTools
     
     public static function cidr_match($ip, $cidr)
     {
-        if (strpos($cidr,'/') === false)
-        {
+        if (strpos($cidr,'/') === false) {
             return $ip == $cidr;
         }
         list($subnet, $mask) = explode('/', $cidr);
     
-        if ((ip2long($ip) & ~((1 << (32 - $mask)) - 1) ) == ip2long($subnet))
-        { 
+        if ((ip2long($ip) & ~((1 << (32 - $mask)) - 1)) == ip2long($subnet)) { 
             return true;
         }
     

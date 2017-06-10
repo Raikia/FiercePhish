@@ -16,7 +16,6 @@ use File;
 use Illuminate\Http\Request;
 use Response;
 
-
 class EmailController extends Controller
 {
     public function __construct()

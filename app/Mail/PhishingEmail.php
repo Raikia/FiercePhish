@@ -46,7 +46,7 @@ class PhishingEmail extends Mailable
         $message = $message->withSwiftMessage(function ($swiftmessage) {
             if (strstr(config('fiercephish.APP_URL'), '.') !== false) {
                 $id = explode('@', $swiftmessage->getId());
-                $domain = explode(':', str_replace(['http://','https://'],'', config('fiercephish.APP_URL')))[0];
+                $domain = explode(':', str_replace(['http://', 'https://'], '', config('fiercephish.APP_URL')))[0];
                 $swiftmessage->setId($id[0].'@'.$domain);
                // $swiftmessage->getHeaders()->addTextHeader('List-Unsubscribe', '<mailto:admin@'.$domain.'>');
             }

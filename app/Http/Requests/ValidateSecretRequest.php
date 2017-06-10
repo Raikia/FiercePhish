@@ -58,6 +58,7 @@ class ValidateSecretRequest extends FormRequest
         } catch (Exception $exc) {
             return false;
         }
+        
         return true;
     }
     

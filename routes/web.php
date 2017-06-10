@@ -19,7 +19,6 @@ if (! empty(config('fiercephish.PROXY_SCHEMA'))) {
     URL::forceScheme(config('fiercephish.PROXY_SCHEMA'));
 }
 
-
 Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function () {
     // Authentication Routes...
     Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -27,8 +26,6 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function () {
     Route::get('logout', 'Auth\LoginController@logout');
     Route::get('2fa/validate', 'Auth\LoginController@getValidateToken');
     Route::post('2fa/validate', ['middleware' => 'throttle:5', 'uses' => 'Auth\LoginController@postValidateToken']);
-
-
 
     // TargetsController Routes...
     Route::get('targets', 'TargetsController@index');
@@ -44,16 +41,12 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function () {
     Route::get('targets/assign/{id}', 'TargetsController@assign_index');
     Route::post('targets/assign/set', 'TargetsController@assignToLists');
 
-
-
     // CampaignController Routes...
     Route::get('campaigns', 'CampaignController@index');
     Route::get('campaigns/create', 'CampaignController@create');
     Route::post('campaigns/create', 'CampaignController@create_post');
     Route::get('campaigns/{id?}', 'CampaignController@campaign_details');
     Route::post('campaigns/{id}/cancel', 'CampaignController@campaign_cancel');
-
-
 
     // SettingsController Routes...
     Route::get('settings/users', 'SettingsController@index');
@@ -98,14 +91,10 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function () {
     Route::get('files/{id}/download', 'HostedFileController@file_details_download');
     Route::get('files/{id}/notify', 'HostedFileController@file_details_toggle_notify');
     
-    
     // Dashboard Routes...
     Route::get('home', 'DashboardController@index');
     Route::get('/', 'DashboardController@index');
-    
     Route::get('/test', 'DashboardController@test');
-
-
 
     // Ajax Routes...
     Route::post('ajax/targetuser/note', 'AjaxController@edit_targetuser_notes');
