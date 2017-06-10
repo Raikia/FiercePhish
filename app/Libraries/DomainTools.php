@@ -14,7 +14,6 @@ class DomainTools
         });
     }
     
-    
     // TODO: Is $forWhatHost even needed?  I don't think so...
     public static function is_IP_an_A_record($domainToParse, $ipToLookFor, $forWhatHost = '', &$response = null)
     {
@@ -109,6 +108,7 @@ class DomainTools
         $spf_record = self::get_SPF_record($domain);
         if (empty($spf_record)) {
             $response = 'No SPF key found for the domain "'.$domain.'"';
+            
             return false; // Maybe this should return true since it would bypass spam filters?  Oh well, we use $response anyway
         }
         //print("Got the SPF record: " . $spf_record."<br />");
@@ -199,12 +199,12 @@ class DomainTools
     
     public static function cidr_match($ip, $cidr)
     {
-        if (strpos($cidr,'/') === false) {
+        if (strpos($cidr, '/') === false) {
             return $ip == $cidr;
         }
         list($subnet, $mask) = explode('/', $cidr);
     
-        if ((ip2long($ip) & ~((1 << (32 - $mask)) - 1)) == ip2long($subnet)) { 
+        if ((ip2long($ip) & ~((1 << (32 - $mask)) - 1)) == ip2long($subnet)) {
             return true;
         }
     

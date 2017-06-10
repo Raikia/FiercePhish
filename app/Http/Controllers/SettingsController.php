@@ -209,19 +209,18 @@ class SettingsController extends Controller
     
     public function post_export_data()
     {
-        if (config('fiercephish.DB_CONNECTION') != 'mysql')
-        {
+        if (config('fiercephish.DB_CONNECTION') != 'mysql') {
             return back()->withErrors('Data export is only supported for mysql databases right now. If you would like another to be supported, make an "Issue" on GitHub');
         }
         ActivityLog::log('FiercePhish Settings exported', 'Settings');
         $storage_class = new \stdClass();
         $sql_dump = [];
-        exec('mysqldump -h '.config('fiercephish.DB_HOST').' -P '.config('fiercephish.DB_PORT').' -u '.config('fiercephish.DB_USERNAME').' -p'.config("fiercephish.DB_PASSWORD").' '.config('fiercephish.DB_DATABASE'), $sql_dump);
+        exec('mysqldump -h '.config('fiercephish.DB_HOST').' -P '.config('fiercephish.DB_PORT').' -u '.config('fiercephish.DB_USERNAME').' -p'.config('fiercephish.DB_PASSWORD').' '.config('fiercephish.DB_DATABASE'), $sql_dump);
         $storage_class->version = \App\Libraries\CacheHelper::getCurrentVersion();
         $storage_class->sql_dump = implode("\n", $sql_dump);
         $storage_class->env = file_get_contents(base_path('.env'));
         
-        return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition','attachment; filename="fiercephish_backup_'.date('Ymd_Gi').'.dat"');
+        return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition', 'attachment; filename="fiercephish_backup_'.date('Ymd_Gi').'.dat"');
     }
     public function post_import_data(Request $request)
     {
@@ -251,7 +250,7 @@ class SettingsController extends Controller
         \Artisan::call('migrate');
         $temp_file = '/tmp/fiercephish_import_'.rand().'.dat';
         file_put_contents($temp_file, $storage_class->sql_dump);
-        exec('mysql -h '.config('fiercephish.DB_HOST').' -P '.config('fiercephish.DB_PORT').' -u '.config('fiercephish.DB_USERNAME').' -p'.config('fiercephish.DB_PASSWORD').' '.config('fiercephish.DB_DATABASE'). ' < '.$temp_file);
+        exec('mysql -h '.config('fiercephish.DB_HOST').' -P '.config('fiercephish.DB_PORT').' -u '.config('fiercephish.DB_USERNAME').' -p'.config('fiercephish.DB_PASSWORD').' '.config('fiercephish.DB_DATABASE').' < '.$temp_file);
         unlink($temp_file);
         $replace_new_with_old = ['APP_KEY', 'APP_URL', 'DB_CONNECTION', 'DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD', 'IMAP_HOST', 'IMAP_PORT', 'IMAP_USERNAME', 'IMAP_PASSWORD'];
         $new_env = $storage_class->env;

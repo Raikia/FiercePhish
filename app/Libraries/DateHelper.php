@@ -54,6 +54,7 @@ class DateHelper
         }
         $target_time_zone = new \DateTimeZone($tz);
         $date_time = new \DateTime('now', $target_time_zone);
+        
         return $date_time->format('P');
     }
     

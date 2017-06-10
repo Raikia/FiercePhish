@@ -35,4 +35,3 @@ class GlobalHelper
         return $graphData;
     }
 }
-

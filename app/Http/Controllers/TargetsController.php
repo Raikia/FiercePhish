@@ -77,6 +77,7 @@ class TargetsController extends Controller
         if (count($checkList) == 0) {
             $t = TargetList::create($request->all());
             ActivityLog::log('Added new Target List named "'.$request->input('name').'"', 'Target List');
+            
             return redirect()->action('TargetsController@targetlists_details', ['id' => $t->id])->with('success', 'List added successfully');
         } else {
             return back()->withErrors('List already exists');

@@ -184,4 +184,3 @@ class HostedFile extends Model
         return self::where('route', $dirname)->where('file_name', $pathinfo['basename'])->first();
     }
 }
-
