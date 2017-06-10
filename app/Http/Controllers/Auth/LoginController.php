@@ -68,8 +68,7 @@ class LoginController extends Controller
         return redirect()->intended($this->redirectTo);
     }
     
-    /**
-     *
+    /*
      * @return \Illuminate\Http\Response
      */
     public function getValidateToken()

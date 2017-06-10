@@ -46,7 +46,7 @@ class LogPull extends Command
         $timezone = system('date +%Z');
         $this->info('Running log aggregation');
         foreach ($this->files_to_log as $type => $file) {
-            $latest = LogAggregate::where('log_type', $type)->orderby('log_time', 'desc')->orderby('id','asc')->first();
+            $latest = LogAggregate::where('log_type', $type)->orderby('log_time', 'desc')->orderby('id', 'asc')->first();
             $latest_hash = '';
             if ($latest !== null) {
                 $latest_hash = $latest->hash;
@@ -58,7 +58,7 @@ class LogPull extends Command
                 while (-1 !== fseek($fp, $pos, SEEK_END)) {
                     $char = fgetc($fp);
                     if (PHP_EOL != $char) {
-                        $currentLine = $char . $currentLine;
+                        $currentLine = $char.$currentLine;
                     } else {
                         $words = preg_split('/\s+/', $currentLine);
                         if (count($words) < 3) {

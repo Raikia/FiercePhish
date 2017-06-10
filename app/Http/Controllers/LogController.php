@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\ActivityLog;
 use App\Http\Requests;
 use Illuminate\Http\Request;
-use \Response;
-use \ZipArchive;
+use Response;
+use ZipArchive;
 
 class LogController extends Controller
 {
@@ -41,7 +41,7 @@ class LogController extends Controller
     {
         $file_to_download = '';
         if (array_key_exists($type, $this->logs_to_check)) {
-            if (!is_readable($this->logs_to_check[$type])) {
+            if (! is_readable($this->logs_to_check[$type])) {
                 return back()->withErrors('"'.$this->logs_to_check[$type].'" does not exist or has invalid permissions');
             }
             return Response::download($this->logs_to_check[$type], $type.'.log');
@@ -71,6 +71,7 @@ class LogController extends Controller
                 'Content-Length' => filesize($file),
             ]);
             unlink($file);
+            
             return $resp;
         } elseif ($type == 'activitylog') {
             $logs = ActivityLog::orderby('id', 'desc')->get();
@@ -79,6 +80,7 @@ class LogController extends Controller
                 $activitylog_arr[] = $log->read();
             }
             $activitylog = implode("\n", $activitylog_arr);
+            
             return Response::make($activitylog, '200', [
                 'Content-Type' => 'application/octet-stream',
                 'Content-Disposition' => 'attachment; filename="activitylog.log"',

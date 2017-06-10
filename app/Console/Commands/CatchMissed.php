@@ -41,7 +41,7 @@ class CatchMissed extends Command
     {
         $emails = Email::where('planned_time', '<', (Carbon::now()->subMinutes(5)))->where('status', Email::NOT_SENT)->get();
         foreach ($emails as $email) {
-            $this->info("Queueing email ".$email->id);
+            $this->info('Queueing email '.$email->id);
             $email->send();
         }
     }

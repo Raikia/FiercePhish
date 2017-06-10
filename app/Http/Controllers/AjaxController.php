@@ -7,16 +7,10 @@ use App\Campaign;
 use App\Email;
 use App\EmailTemplate;
 use App\HostedFile;
-use App\HostedFileView;
-use App\Http\Requests;
 use App\Libraries\DomainTools;
 use App\ReceivedMail;
-use App\ReceivedMailAttachment;
 use App\TargetList;
 use App\TargetUser;
-use Cache;
-use Carbon\Carbon;
-use DB;
 use Datatables;
 use Illuminate\Http\Request;
 use Response;
@@ -30,7 +24,7 @@ class AjaxController extends Controller
     
     public function edit_targetuser_notes(Request $request)
     {
-        if (!$request->has('pk')) {
+        if (! $request->has('pk')) {
             return Response::json('Invalid target user', 400);
         }
         $t = TargetUser::findOrFail($request->input('pk'));
@@ -43,7 +37,7 @@ class AjaxController extends Controller
     
     public function edit_targetlist_notes(Request $request)
     {
-        if (!$request->has('pk')) {
+        if (! $request->has('pk')) {
             return Response::json('Invalid list', 400);
         }
         $t = TargetList::findOrFail($request->input('pk'));
@@ -64,29 +58,26 @@ class AjaxController extends Controller
         }
         
         return Datatables::of($query)->setRowId('row_{{ $id }}')->addColumn('list_of_membership', function ($user) {
-            return $user->lists()->pluck('name')->implode("-=|=-");
+            return $user->lists()->pluck('name')->implode('-=|=-');
         })->make(true);
     }
     
     public function targetuser_membership(Request $request, $id)
     {
         return Datatables::of(TargetList::findOrFail($id)->users())->setRowId('row_{{ $target_user_id }}')->addColumn('list_of_membership', function ($user) {
-            return $user->lists()->pluck('name')->implode("-=|=-");
+            return $user->lists()->pluck('name')->implode('-=|=-');
         })->make(true);
     }
     
     public function get_emailtemplate_info(Request $request, $id = '')
     {
         if ($id === '') {
-            return Response::json("Invalid ID", 400);
+            return Response::json('Invalid ID', 400);
         }
         $template = EmailTemplate::findOrFail($id);
         
         return Response::json($template, 200);
     }
-    
-    
-    
     
     public function email_check_commands(Request $request, $command = '', $domain = '')
     {
@@ -97,7 +88,7 @@ class AjaxController extends Controller
         }
         $server_ip = DomainTools::getServerIP();
         
-        if ($command == "a_record_primary") {
+        if ($command == 'a_record_primary') {
             $resp = '';
             $response[$command] = DomainTools::is_IP_an_A_record($domain, $server_ip, $domain, $resp);
             $response['message'] = $resp;
@@ -121,9 +112,7 @@ class AjaxController extends Controller
         return Response::json($response, 200);
     }
     
-    
-    
-    public function get_activitylog($id = "-1")
+    public function get_activitylog($id = '-1')
     {
         $logs = ActivityLog::orderby('id', 'desc')->where('id', '>', $id)->get();
         $strings = [];
@@ -138,12 +127,10 @@ class AjaxController extends Controller
         return Response::json($ret, 200);
     }
     
-    
     public function get_jobs()
     {
         return Response::json(ActivityLog::getJobList(), 200);
     }
-    
     
     public function campaign_emails_get(Request $request, $id)
     {
@@ -153,11 +140,11 @@ class AjaxController extends Controller
             return $email->targetuser->full_name();
         })->editColumn('sent_time', function ($email) {
             return \App\Libraries\DateHelper::readable($email->sent_time);
-        })->editColumn('planned_time', function($email) {
+        })->editColumn('planned_time', function ($email) {
             return \App\Libraries\DateHelper::readable($email->planned_time);
-        })->filterColumn('sent_time', function($query, $keyword) {
+        })->filterColumn('sent_time', function ($query, $keyword) {
             $query->whereRaw('CAST(CONVERT_TZ(sent_time, "+00:00", "'.\App\Libraries\DateHelper::getOffset(config('fiercephish.APP_TIMEZONE')).'") as char) like ?', ["%{$keyword}%"]);
-        })->filterColumn('planned_time', function($query, $keyword) {
+        })->filterColumn('planned_time', function ($query, $keyword) {
             $query->whereRaw('CAST(CONVERT_TZ(planned_time, "+00:00", "'.\App\Libraries\DateHelper::getOffset(config('fiercephish.APP_TIMEZONE')).'") as char) like ?', ["%{$keyword}%"]);
         })->filterColumn('targetuser.email', function ($query, $keyword) {
             $query->whereRaw('(select count(1) from target_users where target_users.id = target_user_id and target_users.email like ?) >= 1', ["%{$keyword}%"]);
@@ -165,7 +152,6 @@ class AjaxController extends Controller
             $query->whereRaw('(select count(1) from target_users where target_users.id = target_user_id and CONCAT(target_users.first_name," ",target_users.last_name) like ?) >= 1', ["%{$keyword}%"]);
         })->make(true);
     }
-    
     
     public function email_log(Request $request)
     {
@@ -196,13 +182,12 @@ class AjaxController extends Controller
         })->make(true);
     }
     
-    
     public function get_inbox_messages($id = '')
     {
         $ret = [];
         if ($id === '') {
             $all_mails = ReceivedMail::with('attachment_count')->orderby('received_date', 'desc')->select(['id', 'subject', 'received_date', 'sender_name', 'sender_email', 'seen', 'replied', 'forwarded', \DB::raw("SUBSTRING(`message`,1,80) as sub_msg")])->get();
-            for ($x=0; $x < count($all_mails); ++$x) {
+            for ($x = 0; $x < count($all_mails); ++$x) {
                 $all_mails[$x]->subject = e($all_mails[$x]->subject);
                 $all_mails[$x]->sender_name = e($all_mails[$x]->sender_name);
                 if (empty($all_mails[$x]->sender_name)) {
@@ -228,7 +213,7 @@ class AjaxController extends Controller
             $message->subject = e($message->subject);
             $message->message = e($message->message);
             
-            for ($x=0; $x < $message->attachments()->count(); ++$x) {
+            for ($x = 0; $x < $message->attachments()->count(); ++$x) {
                 $message->attachments[$x]->name = e($message->attachments[$x]->name);
             }
             $ret['data'] = $message;
@@ -263,19 +248,19 @@ class AjaxController extends Controller
         return Response::json($ret, 200);
     }
     
-    
     public function hosted_file_view_table(Request $request, $id)
     {
         return Datatables::of(HostedFile::findorfail($id)->views()->with('email.targetuser', 'email.campaign', 'geolocate'))->setRowId('row_{{ $id }}')->editColumn('email.targetuser.full_name', function ($view) {
             if ($view->email !== null) {
                 return $view->email->targetuser->full_name();
             }
+            
             return '';
         })->filterColumn('targetuser.first_name', function ($query, $keyword) {
             $query->whereRaw('(select count(1) from target_users where target_users.id = target_user_id and CONCAT(target_users.first_name," ",target_users.last_name) like ?) >= 1', ["%{$keyword}%"]);
         })->editColumn('created_at', function ($view) {
             return \App\Libraries\DateHelper::readable($view->created_at);
-        })->filterColumn('created_at', function($query, $keyword) {
+        })->filterColumn('created_at', function ($query, $keyword) {
             $query->whereRaw('CAST(CONVERT_TZ(created_at, "+00:00", "'.\App\Libraries\DateHelper::getOffset(config('fiercephish.APP_TIMEZONE')).'") as char) like ?', ["%{$keyword}%"]);
         })->make(true);
     }

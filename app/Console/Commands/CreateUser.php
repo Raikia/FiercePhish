@@ -57,7 +57,6 @@ class CreateUser extends Command
         }
         if (! $this->option('confirm')) {
             if (! $this->confirm('Are you sure you want to create this account? ')) {
-                
                 return;
             }
         }

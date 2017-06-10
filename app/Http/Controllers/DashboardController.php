@@ -5,10 +5,6 @@ namespace App\Http\Controllers;
 use App\ActivityLog;
 use App\Campaign;
 use App\Email;
-use App\Http\Requests;
-use Carbon\Carbon;
-use DB;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -17,6 +13,7 @@ class DashboardController extends Controller
     {
         $this->middleware('auth');
     }
+    
     public function index()
     {
         // Get sent email stats

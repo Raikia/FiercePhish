@@ -6,7 +6,6 @@ use App\ActivityLog;
 use App\Campaign;
 use App\Email;
 use App\EmailTemplate;
-use App\Http\Requests;
 use App\Jobs\StartCampaign;
 use App\TargetList;
 use Carbon\Carbon;
@@ -30,6 +29,7 @@ class CampaignController extends Controller
     {
         $all_templates = EmailTemplate::orderby('name', 'asc')->get();
         $all_lists = TargetList::orderby('name', 'asc')->get();
+        
         return view('campaigns.create')->with('templates', $all_templates)->with('lists', $all_lists);
     }
     
@@ -48,7 +48,7 @@ class CampaignController extends Controller
         $campaign->name = $request->input('campaign_name');
         $campaign->from_name = $request->input('sender_name');
         $campaign->from_email = $request->input('sender_email');
-        $campaign->description = ($request->input('campaign_description')!==null)?$request->input('campaign_description'):'';
+        $campaign->description = ($request->input('campaign_description') !== null) ? $request->input('campaign_description') : '';
         $campaign->status = Campaign::NOT_STARTED;
         $campaign->target_list_id = $request->input('target_list');
         $campaign->email_template_id = $request->input('email_template');
@@ -56,8 +56,8 @@ class CampaignController extends Controller
         $start_date = $request->input('starting_date') ?: \App\Libraries\DateHelper::now()->format('m/d/Y');
         $start_time = $request->input('starting_time') ?: \App\Libraries\DateHelper::now()->format('g:ia');
         $start_date = Carbon::parse($start_date.' '.$start_time, config('fiercephish.APP_TIMEZONE'))->addSeconds(1)->timezone('UTC');
-        $send_num_emails = min((int)$request->input('send_num'), 1000);
-        $send_every_minutes = min((int)$request->input('send_every_x_minutes'), 1000);
+        $send_num_emails = min((int) $request->input('send_num'), 1000);
+        $send_every_minutes = min((int) $request->input('send_every_x_minutes'), 1000);
         if ($request->input('sending_schedule') == 'all' || empty($request->input('send_num')) || empty($request->input('send_every_x_minutes'))) {
             $send_num_emails = -1; // Send all emails at once
         }
@@ -67,7 +67,6 @@ class CampaignController extends Controller
         
         return redirect()->action('CampaignController@campaign_details', ['id' => $campaign->id])->with('success', 'Job to create campaign has been launched successfully');
     }
-    
     
     public function campaign_details($id)
     {

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\ActivityLog;
-use App\Http\Requests;
 use App\User;
 use Crypt;
 use DB;
@@ -14,7 +13,6 @@ use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth');
@@ -41,6 +39,7 @@ class SettingsController extends Controller
         $newUser->password = Hash::make($request->input('password'));
         $newUser->save();
         ActivityLog::log('Added a new user named "'.$newUser->name.'"', 'Settings');
+        
         return back()->with('success', 'User created successfully');
     }
     
@@ -59,10 +58,10 @@ class SettingsController extends Controller
         return back()->with('success', 'User has been successfully deleted');
     }
     
-    public function get_editprofile(Request $request, $id = "")
+    public function get_editprofile(Request $request, $id = '')
     {
         $user = auth()->user();
-        if ($id != "") {
+        if ($id != '') {
             $user = User::findOrFail($id);
         }
         $imageDataUri = '';
@@ -185,8 +184,8 @@ class SettingsController extends Controller
                 }
             }
             file_put_contents($path, $file_contents);
-            $new_redir = '/'.$new_uri.str_replace(config('fiercephish.URI_PREFIX'), '',action('SettingsController@get_config', [], false));
-            ActivityLog::log("Application configuration has been edited", "Settings");
+            $new_redir = '/'.$new_uri.str_replace(config('fiercephish.URI_PREFIX'), '', action('SettingsController@get_config', [], false));
+            ActivityLog::log('Application configuration has been edited,' 'Settings');
             \Artisan::call('config:cache');
             \Artisan::call('queue:restart');
             

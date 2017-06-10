@@ -7,8 +7,6 @@ use App\Campaign;
 use App\Email;
 use App\EmailTemplate;
 use App\HostedFile;
-use App\Http\Requests;
-use App\Jobs\SendEmail;
 use App\Libraries\DomainTools;
 use App\ReceivedMail;
 use App\ReceivedMailAttachment;
@@ -41,15 +39,16 @@ class EmailController extends Controller
     public function addTemplate(Request $request)
     {
         $this->validate($request, [
-            'templateName' => 'required|max:255|unique:email_templates,name'
+            'templateName' => 'required|max:255|unique:email_templates,name',
         ]);
         $template = new EmailTemplate();
         $template->name = $request->input('templateName');
         $template->save();
-        ActivityLog::log('Added a new email template named "'.$template->name.'"', "Email Template");
+        ActivityLog::log('Added a new email template named "'.$template->name.'"', 'Email Template');
         
         return back()->with('success', 'Template "'.$request->input('templateName').'" created successfully');
     }
+    
     public function editTemplate(Request $request)
     {
         $this->validate($request, [
@@ -68,7 +67,7 @@ class EmailController extends Controller
     public function deleteTemplate(Request $request)
     {
         $this->validate($request, [
-            'deleteId' => 'required|integer'
+            'deleteId' => 'required|integer',
         ]);
         $template = EmailTemplate::findOrFail($request->input('deleteId'));
         ActivityLog::log('Deleted the email template named "'.$template->name.'"', 'Email Template');
@@ -94,14 +93,14 @@ class EmailController extends Controller
         $replyMail = new ReceivedMail();
         $newSubject = '';
         $newMessage = '';
-        $actionType='';
+        $actionType = '';
         if ($id != '') {
             $replyMail = ReceivedMail::findOrFail($id);
             $newSubject = $replyMail->subject;
             $messageLines = explode("\n", $replyMail->message);
             if ($fwd === '') {
                 $actionType = 'reply';
-                if (strpos(strtolower(trim($replyMail->subject)), "re: ") !== 0) {
+                if (strpos(strtolower(trim($replyMail->subject)), 're: ') !== 0) {
                     $newSubject = 'Re: ' . $replyMail->subject;
                 }
                 $newMessage = '<br /><br />On '.date('D, M d, Y \a\t g:i A', strtotime($replyMail->received_date)).', '.$replyMail->sender_name.' &lt;'.$replyMail->sender_email.'&gt; wrote:<br /><br />';
@@ -124,7 +123,6 @@ class EmailController extends Controller
                     $newMessage .= $line.'<br />';
                 }
             }
-            
         }
         
         return view('emails.send_simple')->with('replyMail', $replyMail)->with('newSubject', $newSubject)->with('newMessage', $newMessage)->with('actionType', $actionType);
@@ -206,14 +204,14 @@ class EmailController extends Controller
     
     public function inbox_get()
     {
-        $view = view('emails.inbox'); 
+        $view = view('emails.inbox');
         if (\Cache::get('fp:checkmail_error', 0) >= 10) {
             $view = $view->withErrors('INBOX feature has been disabled because of too many connection errors! Edit the settings ("Settings" --> "Configuration") to re-enable it.');
         }
         return $view;
     }
     
-    public function inbox_download_attachment($id='')
+    public function inbox_download_attachment($id = '')
     {
         $attachment = ReceivedMailAttachment::findOrFail($id);
         

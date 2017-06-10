@@ -80,7 +80,7 @@ class HostedFileController extends Controller
     public function deletefile(Request $request)
     {
         $this->validate($request, [
-            'file' => 'required|integer'
+            'file' => 'required|integer',
         ]);
         $file = HostedFile::findorfail($request->input('file'));
         unlink(storage_path('app/'.$file->local_path));
@@ -95,13 +95,13 @@ class HostedFileController extends Controller
     public function file_details($id)
     {
         $file = HostedFile::findorfail($id);
-	    $viewGraphData = \App\Libraries\GlobalHelper::generateGraphData($file->views(), 'created_at');
-	    $viewsWithGeolocate = $file->views()->whereHas('geolocate')->get();
-	    $geoData = [];
-	    foreach ($viewsWithGeolocate as $geo) {
-	        $geoData[$geo->geolocate->ip] = $geo->geolocate;
-	    }
-	    
+        $viewGraphData = \App\Libraries\GlobalHelper::generateGraphData($file->views(), 'created_at');
+        $viewsWithGeolocate = $file->views()->whereHas('geolocate')->get();
+        $geoData = [];
+        foreach ($viewsWithGeolocate as $geo) {
+            $geoData[$geo->geolocate->ip] = $geo->geolocate;
+        }
+        
         return view('files.details')->with('file', $file)->with('viewGraphData', $viewGraphData)->with('geoData' ,$geoData);
     }
     
@@ -126,12 +126,13 @@ class HostedFileController extends Controller
     public function file_details_toggle_notify($id)
     {
         $file = HostedFile::findorfail($id);
-        $file->notify_access = !$file->notify_access;
+        $file->notify_access = ! $file->notify_access;
         $file->save();
         $notify = 'Notifications have been enabled!';
         if ($file->notify_access == false) {
             $notify = 'Notifications have been disabled!';
         }
+        
         return back()->with('success', $notify);
     }
 }

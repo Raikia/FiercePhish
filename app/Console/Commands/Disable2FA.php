@@ -58,7 +58,6 @@ class Disable2FA extends Command
         }
         if (! $this->option('confirm')) {
             if (! $this->confirm('Are you sure you want to disable the 2FA for this account? ')) {
-                
                 return;
             }
         }

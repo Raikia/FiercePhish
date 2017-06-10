@@ -34,8 +34,7 @@ class Email extends Model
         }
         if ($this->status == self::SENT) {
             $this->status = self::PENDING_RESEND;
-        }
-        else {
+        } else {
            $this->status = self::NOT_SENT;
         }
         $this->planned_time = $delay;
