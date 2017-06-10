@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Email;
 use Illuminate\Database\Eloquent\Model;
 
 class Campaign extends Model

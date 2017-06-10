@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\TargetUser;
 use Illuminate\Database\Eloquent\Model;
 
 class TargetList extends Model

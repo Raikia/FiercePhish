@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\HostedFileView;
 use App\Notifications\HostedFileVisited;
 use Illuminate\Database\Eloquent\Model;
 

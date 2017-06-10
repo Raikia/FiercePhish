@@ -2,9 +2,6 @@
 
 namespace App\Libraries;
 
-use App\Libraries\DateHelper;
-use Carbon\Carbon;
-
 class GlobalHelper
 {
     public static function makeUnclickableLink($str)

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Email;
 use Illuminate\Database\Eloquent\Model;
 
 class EmailTemplate extends Model
