@@ -165,7 +165,6 @@ class HostedFile extends Model
         if ($matched != null && $matched->uri == '{catchall}') {
             if (self::grab($path) === null) {
                 if (! file_exists(public_path($path))) {
-                    
                     return false;
                 }
             }

@@ -17,14 +17,16 @@ class LogAggregate extends Model
     
     
     
-    public static function getSurroundingLogs($carbon_date, $before_num_secs='20', $after_num_secs='20', $type = null)
+    public static function getSurroundingLogs($carbon_date, $before_num_secs = '20', $after_num_secs = '20', $type = null)
     {
         $adate = $carbon_date->copy()->subSeconds($before_num_secs);
         $bdate = $carbon_date->copy()->addSeconds($after_num_secs);
-        $query = LogAggregate::where('log_time', '>=', $adate)->where('log_time', '<=', $bdate);
-        if ($type !== null)
+        $query = self::where('log_time', '>=', $adate)->where('log_time', '<=', $bdate);
+        if ($type !== null) {
             $query = $query->where('log_type', $type);
+        }
         $query = $query->orderby('log_time', 'asc')->orderby('id', 'desc');
+        
         return $query->get();
     }
 }

@@ -57,7 +57,7 @@ class CheckMail extends Command
             }
             Cache::forever('fp:checkmail_error', 0);
             $n_msgs = imap_num_msg($imap);
-            $this->info("Found ".$n_msgs." emails!");
+            $this->info('Found '.$n_msgs.' emails!');
             if ($n_msgs == 0) {
                 imap_alerts();
                 imap_errors();
@@ -161,7 +161,6 @@ class CheckMail extends Command
         
         return $str;
     }
-    
     
     private function get_body($imapLink, $num)
     {

@@ -83,7 +83,6 @@ class AjaxController extends Controller
     {
         $response = [$command => false, 'command' => $command, 'message' => ''];
         if (empty($command) || empty($domain)) {
-            
             return Response::json($response, 200);
         }
         $server_ip = DomainTools::getServerIP();
@@ -157,7 +156,7 @@ class AjaxController extends Controller
     {
         return Datatables::of(Email::with('campaign', 'targetuser'))->setRowId('row_{{ $id }}')->editColumn('status', function ($email) {
             return $email->getStatus();
-        })->editColumn('campaign.name', function($email) {
+        })->editColumn('campaign.name', function ($email) {
             if ($email->campaign !== null) {
                 return $email->campaign->name;
             } else {
@@ -167,11 +166,11 @@ class AjaxController extends Controller
             return $email->targetuser->full_name();
         })->editColumn('sent_time', function ($email) {
             return \App\Libraries\DateHelper::readable($email->sent_time);
-        })->editColumn('planned_time', function($email) {
+        })->editColumn('planned_time', function ($email) {
             return \App\Libraries\DateHelper::readable($email->planned_time);
-        })->filterColumn('sent_time', function($query, $keyword) {
+        })->filterColumn('sent_time', function ($query, $keyword) {
             $query->whereRaw('CAST(CONVERT_TZ(sent_time, "+00:00", "'.\App\Libraries\DateHelper::getOffset(config('fiercephish.APP_TIMEZONE')).'") as char) like ?', ["%{$keyword}%"]);
-        })->filterColumn('planned_time', function($query, $keyword) {
+        })->filterColumn('planned_time', function ($query, $keyword) {
             $query->whereRaw('CAST(CONVERT_TZ(planned_time, "+00:00", "'.\App\Libraries\DateHelper::getOffset(config('fiercephish.APP_TIMEZONE')).'") as char) like ?', ["%{$keyword}%"]);
         })->filterColumn('targetuser.first_name', function ($query, $keyword) {
             $query->whereRaw('(select count(1) from target_users where target_users.id = target_user_id and CONCAT(target_users.first_name," ",target_users.last_name) like ?) >= 1', ["%{$keyword}%"]);
@@ -186,7 +185,7 @@ class AjaxController extends Controller
     {
         $ret = [];
         if ($id === '') {
-            $all_mails = ReceivedMail::with('attachment_count')->orderby('received_date', 'desc')->select(['id', 'subject', 'received_date', 'sender_name', 'sender_email', 'seen', 'replied', 'forwarded', \DB::raw("SUBSTRING(`message`,1,80) as sub_msg")])->get();
+            $all_mails = ReceivedMail::with('attachment_count')->orderby('received_date', 'desc')->select(['id', 'subject', 'received_date', 'sender_name', 'sender_email', 'seen', 'replied', 'forwarded', \DB::raw('SUBSTRING(`message`,1,80) as sub_msg')])->get();
             for ($x = 0; $x < count($all_mails); ++$x) {
                 $all_mails[$x]->subject = e($all_mails[$x]->subject);
                 $all_mails[$x]->sender_name = e($all_mails[$x]->sender_name);

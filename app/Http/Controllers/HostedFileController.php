@@ -17,6 +17,7 @@ class HostedFileController extends Controller
     public function index()
     {
         $files = HostedFile::whereNull('hosted_site_id')->get();
+        
         return view('files.index')->with('files', $files);
     }
     
@@ -102,7 +103,7 @@ class HostedFileController extends Controller
             $geoData[$geo->geolocate->ip] = $geo->geolocate;
         }
         
-        return view('files.details')->with('file', $file)->with('viewGraphData', $viewGraphData)->with('geoData' ,$geoData);
+        return view('files.details')->with('file', $file)->with('viewGraphData', $viewGraphData)->with('geoData', $geoData);
     }
     
     public function file_details_disable(Request $request)

@@ -42,6 +42,6 @@ return [
     'IMAP_PASSWORD' => env('IMAP_PASSWORD', null),
     'MAIL_BCC_ALL' => env('MAIL_BCC_ALL', null),
     'NOTIFICATIONS_FROM' => env('NOTIFICATIONS_FROM', 'alert@fiercephish.com'),
-    'NOTIFICATIONS_LOGIN_LINK' => env('NOTIFICATIONS_LOGIN_LINK',false),
+    'NOTIFICATIONS_LOGIN_LINK' => env('NOTIFICATIONS_LOGIN_LINK', false),
     'ANALYTICS' => env('ANALYTICS', true),
 ];

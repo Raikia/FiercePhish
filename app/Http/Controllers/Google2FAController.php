@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Crypt;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
-use \ParagonIE\ConstantTime\Base32;
+use ParagonIE\ConstantTime\Base32;
 
 class Google2FAController extends Controller
 {

@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\ActivityLog;
-use App\Http\Requests;
-use Illuminate\Http\Request;
 use Response;
 use ZipArchive;
 
@@ -44,6 +42,7 @@ class LogController extends Controller
             if (! is_readable($this->logs_to_check[$type])) {
                 return back()->withErrors('"'.$this->logs_to_check[$type].'" does not exist or has invalid permissions');
             }
+            
             return Response::download($this->logs_to_check[$type], $type.'.log');
         } elseif ($type == 'all') {
             $zip = new ZipArchive();

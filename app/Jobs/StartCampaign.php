@@ -2,14 +2,13 @@
 
 namespace App\Jobs;
 
-use App\Jobs\Job;
 use App\ActivityLog;
-
+use App\Jobs\Job;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class StartCampaign extends Job implements ShouldQueue
 {
@@ -52,39 +51,34 @@ class StartCampaign extends Job implements ShouldQueue
         $send_every_minutes = $this->send_every_minutes;
         $start_date = $this->start_date;
         $send_all_immediately = false;
-        if ($send_num_emails < 0)
+        if ($send_num_emails < 0) {
             $send_all_immediately = true;
+        }
         $original_send_num_emails = $send_num_emails;
         $numUsers = $list->users()->count();
         $numSent = 0;
-        $list->users()->chunk(1000, function($users) use($send_all_immediately, &$send_num_emails, $original_send_num_emails, &$counter, &$numSent, $campaign, $template, &$start_date, $send_every_minutes, $numUsers) {
-            foreach ($users as $user)
-            {
+        $list->users()->chunk(1000, function ($users) use($send_all_immediately, &$send_num_emails, $original_send_num_emails, &$counter, &$numSent, $campaign, $template, &$start_date, $send_every_minutes, $numUsers) {
+            foreach ($users as $user) {
                 $new_email = $template->craft_email($campaign, $user);
-                if ($send_all_immediately)
-                {
+                if ($send_all_immediately) {
                     $new_email->send($start_date, 'campaign_email');
-                }
-                else 
-                {
+                } else {
                     $new_email->send($start_date, 'campaign_email');
                     --$send_num_emails;
-                    if ($send_num_emails == 0)
-                    {
+                    if ($send_num_emails == 0) {
                         $start_date = $start_date->addMinutes($send_every_minutes);
                         $send_num_emails = $original_send_num_emails;
                     }
                 }
                 ++$numSent;
                 $oldProgress = $this->getProgress();
-                $newRate = round(($numSent/$numUsers)*100);
-                if ($oldProgress != $newRate)
-                {
+                $newRate = round(($numSent / $numUsers) * 100);
+                if ($oldProgress != $newRate) {
                     $this->setProgress($newRate);
                 }
             }
         });
-        ActivityLog::log("Completed campaign job named \"".$campaign->name."\" to queue ".$list->users()->count()." emails for sending", "Campaign");
+        ActivityLog::log('Completed campaign job named "'.$campaign->name.'" to queue '.$list->users()->count().' emails for sending', 'Campaign');
         $this->cleanup();
     }
 }

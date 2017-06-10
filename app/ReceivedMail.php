@@ -14,7 +14,6 @@ class ReceivedMail extends Model
     
     protected $dates = ['deleted_at', 'received_date'];
     
-    
     public function attachments()
     {
         return $this->hasMany('App\ReceivedMailAttachment');

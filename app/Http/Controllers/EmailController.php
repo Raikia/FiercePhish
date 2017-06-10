@@ -101,7 +101,7 @@ class EmailController extends Controller
             if ($fwd === '') {
                 $actionType = 'reply';
                 if (strpos(strtolower(trim($replyMail->subject)), 're: ') !== 0) {
-                    $newSubject = 'Re: ' . $replyMail->subject;
+                    $newSubject = 'Re: '.$replyMail->subject;
                 }
                 $newMessage = '<br /><br />On '.date('D, M d, Y \a\t g:i A', strtotime($replyMail->received_date)).', '.$replyMail->sender_name.' &lt;'.$replyMail->sender_email.'&gt; wrote:<br /><br />';
                 foreach ($messageLines as $line) {
@@ -199,6 +199,7 @@ class EmailController extends Controller
     public function email_log_details($id)
     {
         $email = Email::findorFail($id);
+        
         return view('emails.email_log_details')->with('email', $email);
     }
     
@@ -208,6 +209,7 @@ class EmailController extends Controller
         if (\Cache::get('fp:checkmail_error', 0) >= 10) {
             $view = $view->withErrors('INBOX feature has been disabled because of too many connection errors! Edit the settings ("Settings" --> "Configuration") to re-enable it.');
         }
+        
         return $view;
     }
     

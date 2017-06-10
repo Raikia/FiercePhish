@@ -2,13 +2,13 @@
 
 namespace App\Notifications;
 
+use App\Channels\SmsChannel;
+use App\Mail\NotificationSMS;
+use App\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use App\Channels\SmsChannel;
-use App\User;
-use App\Mail\NotificationSMS;
+use Illuminate\Notifications\Notification;
 
 class HostedFileVisited extends Notification
 {
@@ -36,8 +36,10 @@ class HostedFileVisited extends Notification
      */
     public function via($notifiable)
     {
-        if ($notifiable->notify_pref == User::SMS_NOTIFICATION)
+        if ($notifiable->notify_pref == User::SMS_NOTIFICATION) {
             return [SmsChannel::class];
+        }
+        
         return ['mail'];
     }
 
@@ -50,19 +52,18 @@ class HostedFileVisited extends Notification
     public function toMail($notifiable)
     {
         $invalid_str = '';
-        if ($this->invalid_tracker)
-        {
+        if ($this->invalid_tracker) {
             $invalid_str = '(invalid tracker!!!)';
         }
         $by_user = '';
-        if ($this->visit->email !== null)
-        {
+        if ($this->visit->email !== null) {
             $by_user = ' by '.$this->visit->email->targetuser->full_name();
         }
         $obj = (new MailMessage)
-                    ->from(config('fiercephish.NOTIFICATIONS_FROM'))
-                    ->subject('FiercePhish: '.$this->visit->hostfile->getPath().' has been viewed'.$by_user.'! '.$invalid_str)
-                    ->markdown('notifications.hostedfileviewed.mail', ['visit' => $this->visit, 'invalid' => $this->invalid_tracker]);
+                ->from(config('fiercephish.NOTIFICATIONS_FROM'))
+                ->subject('FiercePhish: '.$this->visit->hostfile->getPath().' has been viewed'.$by_user.'! '.$invalid_str)
+                ->markdown('notifications.hostedfileviewed.mail', ['visit' => $this->visit, 'invalid' => $this->invalid_tracker]);
+                
         return $obj;
     }
 
@@ -72,24 +73,24 @@ class HostedFileVisited extends Notification
         $data .= 'Original Filename: '.$this->visit->hostfile->original_file_name."\n";
         $data .= 'Hosted filename: '.$this->visit->hostfile->getPath()."\n";
         $data .= "\n";
-        if ($this->visit->email !== null)
-        {
-            $data .= "User: ".$this->visit->email->targetuser->full_name()." (".$this->visit->email->targetuser->email.")"."\n";
-            $data .= "Campaign: ".$this->visit->email->campaign->name."\n";
-            if ($this->visit->email->targetuser->notes !== null)
-                $data .= "User note: ".$this->visit->email->targetuser->notes."\n";
-            if ($this->visit->email->campaign->target_list->notes !== null)
-                $data .= "Target List note: ".$this->visit->email->campaign->target_list->notes."\n";
+        if ($this->visit->email !== null) {
+            $data .= 'User: '.$this->visit->email->targetuser->full_name().' ('.$this->visit->email->targetuser->email.')'."\n";
+            $data .= 'Campaign: '.$this->visit->email->campaign->name."\n";
+            if ($this->visit->email->targetuser->notes !== null) {
+                $data .= 'User note: '.$this->visit->email->targetuser->notes."\n";
+            }
+            if ($this->visit->email->campaign->target_list->notes !== null) {
+                $data .= 'Target List note: '.$this->visit->email->campaign->target_list->notes."\n";
+            }
             $data .= "\n";
         }
-        if ($this->invalid_tracker)
-        {
+        if ($this->invalid_tracker) {
             $data .= "INVALID TRACKER!\n\n";
         }
-        $data .= "IP: ".$this->visit->ip."\n";
-        $data .= "System: ".$this->visit->platform." running ".$this->visit->browser." v".$this->visit->browser_version."\n";
+        $data .= 'IP: '.$this->visit->ip."\n";
+        $data .= 'System: '.$this->visit->platform.' running '.$this->visit->browser.' v'.$this->visit->browser_version."\n";
         
-        return (new NotificationSMS($notifiable, $data));
+        return new NotificationSMS($notifiable, $data);
     }
     
     /**
@@ -101,7 +102,6 @@ class HostedFileVisited extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
         ];
     }
 }

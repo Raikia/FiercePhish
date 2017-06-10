@@ -2,13 +2,12 @@
 
 namespace App\Jobs;
 
+use Cache;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-
-use Cache;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class Job implements ShouldQueue
 {
@@ -16,7 +15,6 @@ class Job implements ShouldQueue
     public $title;
     public $description;
     public $icon;
-    
     
     public function __construct($meta)
     {
@@ -34,9 +32,11 @@ class Job implements ShouldQueue
     
     public function getProgress()
     {
-        if (Cache::has($this->uid))
+        if (Cache::has($this->uid)) {
             return Cache::get($this->uid);
+        }
         Cache::forever($this->uid, 0);
+        
         return 0;
     }
     

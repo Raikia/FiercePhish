@@ -2,19 +2,17 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use App\TargetUser;
+use Illuminate\Database\Eloquent\Model;
 
 class TargetList extends Model
 {
     protected $fillable = ['name'];
     
-    
     public function users()
     {
         return $this->belongsToMany('App\TargetUser');
     }
-    
     
     public function availableUsers()
     {
@@ -22,5 +20,4 @@ class TargetList extends Model
             $q->where('target_list_id', '=', $this->id);
         });
     }
-    
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateTargetUsersTable extends Migration
 {
@@ -20,7 +20,7 @@ class CreateTargetUsersTable extends Migration
             $table->string('email', 191);
             $table->boolean('hidden')->default(false)->index();
             $table->text('notes')->nullable();
-            $table->unique(['first_name','last_name','email']);
+            $table->unique(['first_name', 'last_name', 'email']);
             $table->timestamps();
         });
     }

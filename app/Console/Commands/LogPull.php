@@ -23,7 +23,6 @@ class LogPull extends Command
      */
     protected $description = 'Command description';
 
-
     private $files_to_log = ['smtp' => '/var/log/mail.log', 'imap' => '/var/log/dovecot.log'];
     
     /**

@@ -8,7 +8,6 @@ class TargetUser extends Model
 {
     protected $fillable = ['first_name', 'last_name', 'email', 'notes'];
     
-    
     public function lists()
     {
         return $this->belongsToMany('App\TargetList');
@@ -27,8 +26,10 @@ class TargetUser extends Model
     public function full_name()
     {
         $str = $this->first_name;
-        if ($this->last_name !== '')
+        if ($this->last_name !== '') {
             $str .= ' '.$this->last_name;
+        }
+        
         return $str;
     }
 }
