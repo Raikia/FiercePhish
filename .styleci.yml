@@ -9,7 +9,6 @@ enabled:
 disabled:
   - length_ordered_imports
   - no_whitespace_in_blank_line
-  - no_unused_imports
   
 finder:
   exclude:

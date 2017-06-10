@@ -222,6 +222,7 @@ class SettingsController extends Controller
         
         return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition', 'attachment; filename="fiercephish_backup_'.date('Ymd_Gi').'.dat"');
     }
+    
     public function post_import_data(Request $request)
     {
         $this->validate($request, [

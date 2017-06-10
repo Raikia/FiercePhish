@@ -211,4 +211,3 @@ class DomainTools
         return false;
     }
 }
-
