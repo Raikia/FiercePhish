@@ -38,7 +38,6 @@ CKEDITOR.editorConfig = function( config ) {
 	};
 	config.disallowedContent = 'script; *[on*]';
 	config.fullPage = true;
-	
 	config.removeFormatAttributes = '';
 
 	// Remove some buttons provided by the standard plugins, which are
