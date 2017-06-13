@@ -3,11 +3,13 @@
  * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
+/* global CKEDITOR */
+
 CKEDITOR.editorConfig = function( config ) {
 	// Define changes to default configuration here.
 	// For complete reference see:
 	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
-
+	
 	// The toolbar groups arrangement, optimized for two toolbar rows.
 	config.toolbarGroups = [
 		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
@@ -25,6 +27,18 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'colors' },
 		{ name: 'about' }
 	];
+	
+	config.allowedContent = {
+		$1: {
+			elements: CKEDITOR.dtd,
+			attributes: true,
+			styles: true,
+			classes: true
+		}
+	};
+	config.disallowedContent = 'script; *[on*]';
+	config.fullPage = true;
+	config.removeFormatAttributes = '';
 
 	// Remove some buttons provided by the standard plugins, which are
 	// not needed in the Standard(s) toolbar.
