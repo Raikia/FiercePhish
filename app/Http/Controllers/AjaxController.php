@@ -58,20 +58,20 @@ class AjaxController extends Controller
         }
         
         return Datatables::of($query)->setRowId('row_{{ $id }}')->addColumn('list_of_membership', function ($user) {
-                return $user->lists()->pluck('name')->implode("-=|=-");
-            })->editColumn('notes', function($user) {
-                if ($user->notes === null) {
-                    return '';
-                }
-                
-                return $user->notes;
-            })->make(true);
+            return $user->lists()->pluck('name')->implode('-=|=-');
+        })->editColumn('notes', function($user) {
+            if ($user->notes === null) {
+                return '';
+            }
+            
+            return $user->notes;
+        })->make(true);
     }
     
     public function targetuser_membership(Request $request, $id)
     {
         return Datatables::of(TargetList::findOrFail($id)->users())->setRowId('row_{{ $id }}')->addColumn('list_of_membership', function ($user) {
-                return $user->lists()->pluck('name')->implode("-=|=-");
+            return $user->lists()->pluck('name')->implode('-=|=-');
         })->editColumn('notes', function($user) {
             if ($user->notes === null) {
                 return '';

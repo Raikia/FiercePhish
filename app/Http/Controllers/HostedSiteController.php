@@ -16,7 +16,8 @@ class HostedSiteController extends Controller
     public function index()
     {
         $allsites = HostedSite::all();
-        return view('sites.index', ['allsites' => $allsites ]);
+        
+        return view('sites.index', ['allsites' => $allsites]);
     }
     
     public function addsite(Request $request)
