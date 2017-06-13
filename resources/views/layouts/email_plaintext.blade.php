@@ -1,1 +1,1 @@
-{!! strip_tags($data) !!}
+{!! Html2Text\Html2Text::convert($data) !!}

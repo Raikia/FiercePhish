@@ -1,3 +1,1 @@
-<html>
 {!! $data !!}
-</html>

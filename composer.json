@@ -13,7 +13,8 @@
         "laravel/tinker": "~1.0",
         "paragonie/constant_time_encoding": "^1",
         "pragmarx/google2fa": "^1.0",
-        "yajra/laravel-datatables-oracle": "^7.0"
+        "yajra/laravel-datatables-oracle": "^7.0",
+        "soundasleep/html2text": "~0.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
