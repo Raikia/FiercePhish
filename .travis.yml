@@ -9,10 +9,10 @@ php:
 
 before_script:
   - cp .env.travis .env
-  - composer self-update
-  - composer install --no-interaction
-  - npm install -g bower
-  - bower install --allow-root
+  - travis_retry composer self-update
+  - travis_retry composer install --no-interaction
+  - travis_retry npm install -g bower
+  - travis_retry bower install --allow-root
   - mysql -e 'create database fiercephish;'
   - php artisan key:generate
   - php artisan migrate
