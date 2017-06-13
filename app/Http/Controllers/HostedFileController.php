@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 
 class HostedFileController extends Controller
 {
-    protected $fillable = ['path', 'file_data', 'file_name', 'file_mime', 'action', 'hosted_site_id', 'uidvar'];
-    
     public function __construct()
     {
         $this->middleware('auth', ['except' => 'catchall']);

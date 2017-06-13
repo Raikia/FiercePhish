@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class HostedFile extends Model
 {
+    protected $fillable = ['path', 'file_data', 'file_name', 'file_mime', 'action', 'hosted_site_id', 'uidvar'];
+    
     const DISABLED = 0;
     const SERVE = 1;
     const PARSE = 2;
     const DOWNLOAD = 3;
-    
     const INVALID_ALLOW = 50;
     const INVALID_DENY = 51;
     const INVALID_DISABLE = 52;
