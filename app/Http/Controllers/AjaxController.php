@@ -59,7 +59,7 @@ class AjaxController extends Controller
         
         return Datatables::of($query)->setRowId('row_{{ $id }}')->addColumn('list_of_membership', function ($user) {
             return $user->lists()->pluck('name')->implode('-=|=-');
-        })->editColumn('notes', function($user) {
+        })->editColumn('notes', function ($user) {
             if ($user->notes === null) {
                 return '';
             }
@@ -70,9 +70,9 @@ class AjaxController extends Controller
     
     public function targetuser_membership(Request $request, $id)
     {
-        return Datatables::of(TargetList::findOrFail($id)->users())->setRowId('row_{{ $id }}')->addColumn('list_of_membership', function ($user) {
+        return Datatables::of(TargetList::findOrFail($id)->users())->setRowId('row_{{ $target_user_id }}')->addColumn('list_of_membership', function ($user) {
             return $user->lists()->pluck('name')->implode('-=|=-');
-        })->editColumn('notes', function($user) {
+        })->editColumn('notes', function ($user) {
             if ($user->notes === null) {
                 return '';
             }
