@@ -67,6 +67,8 @@ class AjaxController extends Controller
                 if ($user->notes === null) {
                     return '';
                 }
+                
+                return $user->notes;
             })->make(true);
     }
     
@@ -78,6 +80,8 @@ class AjaxController extends Controller
             if ($user->notes === null) {
                 return '';
             }
+            
+            return $user->notes;
         })->make(true);
     }
     
