@@ -1,1 +1,1 @@
-{!! Html2Text\Html2Text::convert($data) !!}
+{!! Html2Text\Html2Text::convert(preg_replace('/(<[^>]+) id=".*?"/i', '$1', $data)) !!}
