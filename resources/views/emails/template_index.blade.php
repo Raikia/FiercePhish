@@ -130,16 +130,13 @@
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
-
-        <form class="form-horizontal form-label-left" method="post" action="{{ action('EmailController@editTemplate') }}">
-          {{ csrf_field() }}
+        <form class="form-horizontal form-label-left">
           <div class="form-group">
             <label class="control-label col-md-1 col-sm-1 col-xs-1" for="subject">Subject  <span class="required">*</span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="input-group" style="width: 250px;">
-                    <input type="text" id="subject" name="subject" required="required" class="form-control" />
-                    <input type="hidden" id="template_id" name="template_id" />
+                    <input type="text" id="subject" required="required" class="form-control" />
                 </div>
                 
               <!--<label class="btn btn-default btn-file">
@@ -149,7 +146,7 @@
             </div>
           </div>
           <div class="form-group">
-            <textarea style="width: 100%; height: 300px;" name="templateData" id="templateData"></textarea>
+            <textarea style="width: 100%; height: 300px;" id="templateData"></textarea>
           </div>
           <div class="form-group">
             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -178,10 +175,16 @@
             </div>
           </div>
           <div class="ln_solid"></div>
+        </form>
+        <form class="form-horizontal form-label-left" id="templateForm" method="post" action="{{ action('EmailController@editTemplate') }}">
+          {{ csrf_field() }}
           <div class="form-group">
             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+              <input type="hidden" name="subject" id="subject_real" value="" />
+              <input type="hidden" id="template_id" name="template_id" />
+              <input type="hidden" name="templateData" id="templateData_real" />
               <button type="button" id="delete_template_btn" class="btn btn-danger" data-toggle="modal" data-target=".deletetemplate-modal-sm">Delete Template</button>
-              <button type="submit" style="margin-left: 30px;" class="btn btn-success">Save Template</button>
+              <button type="button" style="margin-left: 30px;" id="saveTemplateBtn" class="btn btn-success">Save Template</button>
             </div>
           </div>
 
@@ -330,8 +333,13 @@
       }).fail(function() {
         window.location = "{{ action('DashboardController@index') }}";
       });
-    })
+    });
     
+    $("#saveTemplateBtn").click(function() {
+      $("#subject_real").val($("#subject").val());
+      $("#templateData_real").val(CKEDITOR.instances.templateData.getData());
+      $("#templateForm").submit();
+    })
     
 </script>
 @endsection
