@@ -57,6 +57,7 @@ class HostedSiteController extends Controller
                 $table->tinyInteger('invalid_action')->default(50);
                 $table->boolean('notify_access')->default(false);
                 $table->integer('hosted_site_id')->nullable(); */
+            dd("break");
             $fileinfo = $za->statIndex($i);
             if (substr($fileinfo['name'], -1) === '/') {  // Skip if its just a folder
                 continue;
@@ -78,7 +79,7 @@ class HostedSiteController extends Controller
             $file->original_file_name = $fileinfo['name'];
             $file->file_mime = mime_content_type(storage_path('app/'.$filename));
             $file->kill_switch = null;
-            $file->action = 
+            $file->action = 0;
             
             echo "index: $i\n";
             $fileinfo = $za->statIndex($i);
