@@ -17,6 +17,11 @@ class HostedFile extends Model
     const INVALID_DENY = 51;
     const INVALID_DISABLE = 52;
     
+    public function site()
+    {
+        return $this->belongsTo('App\HostedSite');
+    }
+    
     public function serve($request)
     {
         $vars = $request->all();
@@ -182,5 +187,10 @@ class HostedFile extends Model
         }
         
         return self::where('route', $dirname)->where('file_name', $pathinfo['basename'])->first();
+    }
+    
+    public static function generateFilename()
+    {
+        return sha1(time().''.rand()).'.dat';
     }
 }

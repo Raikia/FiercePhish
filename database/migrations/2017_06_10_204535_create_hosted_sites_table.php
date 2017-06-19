@@ -20,8 +20,8 @@ class CreateHostedSitesTable extends Migration
             $table->string('package_author');
             $table->string('package_email');
             $table->string('package_url');
-            $table->string('package_tracker');
             $table->string('route');
+            $table->integer('entry_file_id')->nullable();
             
             $table->timestamps();
         });

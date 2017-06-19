@@ -17,15 +17,27 @@
           <table class="table table-striped table-bordered datatable">
               <thead>
                   <tr>
-                      <th>Original File Name</th>
-                      <th>File Path</th>
-                      <th>Mime Type</th>
-                      <th>Action</th>
-                      <th>Views</th>
-                      <th>Created Date</th>
+                    <th>Site Name</th>
+                    <th>Package Name</th>
+                    <th>Folder</th>
+                    <th># Files</th>
+                    <th>Total Views</th>
+                    <th>Total Credentials</th>
+                    <th>Created Date</th>
                   </tr>
               </thead>
               <tbody>
+                @foreach ($allsites as $site)
+                <tr>
+                  <td>{{ $site->name }}</td>
+                  <td><a href="{{ $site->package_url }}">{{ $site->package_name }}</a> by <a href="mailto:{{ $site->package_email }}">{{ $site->package_author }}</a></td>
+                  <td>{{ str_replace('//', '/', '/'.$site->route.'/') }}</td>
+                  <td>{{ $site->files()->count() }}</td>
+                  <td>{{ $site->files()->withCount('views')->get()->sum('views_count') }}</td>
+                  <td>TBD</td>
+                  <td>{{ \App\Libraries\DateHelper::readable($site->created_at) }}</td>
+                </tr>
+                @endforeach
               </tbody>
           </table>
       </div>
@@ -55,19 +67,15 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">File Path </label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Folder Path </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="text" id="path" name="path" class="form-control col-md-7 col-xs-12" placeholder="example/location/file.php" value="{{ old('name') }}">
+              <input type="text" id="path" name="path" class="form-control col-md-7 col-xs-12" placeholder="example/location/" value="{{ old('name') }}">
             </div>
           </div>
           <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Selected Path <span class="required">*</span></label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Root Path <span class="required">*</span></label>
             <div class="col-md-9 col-sm-9 col-xs-12" style="margin-top:8px;" id="selected_path">
-              <span id="currentPath">{{ \Request::root() }}/</span><span id="routeResult" style="color: #FF0000;">
-                  @if (\App\HostedFile::path_already_exists('/'))
-                   - Taken!
-                  @endif
-                  </span>
+              <span id="currentPath">{{ \Request::root() }}/</span>
             </div>
           </div>
           <div class="form-group">
@@ -113,7 +121,7 @@
                     <select class="form-control" style="width: 200px;" name="site">
                         <option></option>
                         @foreach ($allsites as $site)
-                            <option value="{{ $site->id }}">{{ $site->name }}</option>
+                            <option value="{{ $site->id }}">{{ $site->name }} - {{ $site->files()->count() }} files</option>
                         @endforeach
                     </select>
                 </div>
@@ -178,18 +186,6 @@
         oldVal = oldVal.replace(/^\/+/g, '').replace(/[^0-9a-zA-Z_\.%\/]/g, '');
         $("#path").val(oldVal);
         updatePath();
-        
-        $.post('{{ action('AjaxController@check_route') }}', {'route': $("#path").val()}, function (data) {
-            if (data.data == false)
-            {
-                $("#routeResult").html(" - Taken!")
-            }
-            else
-            {
-                $("#routeResult").html("");
-            }
-        });
-        
     });
     
     function updatePath()

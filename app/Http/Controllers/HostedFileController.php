@@ -14,8 +14,8 @@ class HostedFileController extends Controller
     
     public function index()
     {
-        $files = HostedFile::whereNull('hosted_site_id')->get();
-        
+        //$files = HostedFile::whereNull('hosted_site_id')->get();
+        $files = HostedFile::all();
         return view('files.index')->with('files', $files);
     }
     
@@ -70,7 +70,7 @@ class HostedFileController extends Controller
         }
         $newfile->notify_access = $request->has('notify');
         $newfile->hosted_site_id = null;
-        $newfile->local_path = $file->storeAs('hosted', sha1(time().''.rand()).'.dat');
+        $newfile->local_path = $file->storeAs('hosted', HostedFile::generateFilename());
         $newfile->save();
         
         return back()->with('success', 'File successfully hosted!');
