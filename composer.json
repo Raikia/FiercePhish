@@ -15,7 +15,8 @@
         "paragonie/constant_time_encoding": "^1",
         "pragmarx/google2fa": "^1.0",
         "yajra/laravel-datatables-oracle": "^7.0",
-        "soundasleep/html2text": "~0.5"
+        "soundasleep/html2text": "~0.5",
+        "laravel/dusk": "^1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
