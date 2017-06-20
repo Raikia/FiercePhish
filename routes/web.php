@@ -93,6 +93,7 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function () {
     
     // Sites Routes
     Route::get('sites', 'HostedSiteController@index');
+    Route::get('site/{id}', 'HostedSiteController@siteview');
     Route::post('sites/addsite', 'HostedSiteController@addsite');
     Route::post('sites/deletesite', 'HostedSiteController@deletesite');
     

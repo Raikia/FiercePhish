@@ -111,14 +111,14 @@
       </div>
       <div class="x_content">
 
-        <form class="form-horizontal form-label-left" id="deletesiteForm" method="post" action="">
+        <form class="form-horizontal form-label-left" id="deletesiteForm" method="post" action="{{ action('HostedSiteController@deletesite') }}">
           {{ csrf_field() }}
           <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="import_file">Select Site <span class="required">*</span>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="site">Select Site <span class="required">*</span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="input-group">
-                    <select class="form-control" style="width: 200px;" name="site">
+                    <select class="form-control" style="width: 200px;" id="site" name="site">
                         <option></option>
                         @foreach ($allsites as $site)
                             <option value="{{ $site->id }}">{{ $site->name }} - {{ $site->files()->count() }} files</option>

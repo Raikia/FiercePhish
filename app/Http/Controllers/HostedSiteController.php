@@ -119,6 +119,17 @@ class HostedSiteController extends Controller
     
     public function deletesite(Request $request)
     {
-        
+        $site = HostedSite::findorfail($request->input('site'));
+        foreach ($site->files as $file) {
+            $file->deleteFile();
+        }
+        $site->delete();
+        return back()->with('success', 'Site deleted successfully');
+    }
+    
+    public function siteview($id)
+    {
+        $site = HostedSite::findorfail($id);
+        return view('sites.view')->with('site', $site);
     }
 }
