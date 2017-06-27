@@ -990,20 +990,10 @@ install_ssl()
 		sys_cmd "chmod a+x /usr/local/sbin/certbot-auto"
 		info "Installing and configuring LetsEncrypt...this can take a few minutes"
 		if [[ $VERBOSE = "true" ]]
-			then
-      if [[ -z ${SSL_EMAIL} ]]
-         then
-         resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1 | tee /dev/tty)
-      else
-         resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --register-unsafely-without-email --redirect --hsts --apache 2>&1 | tee /dev/tty)
-      fi
+      then
+      resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --register-unsafely-without-email --redirect --hsts --apache 2>&1 | tee /dev/tty)
 		else
-        if [[ -z ${SSL_EMAIL} ]]
-           then
-           resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1)
-        else
-           resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --register-unsafely-without-email --redirect --hsts --apache 2>&1)
-        fi
+      resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --register-unsafely-without-email --redirect --hsts --apache 2>&1)
 		fi
 		if [[ $resp =~ Failed ]]
 			then
