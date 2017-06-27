@@ -568,7 +568,7 @@ validate_vars_ssl()
 	while [[ -z $SSL_EMAIL ]]
 		do
 		echo -e ""
-		notice "LetsEncrypt requires a valid email address for you. Enter it below"
+		notice "LetsEncrypt email address. Enter it below (or leave blank)."
 		prompt "Enter your email"
 		SSL_EMAIL=$(get_input "")
 		if [[ $SSL_EMAIL = "" ]]
