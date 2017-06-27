@@ -564,18 +564,20 @@ validate_vars_ssl()
 			unset SSL_DOMAIN
 		fi
 	done
-	
-	while [[ -z $SSL_EMAIL ]]
-		do
-		echo -e ""
-		notice "LetsEncrypt email address. Enter it below (or leave blank)."
-		prompt "Enter your email"
-		SSL_EMAIL=$(get_input "")
-		if [[ $SSL_EMAIL = "" ]]
-			then
-			unset SSL_EMAIL
-		fi
-	done
+
+# If we're not giving LetsEncrypt an email address, we don't need to validate
+# if email exists.
+#	while [[ -z $SSL_EMAIL ]]
+#		do
+#		echo -e ""
+#		notice "LetsEncrypt email address. Enter it below (or leave blank)."
+#		prompt "Enter your email"
+#		SSL_EMAIL=$(get_input "")
+#		if [[ $SSL_EMAIL = "" ]]
+#			then
+#			unset SSL_EMAIL
+#		fi
+#	done
 }
 
 
@@ -989,9 +991,11 @@ install_ssl()
 		info "Installing and configuring LetsEncrypt...this can take a few minutes"
 		if [[ $VERBOSE = "true" ]]
 			then
-			resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1 | tee /dev/tty)
+      if [[ -z ${SSL_EMAIL} ]]
+         then
+         resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1 | tee /dev/tty)
 		else
-			resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1)
+			resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --register-unsafely-without-email --redirect --hsts --apache 2>&1)
 		fi
 		if [[ $resp =~ Failed ]]
 			then
