@@ -996,12 +996,14 @@ install_ssl()
          resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1 | tee /dev/tty)
       else
          resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --register-unsafely-without-email --redirect --hsts --apache 2>&1 | tee /dev/tty)
+      fi
 		else
         if [[ -z ${SSL_EMAIL} ]]
            then
            resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --email ${SSL_EMAIL} --redirect --hsts --apache 2>&1)
         else
            resp=$(certbot-auto -n -d ${SSL_DOMAIN} --agree-tos --register-unsafely-without-email --redirect --hsts --apache 2>&1)
+        fi
 		fi
 		if [[ $resp =~ Failed ]]
 			then
