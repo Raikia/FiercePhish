@@ -23,6 +23,11 @@ class HostedFileView extends Model
         return $this->hasOne('App\Geolocation', 'ip', 'ip');
     }
     
+    public function credentials()
+    {
+        return $this->hasOne('App\SiteCreds');
+    }
+    
     // Add plugin detection as well
     
     public function detectBrowser($useragent)

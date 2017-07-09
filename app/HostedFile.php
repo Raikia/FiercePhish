@@ -101,6 +101,11 @@ class HostedFile extends Model
         return $this->hasMany('App\HostedFileView');
     }
     
+    public function credentials()
+    {
+        return $this->hasManyThrough('App\SiteCreds', 'App\HostedFileView');
+    }
+    
     public function logVisit()
     {
         $request = \Request::instance(); // Not type hinting in the arguments for later user scripting purposes

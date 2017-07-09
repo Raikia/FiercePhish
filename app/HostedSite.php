@@ -18,6 +18,16 @@ class HostedSite extends Model
         return $this->hasOne('App\HostedFile', 'id', 'entry_file_id');
     }
     
+    public function credentials()
+    {
+        $allcreds = [];
+        foreach ($this->files as $file)
+        {
+            $allcreds = array_merge($allcreds, $file->credentials->toArray());
+        }
+        return $allcreds;
+    }
+    
     public static function getConfigValue($config, $key, $default)
     {
         $recursive_path = explode('|', $key);
