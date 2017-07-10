@@ -149,7 +149,8 @@ class HostedFile extends Model
         return $continue;
     }
     
-    public function deleteFile() {
+    public function deleteFile()
+    {
         unlink(storage_path('app/'.$this->local_path));
         foreach ($this->views as $view) {
             $view->delete();

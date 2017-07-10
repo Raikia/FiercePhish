@@ -59,7 +59,7 @@ class HostedSiteController extends Controller
             if ($request->has('path')) {
                 $path = $request->input('path');
             }
-            $path = trim(str_replace('//','/', $path.'/'.HostedSite::getConfigValue($config, 'paths|'.$fileinfo['name'], $fileinfo['name'])), '/');
+            $path = trim(str_replace('//', '/', $path.'/'.HostedSite::getConfigValue($config, 'paths|'.$fileinfo['name'], $fileinfo['name'])), '/');
             if (HostedFile::path_already_exists($path)) {
                 $errors[] = 'Route for "'.$path.'" already exists';
             }
@@ -88,7 +88,7 @@ class HostedSiteController extends Controller
             if ($request->has('path')) {
                 $path = $request->input('path');
             }
-            $path = trim(str_replace('//','/', $path.'/'.HostedSite::getConfigValue($config, 'paths|'.$fileinfo['name'], $fileinfo['name'])), '/');
+            $path = trim(str_replace('//', '/', $path.'/'.HostedSite::getConfigValue($config, 'paths|'.$fileinfo['name'], $fileinfo['name'])), '/');
             $pathinfo = pathinfo($path);
             $dirname = '';
             if (isset($pathinfo['dirname']) && $pathinfo['dirname'] != '.') {
@@ -99,7 +99,7 @@ class HostedSiteController extends Controller
             $file->original_file_name = $fileinfo['name'];
             $file->file_mime = mime_content_type(storage_path('app/'.$filename));
             $file->kill_switch = null;
-            if (stripos($fileinfo['name'],'.php') === false) {
+            if (stripos($fileinfo['name'], '.php') === false) {
                 $file->action = HostedFile::SERVE;
             } else {
                 $file->action = HostedFile::PARSE;
@@ -114,6 +114,7 @@ class HostedSiteController extends Controller
                 $site->save();
             }
         }
+        
         return back()->with('success', 'Added site successfully');
     }
     
@@ -124,12 +125,14 @@ class HostedSiteController extends Controller
             $file->deleteFile();
         }
         $site->delete();
+        
         return back()->with('success', 'Site deleted successfully');
     }
     
     public function siteview($id)
     {
         $site = HostedSite::findorfail($id);
+        
         return view('sites.view')->with('site', $site);
     }
 }

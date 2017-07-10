@@ -21,10 +21,10 @@ class HostedSite extends Model
     public function credentials()
     {
         $allcreds = [];
-        foreach ($this->files as $file)
-        {
+        foreach ($this->files as $file) {
             $allcreds = array_merge($allcreds, $file->credentials->toArray());
         }
+        
         return $allcreds;
     }
     
