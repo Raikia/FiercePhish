@@ -29,12 +29,12 @@
               <tbody>
                 @foreach ($allsites as $site)
                 <tr>
-                  <td>{{ $site->name }}</td>
+                  <td><a href="{{ action('HostedSiteController@siteview', ['id' => $site->id]) }}">{{ $site->name }}</a></td>
                   <td><a href="{{ $site->package_url }}">{{ $site->package_name }}</a> by <a href="mailto:{{ $site->package_email }}">{{ $site->package_author }}</a></td>
                   <td>{{ str_replace('//', '/', '/'.$site->route.'/') }}</td>
                   <td>{{ $site->files()->count() }}</td>
                   <td>{{ $site->files()->withCount('views')->get()->sum('views_count') }}</td>
-                  <td>TBD</td>
+                  <td>{{ count($site->credentials()) }}</td>
                   <td>{{ \App\Libraries\DateHelper::readable($site->created_at) }}</td>
                 </tr>
                 @endforeach

