@@ -135,4 +135,17 @@ class HostedSiteController extends Controller
         
         return view('sites.view')->with('site', $site);
     }
+    
+    public function site_file_details($id)
+    {
+        $file = HostedFile::findorfail($id);
+        $viewGraphData = \App\Libraries\GlobalHelper::generateGraphData($file->views(), 'created_at');
+        $viewsWithGeolocate = $file->views()->whereHas('geolocate')->get();
+        $geoData = [];
+        foreach ($viewsWithGeolocate as $geo) {
+            $geoData[$geo->geolocate->ip] = $geo->geolocate;
+        }
+        
+        return view('sites.details')->with('file', $file)->with('viewGraphData', $viewGraphData)->with('geoData', $geoData);
+    }
 }

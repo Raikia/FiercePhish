@@ -14,8 +14,7 @@ class HostedFileController extends Controller
     
     public function index()
     {
-        //$files = HostedFile::whereNull('hosted_site_id')->get();
-        $files = HostedFile::all();
+        $files = HostedFile::whereNull('hosted_site_id')->get();
         
         return view('files.index')->with('files', $files);
     }

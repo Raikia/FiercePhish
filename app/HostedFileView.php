@@ -28,6 +28,14 @@ class HostedFileView extends Model
         return $this->hasOne('App\SiteCreds');
     }
     
+    public function deleteView()
+    {
+        foreach ($this->credentials as $cred) {
+            $cred->delete();
+        }
+        $this->delete();
+    }
+    
     // Add plugin detection as well
     
     public function detectBrowser($useragent)

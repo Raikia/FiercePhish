@@ -43,6 +43,9 @@
                               @else 
                                 &infin;
                               @endif
+                              @if ($file->credentials()->count() > 0)
+                                &nbsp;&nbsp;&nbsp;({{ $file->credentials()->count() }} <i class="fa fa-key"></i>)
+                              @endif
                               </td>
                               <td>{{ \App\Libraries\DateHelper::readable($file->created_at) }}</td>
                           </tr>

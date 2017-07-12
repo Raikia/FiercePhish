@@ -261,7 +261,7 @@ class AjaxController extends Controller
     
     public function hosted_file_view_table(Request $request, $id)
     {
-        return Datatables::of(HostedFile::findorfail($id)->views()->with('email.targetuser', 'email.campaign', 'geolocate'))->setRowId('row_{{ $id }}')->editColumn('email.targetuser.full_name', function ($view) {
+        return Datatables::of(HostedFile::findorfail($id)->views()->with('email.targetuser', 'email.campaign', 'geolocate', 'credentials'))->setRowId('row_{{ $id }}')->editColumn('email.targetuser.full_name', function ($view) {
             if ($view->email !== null) {
                 return $view->email->targetuser->full_name();
             }
