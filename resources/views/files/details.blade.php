@@ -238,7 +238,7 @@
       columns: [
         { data: 'ip', name: 'ip', render: function(data, type, row) {
           var geolocate = "";
-          if (row.geolocate != "")
+          if (row.geolocate != "" && row.geolocate != null)
           {
             geolocate = '  (<a href="javascript:void()" class="geolocatepopup" id="'+row.id+'_'+row.geolocate.ip+'">geolocate</a>)';
           }
