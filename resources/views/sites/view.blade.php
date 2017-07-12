@@ -82,7 +82,7 @@
             @forelse ($site->credentials() as $cred)
               <tr>
                 <td>{{ $cred->fileReference }}</td>
-                <td><a href="">{{ $cred->username }}</a></td>
+                <td>{{ $cred->username }}</td>
                 <td>{{ $cred->password }}</td>
                 <td>{{ App\Libraries\DateHelper::readable($cred->created_at) }}</td>
               </tr>

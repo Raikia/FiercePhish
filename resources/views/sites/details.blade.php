@@ -165,7 +165,7 @@
           <tbody>
             @forelse ($file->credentials as $cred)
               <tr>
-                <td><a href="">{{ $cred->username }}</a></td>
+                <td>{{ $cred->username }}</td>
                 <td>{{ $cred->password }}</td>
                 <td>{{ App\Libraries\DateHelper::readable($cred->created_at) }}</td>
               </tr>
