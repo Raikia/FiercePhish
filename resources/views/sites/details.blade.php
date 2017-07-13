@@ -272,7 +272,7 @@
       },
       columns: [
         { data: 'ip', name: 'ip', render: function(data, type, row) {
-          var geolocate = "";
+          var geolocate = '  (<a href="http://ipinfo.io/'+data+'" target="_blank">geolocate</a>)';
           if (row.geolocate != "" && row.geolocate != null)
           {
             geolocate = '  (<a href="javascript:void()" class="geolocatepopup" id="'+row.id+'_'+row.geolocate.ip+'">geolocate</a>)';
