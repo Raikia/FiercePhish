@@ -38,6 +38,11 @@
 * **Referer:**  {{ \App\Libraries\GlobalHelper::makeUnclickableLink($visit->referer) }}
 @endif
 
+@if ($visit->credentials !== null)
+### Credentials!
+* Username: {{ $visit->credentials->username }}
+* Password: {{ $visit->credentials->password }}
+@endif
 
-_'To disable these notifications, [click here]({{ action('SettingsController@get_editprofile') }})_
+_To disable these notifications, [click here]({{ action('SettingsController@get_editprofile') }})_
 @endcomponent
