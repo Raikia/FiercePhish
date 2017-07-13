@@ -89,7 +89,7 @@ class HostedFileVisited extends Notification
         $data .= 'IP: '.$this->visit->ip."\n<br>";
         $data .= 'System: '.$this->visit->platform.' running '.$this->visit->browser.' v'.$this->visit->browser_version."\n<br>";
         if ($this->visit->credentials !== null) {
-            $data .= "<br><br>\n\nGOT CREDENTIALS: <br>Username: ".$this->visit->credentials->username."\n<br>Password: ".$this->visit->credentials->password."\n";
+            $data .= "<br><br>\n\nGOT CREDENTIALS: <br>Username: ".$this->visit->credentials->username."\n";
         }
         
         return new NotificationSMS($notifiable, $data);

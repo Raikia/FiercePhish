@@ -9,6 +9,9 @@
 
 * **Original filename:** {{ $visit->hostfile->original_file_name }}
 * **Hosted filename:**  {{ $visit->hostfile->getPath() }}
+@if ($visit->hostfile->site !== null)
+* **Spoofed Site:** {{ $visit->hostfile->site->name }}
+@endif
 
 @if ($visit->email !== null)
 @component('mail::panel')
@@ -41,7 +44,11 @@
 @if ($visit->credentials !== null)
 ### Credentials!
 * Username: {{ $visit->credentials->username }}
-* Password: {{ $visit->credentials->password }}
+@if ($visit->hostfile->site !== null)
+* **Password:** [click here]({{ action('HostedSiteController@site_file_details', ['id' => $visit->hostfile->id]) }})
+@else
+* **Password:** [click here]({{ action('HostedFileController@file_details', ['id' => $visit->hostfile->id]) }})
+@endif
 @endif
 
 _To disable these notifications, [click here]({{ action('SettingsController@get_editprofile') }})_
