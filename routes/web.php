@@ -19,7 +19,7 @@ if (! empty(config('fiercephish.PROXY_SCHEMA'))) {
     URL::forceScheme(config('fiercephish.PROXY_SCHEMA'));
 }
 
-Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function () {
+Route::middleware(['web', 'csrfprotect'])->prefix(config('fiercephish.URI_PREFIX'))->group(function () {
     // Authentication Routes...
     Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
     Route::post('login', 'Auth\LoginController@login');
@@ -122,4 +122,4 @@ Route::group(['prefix' => config('fiercephish.URI_PREFIX')], function () {
     Route::post('ajax/hostedfile/views/{id?}', 'AjaxController@hosted_file_view_table');
 });
 
-Route::get('{catchall}', 'HostedFileController@catchall')->where('catchall', '(.*)');
+Route::any('{catchall}', 'HostedFileController@catchall')->where('catchall', '(.*)');

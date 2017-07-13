@@ -69,25 +69,28 @@ class HostedFileVisited extends Notification
     public function toSms($notifiable)
     {
         $data = '';
-        $data .= 'Original Filename: '.$this->visit->hostfile->original_file_name."\n";
-        $data .= 'Hosted filename: '.$this->visit->hostfile->getPath()."\n";
+        $data .= 'Original Filename: '.$this->visit->hostfile->original_file_name."\n<br>";
+        $data .= 'Hosted filename: '.$this->visit->hostfile->getPath()."\n<br>";
         $data .= "\n";
         if ($this->visit->email !== null) {
-            $data .= 'User: '.$this->visit->email->targetuser->full_name().' ('.$this->visit->email->targetuser->email.')'."\n";
-            $data .= 'Campaign: '.$this->visit->email->campaign->name."\n";
+            $data .= 'User: '.$this->visit->email->targetuser->full_name().' ('.$this->visit->email->targetuser->email.')'."\n<br>";
+            $data .= 'Campaign: '.$this->visit->email->campaign->name."\n<br>";
             if ($this->visit->email->targetuser->notes !== null) {
-                $data .= 'User note: '.$this->visit->email->targetuser->notes."\n";
+                $data .= 'User note: '.$this->visit->email->targetuser->notes."\n<br>";
             }
             if ($this->visit->email->campaign->target_list->notes !== null) {
-                $data .= 'Target List note: '.$this->visit->email->campaign->target_list->notes."\n";
+                $data .= 'Target List note: '.$this->visit->email->campaign->target_list->notes."\n<br>";
             }
             $data .= "\n";
         }
         if ($this->invalid_tracker) {
-            $data .= "INVALID TRACKER!\n\n";
+            $data .= "INVALID TRACKER!\n\n<br>";
         }
-        $data .= 'IP: '.$this->visit->ip."\n";
-        $data .= 'System: '.$this->visit->platform.' running '.$this->visit->browser.' v'.$this->visit->browser_version."\n";
+        $data .= 'IP: '.$this->visit->ip."\n<br>";
+        $data .= 'System: '.$this->visit->platform.' running '.$this->visit->browser.' v'.$this->visit->browser_version."\n<br>";
+        if ($this->visit->credentials !== null) {
+            $data .= "<br><br>\n\nGOT CREDENTIALS: <br>Username: ".$this->visit->credentials->username."\n<br>Password: ".$this->visit->credentials->password."\n";
+        }
         
         return new NotificationSMS($notifiable, $data);
     }
