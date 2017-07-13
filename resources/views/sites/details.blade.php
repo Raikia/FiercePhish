@@ -284,7 +284,6 @@
         { data: 'platform', name: 'platform'},
         { data: 'email.targetuser.full_name', name: 'email.targetuser.first_name', render: function(data, type, row) {
             var creds = "";
-            console.log(row);
             if (row.credentials != null)
               creds = '&nbsp;&nbsp;&nbsp;<i class="fa fa-key" title="' + row.credentials.username + ' : ' + row.credentials.password + '"></i>'
             if (data == '')

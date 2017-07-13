@@ -151,7 +151,47 @@
   </div>
 </div>
 
+<div class="row">
+  <div class="col-md-6 col-sm-6 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><i class="fa fa-key"></i> Harvested Credentials</h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Password</th>
+              <th>Related User</th>
+              <th>Date Received</th>
+            </tr>
+          </thead>
+          <tbody>
+            @forelse ($file->credentials as $cred)
+              <tr>
+                <td>{{ $cred->username }}</td>
+                <td>{{ $cred->password }}</td>
+                @if ($cred->view->email !== null && $cred->view->email->targetuser !== null)
+                  <td>{{ $cred->view->email->targetuser }}</td>
+                @else 
+                  <td>N/A</td>
+                @endif
+                <td>{{ App\Libraries\DateHelper::readable($cred->created_at) }}</td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="4" style="text-align: center;">No credentials yet</td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
 
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="modal fade geolocate-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-md">
@@ -248,9 +288,12 @@
         { data: 'browser_maker', name: 'browser_maker'},
         { data: 'platform', name: 'platform'},
         { data: 'email.targetuser.full_name', name: 'email.targetuser.first_name', render: function(data, type, row) {
+            var creds = "";
+            if (row.credentials != null)
+              creds = '&nbsp;&nbsp;&nbsp;<i class="fa fa-key" title="' + row.credentials.username + ' : ' + row.credentials.password + '"></i>'
             if (data == '')
-              return 'N/A';
-            return data + " (" + row.email.campaign.name + ")";
+              return 'N/A' + creds;
+            return data + " (" + row.email.campaign.name + ")" + creds;
           }
         },
         { data: 'created_at', name: 'created_at' },
