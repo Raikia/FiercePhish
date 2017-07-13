@@ -159,6 +159,7 @@
             <tr>
               <th>Username</th>
               <th>Password</th>
+              <th>Related User</th>
               <th>Date Received</th>
             </tr>
           </thead>
@@ -167,11 +168,16 @@
               <tr>
                 <td>{{ $cred->username }}</td>
                 <td>{{ $cred->password }}</td>
+                @if ($cred->view->email !== null && $cred->view->email->targetuser !== null)
+                  <td>{{ $cred->view->email->targetuser }}</td>
+                @else 
+                  <td>N/A</td>
+                @endif
                 <td>{{ App\Libraries\DateHelper::readable($cred->created_at) }}</td>
               </tr>
             @empty
               <tr>
-                <td colspan="3" style="text-align: center;">No credentials yet</td>
+                <td colspan="4" style="text-align: center;">No credentials yet</td>
               </tr>
             @endforelse
           </tbody>
