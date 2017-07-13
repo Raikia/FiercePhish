@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class HostedFile extends Model
 {
     protected $fillable = ['path', 'file_data', 'file_name', 'file_mime', 'action', 'hosted_site_id', 'uidvar'];
+    protected $loggedVisit = null;
     
     const DISABLED = 0;
     const SERVE = 1;
@@ -31,7 +32,7 @@ class HostedFile extends Model
             header('Content-Type: '.$this->file_mime);
             echo \File::get($path);
         } elseif ($this->action == self::PARSE && $continue) {
-            $code = \File::get(storage_path('app/'.$this->local_path));
+            $code = \File::get($path);
             eval('?> '.$code.' <?php');
         } elseif ($this->action == self::DOWNLOAD && $continue) {
             header('Content-Type: application/octet-stream');
@@ -112,43 +113,46 @@ class HostedFile extends Model
         if (\Auth::check()) { // Don't log the view if the user is logged in to FiercePhish
             return true;
         }
-        $visit = new HostedFileView();
-        $visit->hosted_file_id = $this->id;
-        $visit->ip = $request->ip();
-        $visit->referer = $request->header('Referer');
-        $visit->detectBrowser($request->header('User-Agent'));
-        $invalid_tracker = false;
-        $continue = true;
-        if ($this->uidvar != null) { // if uid tracker variable is enabled
-            if ($request->has($this->uidvar) && ($email = Email::where('uuid', $request->input($this->uidvar))->first()) !== null) { // if it has the uid tracker variable
-                $visit->uuid = $email->uuid;
-            } else {
-                $invalid_tracker = true;
-                if ($this->invalid_action === self::INVALID_DENY) {
-                    $continue = false; // Send 404
-                } elseif ($this->invalid_action === self::INVALID_DISABLE) {
-                    $continue = false; // Send 404 and disable
-                    $this->action = self::DISABLED;
-                    $this->save();
+        if ($this->loggedVisit === null) {
+            $visit = new HostedFileView();
+            $visit->hosted_file_id = $this->id;
+            $visit->ip = $request->ip();
+            $visit->referer = $request->header('Referer');
+            $visit->detectBrowser($request->header('User-Agent'));
+            $invalid_tracker = false;
+            $continue = true;
+            if ($this->uidvar != null) { // if uid tracker variable is enabled
+                if ($request->has($this->uidvar) && ($email = Email::where('uuid', $request->input($this->uidvar))->first()) !== null) { // if it has the uid tracker variable
+                    $visit->uuid = $email->uuid;
+                } else {
+                    $invalid_tracker = true;
+                    if ($this->invalid_action === self::INVALID_DENY) {
+                        $continue = false; // Send 404
+                    } elseif ($this->invalid_action === self::INVALID_DISABLE) {
+                        $continue = false; // Send 404 and disable
+                        $this->action = self::DISABLED;
+                        $this->save();
+                    }
                 }
             }
-        }
-        if ($this->action !== self::DISABLED && $this->kill_switch !== null && $this->views()->count() >= $this->kill_switch) { // Disable it if max number of requests is reached
-            $continue = false;
-            $this->action = self::DISABLED;
-            $this->save();
-        }
-        if ($this->notify_access) { // Notify people
-            $users = User::getNotifiable();
-            foreach ($users as $user) {
-                $user->notify(new HostedFileVisited($visit, $invalid_tracker));
+            if ($this->action !== self::DISABLED && $this->kill_switch !== null && $this->views()->count() >= $this->kill_switch) { // Disable it if max number of requests is reached
+                $continue = false;
+                $this->action = self::DISABLED;
+                $this->save();
             }
+            if ($this->notify_access) { // Notify people
+                $users = User::getNotifiable();
+                foreach ($users as $user) {
+                    $user->notify(new HostedFileVisited($visit, $invalid_tracker));
+                }
+            }
+            $visit->save();
+            $this->loggedVisit = $visit;
         }
-        $visit->save();
         if ($username !== null && $password !== null) {
-            $visit->credentials()->create(['username' => $username, 'password' => $password]);
+            $this->loggedVisit->credentials()->create(['username' => $username, 'password' => $password]);
         } elseif ($request->has('username') && $request->has('password')) {
-            $visit->credentials()->create(['username' => $request->input('username'), 'password' => $request->input('password')]);
+            $this->loggedVisit->credentials()->create(['username' => $request->input('username'), 'password' => $request->input('password')]);
         }
         
         return $continue;
