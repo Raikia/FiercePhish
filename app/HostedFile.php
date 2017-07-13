@@ -20,7 +20,7 @@ class HostedFile extends Model
     
     public function site()
     {
-        return $this->belongsTo('App\HostedSite');
+        return $this->belongsTo('App\HostedSite', 'hosted_site_id');
     }
     
     public function serve($request)
