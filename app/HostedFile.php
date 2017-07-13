@@ -113,13 +113,13 @@ class HostedFile extends Model
         if (\Auth::check()) { // Don't log the view if the user is logged in to FiercePhish
             return true;
         }
+        $invalid_tracker = false;
         if ($this->loggedVisit === null) {
             $visit = new HostedFileView();
             $visit->hosted_file_id = $this->id;
             $visit->ip = $request->ip();
             $visit->referer = $request->header('Referer');
             $visit->detectBrowser($request->header('User-Agent'));
-            $invalid_tracker = false;
             $continue = true;
             if ($this->uidvar != null) { // if uid tracker variable is enabled
                 if ($request->has($this->uidvar) && ($email = Email::where('uuid', $request->input($this->uidvar))->first()) !== null) { // if it has the uid tracker variable
@@ -140,12 +140,6 @@ class HostedFile extends Model
                 $this->action = self::DISABLED;
                 $this->save();
             }
-            if ($this->notify_access) { // Notify people
-                $users = User::getNotifiable();
-                foreach ($users as $user) {
-                    $user->notify(new HostedFileVisited($visit, $invalid_tracker));
-                }
-            }
             $visit->save();
             $this->loggedVisit = $visit;
         }
@@ -153,6 +147,13 @@ class HostedFile extends Model
             $this->loggedVisit->credentials()->create(['username' => $username, 'password' => $password]);
         } elseif ($request->has('username') && $request->has('password')) {
             $this->loggedVisit->credentials()->create(['username' => $request->input('username'), 'password' => $request->input('password')]);
+        }
+        
+        if ($this->notify_access) { // Notify people
+            $users = User::getNotifiable();
+            foreach ($users as $user) {
+                $user->notify(new HostedFileVisited($visit, $invalid_tracker));
+            }
         }
         
         return $continue;
