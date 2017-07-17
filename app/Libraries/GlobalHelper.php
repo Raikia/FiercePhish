@@ -31,4 +31,21 @@ class GlobalHelper
         
         return $graphData;
     }
+    
+    public static function isLowerVersion($current_version, $latest_version)
+    {
+        $cv = explode('.', $current_version);
+        $lv = explode('.', $latest_version);
+        $cv = array_pad($cv, count($lv), 0);
+        $lv = array_pad($lv, count($cv), 0);
+        for ($x = 0; $x < count($cv); ++$x)
+        {
+            if ($cv[$x] < $lv[$x])
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 }
