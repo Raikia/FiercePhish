@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActivityLog extends Model
 {
+    protected $fillable = ['ref_id', 'ref_text', 'type', 'is_error', 'user', 'log'];
+    
     public static function log($msg, $type = 'General', $error = false)
     {
         if (empty($msg)) {

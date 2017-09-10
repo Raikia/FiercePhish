@@ -12,7 +12,7 @@ class Campaign extends Model
     const FINISHED = 5;
     const CANCELLED = 6;
 
-    protected $fillable = ['name', 'notes'];
+    protected $fillable = ['name', 'from_name', 'from_email', 'description', 'status', 'target_list_id', 'email_template_id'];
 
     public function email_template()
     {
