@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LogAggregate extends Model
 {
-    protected $fillable = ['log_time', 'log_type', 'data'];
+    protected $fillable = ['log_time', 'log_type', 'hash', 'data'];
     
     protected $dates = ['log_time'];
     

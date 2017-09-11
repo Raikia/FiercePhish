@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TargetList extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'notes'];
     
     public function users()
     {

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class HostedFile extends Model
 {
-    protected $fillable = ['local_path', 'file_data', 'file_name', 'file_mime', 'action', 'hosted_site_id', 'uidvar'];
+    protected $fillable = ['local_path', 'route', 'original_file_name', 'file_name', 'file_mime', 'action', 'kill_switch', 'uidvar', 'invalid_action', 'notify_access', 'hosted_site_id'];
     protected $loggedVisit = null;
     
     const DISABLED = 0;

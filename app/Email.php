@@ -18,7 +18,7 @@ class Email extends Model
     const CANCELLED = 8;
     const FAILED = 9;
     
-    protected $fillable = ['sender_name', 'sender_email', 'target_user_id', 'subject', 'message', 'tls', 'has_attachment', 'attachment', 'status', 'uuid', 'related_logs', 'sent_time', 'planned_time'];
+    protected $fillable = ['campaign_id', 'sender_name', 'sender_email', 'target_user_id', 'subject', 'message', 'tls', 'has_attachment', 'attachment', 'attachment_name', 'attachment_mime', 'status', 'uuid', 'related_logs', 'sent_time', 'planned_time'];
     
     protected $dates = ['sent_time', 'planned_time'];
     

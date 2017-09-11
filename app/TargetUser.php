@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TargetUser extends Model
 {
-    protected $fillable = ['first_name', 'last_name', 'email', 'notes'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'hidden', 'notes'];
     
     public function lists()
     {

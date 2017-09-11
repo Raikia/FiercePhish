@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReceivedMailAttachment extends Model
 {
-    protected $fillable = ['name', 'content'];
+    protected $fillable = ['received_mail_id', 'name', 'content'];
     
     protected $hidden = ['content'];
     

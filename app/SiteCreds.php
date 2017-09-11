@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SiteCreds extends Model
 {
-    public $fillable = ['username', 'password'];
+    public $fillable = ['username', 'password', 'hosted_file_view_id'];
 
     public function view()
     {
