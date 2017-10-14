@@ -49,11 +49,14 @@ class AddToList extends Job implements ShouldQueue
             if ($this->only_unassigned)
                 $query = TargetUser::doesntHave('lists');
             $totalNum = $query->count();
-            $query->chunk(1000, function($u) use($list, $totalNum, &$count) {
-                $list->users()->syncWithoutDetaching($u->pluck('id')->toArray());
-                $count += $u->count();
+            $chunkSize = 1000;
+            $batch = $query->take($chunkSize)->get();
+            while (count($batch) > 0) {
+                $list->users()->syncWithoutDetaching($batch->pluck('id')->toArray());
+                $count += count($batch);
                 $this->setProgress(round(($count/$totalNum)*100));
-            });
+                $batch = $query->take($chunkSize)->get();
+            }
             ActivityLog::log("Added All Target Users to the Target List \"".$list->name."\" job completed", "Target List");
         }
         else
