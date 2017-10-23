@@ -1,53 +1,30 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+![FiercePhish](http://i.imgur.com/5WyejWU.png)
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+# FiercePhish
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+| master | v2 |
+| :------: | :------: |
+| [![Build Status](https://travis-ci.org/Raikia/FiercePhish.svg?branch=master)](https://travis-ci.org/Raikia/FiercePhish)   | [![Build Status](https://travis-ci.org/Raikia/FiercePhish.svg?branch=v2)](https://travis-ci.org/Raikia/FiercePhish) |
+|  [![Coverage Status](https://coveralls.io/repos/github/Raikia/FiercePhish/badge.svg?branch=master)](https://coveralls.io/github/Raikia/FiercePhish?branch=master)   |    [![Coverage Status](https://coveralls.io/repos/github/Raikia/FiercePhish/badge.svg?branch=v2)](https://coveralls.io/github/Raikia/FiercePhish?branch=dev)    |
+| [![StyleCI](https://styleci.io/repos/77753786/shield?branch=master)](https://styleci.io/repos/77753786) | [![StyleCI](https://styleci.io/repos/77753786/shield?branch=v2)](https://styleci.io/repos/77753786) |
+| ![Latest Version](https://img.shields.io/github/release/raikia/fiercephish.svg) | - |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb combination of simplicity, elegance, and innovation give you tools you need to build any application with which you are tasked.
 
-## Learning Laravel
+![GPL-3](https://img.shields.io/github/license/raikia/fiercephish.svg)
 
-Laravel has the most extensive and thorough documentation and video tutorial library of any modern web application framework. The [Laravel documentation](https://laravel.com/docs) is thorough, complete, and makes it a breeze to get started learning the framework.
+FiercePhish is a full-fledged phishing framework to manage all phishing engagements.  It allows you to track separate phishing campaigns, schedule sending of emails, and much more. The features will continue to be expanded and will include website spoofing, click tracking, and extensive notification options.
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 900 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+**This is the Version 2 branch which is under _heavy_ development and is NOT recommended for general use yet**
 
-## Laravel Sponsors
+# All Information is on the Wiki Pages
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](http://patreon.com/taylorotwell):
+[ChangeLog](https://github.com/Raikia/FiercePhish/wiki/Changelog)
 
-- **[Vehikl](http://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Styde](https://styde.net)**
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
+[Click here to go to the Wiki Pages](https://github.com/Raikia/FiercePhish/wiki)
 
-## Contributing
+# Disclaimer
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+This project is my own and is not a representation of my employer's views. It is my own side project and released by me alone.
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
