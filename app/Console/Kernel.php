@@ -13,11 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\CreateUser::class,
-        Commands\Disable2FA::class,
-        Commands\CheckMail::class,
-        Commands\LogPull::class,
-        Commands\CatchMissed::class,
+        //
     ];
 
     /**
@@ -28,18 +24,19 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('fp:checkmail')->everyMinute();
-        $schedule->command('fp:logpull')->everyMinute();
-        $schedule->command('fp:catchmissedmail')->everyMinute();
+        // $schedule->command('inspire')
+        //          ->hourly();
     }
 
     /**
-     * Register the Closure based commands for the application.
+     * Register the commands for the application.
      *
      * @return void
      */
     protected function commands()
     {
+        $this->load(__DIR__.'/Commands');
+
         require base_path('routes/console.php');
     }
 }

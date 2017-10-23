@@ -1,110 +1,53 @@
-![FiercePhish](http://i.imgur.com/5WyejWU.png)
+<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
 
-# FiercePhish
+<p align="center">
+<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
+</p>
 
+## About Laravel
 
-FiercePhish is a full-fledged phishing framework to manage all phishing engagements.  It allows you to track separate phishing campaigns, schedule sending of emails, and much more. The features will continue to be expanded and will include website spoofing, click tracking, and extensive notification options.
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
 
-**Note: As of 1/6/2017, FirePhish has been renamed FiercePhish. Screenshots may still show FirePhish logo**
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-# All Information is on the Wiki Pages
+Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb combination of simplicity, elegance, and innovation give you tools you need to build any application with which you are tasked.
 
-[ChangeLog](https://github.com/Raikia/FiercePhish/wiki/Changelog)
+## Learning Laravel
 
-[Click here to go to the Wiki Pages](https://github.com/Raikia/FiercePhish/wiki)
+Laravel has the most extensive and thorough documentation and video tutorial library of any modern web application framework. The [Laravel documentation](https://laravel.com/docs) is thorough, complete, and makes it a breeze to get started learning the framework.
 
-# Disclaimer
+If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 900 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
 
-This project is my own and is not a representation of my employer's views. It is my own side project and released by me alone.
+## Laravel Sponsors
 
-# Screenshot
+We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](http://patreon.com/taylorotwell):
 
-![Screenshot](http://i.imgur.com/v852BbM.png)
+- **[Vehikl](http://vehikl.com)**
+- **[Tighten Co.](https://tighten.co)**
+- **[British Software Development](https://www.britishsoftware.co)**
+- **[Styde](https://styde.net)**
+- [Fragrantica](https://www.fragrantica.com)
+- [SOFTonSOFA](https://softonsofa.com/)
+- [User10](https://user10.com)
+- [Soumettre.fr](https://soumettre.fr/)
 
-More screenshots are available in the ["Features" wiki pages](https://github.com/Raikia/FiercePhish/wiki/Features-Overview)
+## Contributing
 
-# Quick Automated Install
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
 
-For more information (like a manual installation method), see the [wiki pages](https://github.com/Raikia/FiercePhish/wiki)
+## Security Vulnerabilities
 
-This is the preferred method of installing FiercePhish + SMTP + IMAP services.
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
 
-### Supported Operating Systems
-* Ubuntu 16.04
-* Ubuntu 16.10
+## License
 
-(Fresh installs are expected, but the installer should work on a used OS with no problems)
-
-(Ubuntu 14.04 support has been removed. To install FiercePhish on 14.04, [read these instructions](https://github.com/Raikia/FiercePhish/wiki/Ubuntu-14.04-Installation-Guide))
-
-_If you would like a different OS distribution supported, create a [Github issue](https://github.com/Raikia/FiercePhish/issues)_
-
-
-### Recommended Prerequisites
-* Purchase a domain name to send emails from
-
-This isn't required, but it is heavily suggested. Phishing campaigns where you spoof an active domain you don't own are extremely susceptible to being spam filtered (unless the domain's SPF record is improperly configured). The best way to perform a phishing campaign is by buying a generic domain that can fool someone ("yourfilehost.com") or a domain that is very similar to a real domain ("microsoft-secure.com").
-
-### Installation Method #1 (remote curl download)
-
-This method is probably the easiest way to install/configure everything. It is a fully unattended installation (aside from the beginning).
-
- 1. You must run the installer as root:
-
-   ```sudo su```
-
- 2. Generate the configuration file:
-
-   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/master/install.sh | bash```
-
- 3. This will create a configuration file located at "~/fiercephish.config".  You must edit this file before moving on!
-
-   [Click here for a detailed description of the configuration variables](https://github.com/Raikia/FiercePhish/wiki/Installation-Configuration-File)
-
- 4. Once "CONFIGURED=true" is set in the configuration file, re-run the install script:
-
-   ```curl https://raw.githubusercontent.com/Raikia/FiercePhish/master/install.sh | bash```
-
- 5. Sit and wait.  The installation could take anywhere from 5-15 minutes depending on your server's download speed.
-
- 6. Once the installation completes, follow the instructions it prints out.  It will tell you what [DNS entries](https://github.com/Raikia/FiercePhish/wiki/DNS-Configurations) to set.
-
-
-### Installation Method #2 (local installation run)
-
-This method is just as easy as method #1, but the install will prompt you as it runs for the information it requires (as opposed to using a configuration file like method #1).
-
- 1. You must run the installer as root:
-
-   ```sudo su```
- 
- 2. Download the configuration file:
-
-   ```wget https://raw.githubusercontent.com/Raikia/FiercePhish/master/install.sh```
-
- 3. Set the installer as executable:
-
-   ```chmod +x install.sh```
-
- 4. Run the installer:
-
-   ``` ./install.sh ```
-
-   The installer will prompt you for the same information as is described in [the configuration file for method #1](https://github.com/Raikia/FiercePhish/wiki/Installation-Configuration-File).  See that wiki page for information on what to provide.
-
- 5. Sit and wait.  The installation could take anywhere from 5-15 minutes depending on your server's download speed.
-
- 6. Once the installation completes, follow the instructions it prints out.  It will tell you what [DNS entries](https://github.com/Raikia/FiercePhish/wiki/DNS-Configurations) to set.
-
-
-### Updating
-
-As of FiercePhish v1.2.0, an update script is included.  Versions prior to 1.2.0 are **not** compatible with 1.2.0 and later, so you'll have to do a fresh install (or read the wiki).
-
-To update FiercePhish, simply run:
-   ```
-    sudo ./update.sh
-   ```
-### Troubleshooting
-
-If you have errors with the installation script, you can safely rerun the script without messing anything up (even if you provide it different information). If you continue to have problems, set "VERBOSE=true" (for method #1) or run ```./install.sh -v``` (for method #2) to see the full log of everything running.  If you still have problems, [submit a bug report](https://github.com/Raikia/FiercePhish/wiki/Reporting-Bugs).
+The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
