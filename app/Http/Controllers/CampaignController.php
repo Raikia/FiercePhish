@@ -59,8 +59,9 @@ class CampaignController extends Controller
         $start_date = $request->input('starting_date') ?: \App\Libraries\DateHelper::now()->format('m/d/Y');
         $start_time = $request->input('starting_time') ?: \App\Libraries\DateHelper::now()->format('g:ia');
         $start_date = Carbon::parse($start_date . ' ' . $start_time, config('fiercephish.APP_TIMEZONE'))->addSeconds(1)->timezone('UTC');
-        if ($start_date < \App\Libraries\DateHelper::now()) {
-            $start_date = \App\Libraries\DateHelper::now();
+        $nowTime = Carbon::now()->timezone('UTC');
+        if ($start_date < $nowTime) {
+            $start_date = $nowTime;
         }
         $send_num_emails = min((int)$request->input('send_num'),1000);
         $send_every_minutes = min((int)$request->input('send_every_x_minutes'), 1000);
