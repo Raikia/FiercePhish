@@ -626,7 +626,7 @@ install_fiercephish()
 		sys_cmd "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWD'"
 		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION="18.04" ]]
 			then
-			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php php-cli mysql-server php-mysql libapache2-mod-php php-mcrypt php-mbstring php-imap php-gd php-zip phpunit npm unzip git curl supervisor"
+			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php php-cli mysql-server php-mysql libapache2-mod-php php-mbstring php-imap php-gd php-zip phpunit npm unzip git curl supervisor"
 		fi
 		sys_cmd "service mysql restart"
 	fi
