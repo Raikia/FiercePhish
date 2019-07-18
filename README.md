@@ -32,6 +32,7 @@ This is the preferred method of installing FiercePhish + SMTP + IMAP services.
 ### Supported Operating Systems
 * Ubuntu 16.04
 * Ubuntu 16.10
+* Ubuntu 18.04
 
 (Fresh installs are expected, but the installer should work on a used OS with no problems)
 
