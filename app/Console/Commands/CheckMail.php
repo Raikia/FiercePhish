@@ -54,7 +54,7 @@ class CheckMail extends Command
             $imap = false;
             try
             {
-                $imap = imap_open('{'.config('fiercephish.IMAP_HOST').':'.config('fiercephish.IMAP_PORT').'}INBOX', config('fiercephish.IMAP_USERNAME'), config('fiercephish.IMAP_PASSWORD'));
+                $imap = imap_open('{'.config('fiercephish.IMAP_HOST').':'.config('fiercephish.IMAP_PORT').'/novalidate-cert}INBOX', config('fiercephish.IMAP_USERNAME'), config('fiercephish.IMAP_PASSWORD'));
             }
             catch (\Exception $e)
             {
@@ -70,7 +70,12 @@ class CheckMail extends Command
             $n_msgs = imap_num_msg($imap);
             $this->info("Found " . $n_msgs . " emails!");
             if ($n_msgs == 0)
+            {
+                imap_alerts();
+                imap_errors();
+                imap_close($imap);
                 return;
+            }
             for ($x=1; $x<= $n_msgs; ++$x)
             {
                 $email_header = imap_header($imap, $x);
