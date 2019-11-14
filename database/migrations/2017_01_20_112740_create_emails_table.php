@@ -26,7 +26,7 @@ class CreateEmailsTable extends Migration
             $table->datetime('sent_time')->nullable()->index();
             $table->string('uuid')->nullable()->index();
             $table->boolean('has_attachment');
-            $table->text('attachment')->nullable();
+            $table->longText('attachment')->nullable();
             $table->string('attachment_name')->nullable();
             $table->string('attachment_mime')->nullable();
             $table->integer('status')->index();
