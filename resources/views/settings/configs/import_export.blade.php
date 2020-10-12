@@ -78,7 +78,7 @@
                           <button type="submit" name="export" class="btn btn-primary">Download Data</button>
                         </div>
                       </div>
-                    <p>You can export the database here for importing into a new FiercePhish instance</p>
+                    <p>You can export the email log to CSV for offline parsing.</p>
                 </form>
             </div>
         </div>
