@@ -230,7 +230,7 @@ show_header()
     echo -e ""
     echo -e ""
     notice "This installer automatically installs FiercePhish and all the other services needed."
-    notice "It is designed to work with Ubuntu and currently only works for Ubuntu 16.04 and Ubuntu 16.10"
+    notice "It is designed to work with Ubuntu and currently only works for Ubuntu 16.04, Ubuntu 16.10, and Ubuntu 20.04"
     echo -e ""
 }
 
@@ -696,10 +696,16 @@ EOM
 			then
 			sys_cmd "phpenmod imap"
 		fi
+		sys_cmd "sed -i 's/PrivateTmp=true/PrivateTmp=false/' /etc/systemd/system/multi-user.target.wants/apache2.service"
+		sys_cmd "sed -i 's/PrivateTmp=true/PrivateTmp=false/' /usr/lib/systemd/system/apache2.service"
+		sys_cmd "sed -i 's/PrivateTmp=true/PrivateTmp=false/' /lib/systemd/system/apache2.service"
+		sys_cmd "systemctl daemon-reload"
 		sys_cmd "service apache2 restart"
 		sys_cmd "pushd /var/www/fiercephish"
 		sys_cmd "composer install"
 		sys_cmd "bower install --allow-root"
+		# Heres a gross fix for stupid old laravel issues
+		sys_cmd "sed -i 's/= compact(/= @compact(/g' /var/www/fiercephish/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php"
 		sys_cmd "mysql -u root --password='${MYSQL_ROOT_PASSWD}' -e 'create database fiercephish'"
 		FIERCEPHISH_MYSQL_PASSWD=$(random_str)
 		sys_cmd "mysql -u root --password='${MYSQL_ROOT_PASSWD}' -e \$'create user fiercephish@localhost identified by \'${FIERCEPHISH_MYSQL_PASSWD}\''"
@@ -711,7 +717,6 @@ EOM
 
 
 	info "Configuring FiercePhish"
-	sys_cmd "sed -i 's/PrivateTmp=true/PrivateTmp=false/' /etc/systemd/system/multi-user.target.wants/apache2.service"
 	sys_cmd "pushd /var/www/fiercephish"
 	sys_cmd "cp .env.example .env"
 	sys_cmd "touch storage/logs/laravel.log"
