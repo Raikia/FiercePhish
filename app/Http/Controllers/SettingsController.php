@@ -183,6 +183,37 @@ class SettingsController extends Controller
         $storage_class->env = file_get_contents(base_path('.env'));
         return response(serialize($storage_class))->header('Content-Type', 'application/octet-stream')->header('Content-Disposition','attachment; filename="fiercephish_backup_'.date('Ymd_Gi').'.dat"');
     }
+    
+    public function post_export_emaillog()
+    {
+        $data = DB::select(DB::raw('SELECT target_users.`email` as "Email", target_users.`first_name` as "First Name", target_users.`last_name` as "Last Name", target_users.`notes` as "User Notes", emails.`uuid` as "UUID", emails.`sent_time` as "Sent Time", emails.`campaign_id` as "Campaign ID", campaigns.`name` as "Campaign Name", campaigns.`from_name` as "Campaign From Name", campaigns.`from_email` as "Campaign From Email", campaigns.`description` as "Campaign Description" FROM target_users , emails , campaigns WHERE target_users.`id` = emails.`target_user_id` and emails.`campaign_id` = campaigns.`id` order by campaign_id, sent_time;'));
+        $fileName = "FiercePhish_Email_Export.csv";
+        $headers = array(
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        );
+        $columns = ['Email', 'First Name', 'Last Name', 'User Notes', 'UUID', 'Sent Time', 'Campaign ID', 'Campaign Name', 'Campaign From Name', 'Campaign From Email', 'Campaign Description'];
+        $callback = function() use($data, $columns) {
+            
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($data as $row)
+            {
+                $arr = [];
+                foreach ($columns as $col)
+                {
+                    $arr[] = $row->$col;
+                }
+                fputcsv($file, $arr);
+            }
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, $headers);
+    }
     public function post_import_data(Request $request)
     {
         $this->validate($request, [

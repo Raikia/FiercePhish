@@ -62,6 +62,28 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Email Log Export</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form class="form-horizontal form-label-left" method="post" action="{{ action('SettingsController@post_export_emaillog') }}">
+                    {{ csrf_field() }}
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Export Email Log:</label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                          <button type="submit" name="export" class="btn btn-primary">Download Data</button>
+                        </div>
+                      </div>
+                    <p>You can export the database here for importing into a new FiercePhish instance</p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @endsection
