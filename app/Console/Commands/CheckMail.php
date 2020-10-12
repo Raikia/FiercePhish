@@ -54,7 +54,7 @@ class CheckMail extends Command
             $imap = false;
             try
             {
-                $imap = imap_open('{'.config('fiercephish.IMAP_HOST').':'.config('fiercephish.IMAP_PORT').'/novalidate-cert}INBOX', config('fiercephish.IMAP_USERNAME'), config('fiercephish.IMAP_PASSWORD'));
+                $imap = imap_open('{'.config('fiercephish.IMAP_HOST').':'.config('fiercephish.IMAP_PORT').'/notls/novalidate-cert}INBOX', config('fiercephish.IMAP_USERNAME'), config('fiercephish.IMAP_PASSWORD'));
             }
             catch (\Exception $e)
             {
