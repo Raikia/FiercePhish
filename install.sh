@@ -230,7 +230,7 @@ show_header()
     echo -e ""
     echo -e ""
     notice "This installer automatically installs FiercePhish and all the other services needed."
-    notice "It is designed to work with Ubuntu and currently only works for Ubuntu 16.04 and Ubuntu 16.10"
+    notice "It is designed to work with Ubuntu and currently only works for Ubuntu 16.04, Ubuntu 16.10, and Ubuntu 20.04"
     echo -e ""
 }
 
@@ -244,7 +244,7 @@ check_os()
 		OS_VERSION=${DISTRIB_RELEASE}
 		if [[ $OS = 'Ubuntu' ]]
 			then
-			if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" ]]
+			if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION="20.04" ]]
 				then
 				notice "Found that you are running ${LYELLOW}${OS} ${OS_VERSION}${WHITE}! This is a supported operating system!"
 			elif [[ $OS_VERSION = "14.04" ]]
@@ -254,7 +254,7 @@ check_os()
 				error "     https://github.com/Raikia/FiercePhish/wiki/Ubuntu-14.04-Installation-Guide"
 				exit 1
 			else
-				error "You are running ${LYELLOW}${OS} ${OS_VERSION}${LRED}. This is not supported by this installer. There's really no reason to not update Ubuntu"
+				error "You are running ${LYELLOW}${OS} ${OS_VERSION}${LRED}. This is not supported by this installer."
 				exit 1
 			fi
 		else
@@ -615,6 +615,7 @@ install_fiercephish()
 	info "Updating package repositories"
 	if [[ $OS = "Ubuntu" ]]
 		then
+		sys_cmd "echo nameserver 8.8.8.8 > /etc/resolv.conf"
 		sys_cmd "apt-get update"
 	fi
 	
@@ -624,7 +625,7 @@ install_fiercephish()
 		then
 		sys_cmd "debconf-set-selections <<< 'mysql-server mysql-server/root_password password $MYSQL_ROOT_PASSWD'"
 		sys_cmd "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWD'"
-		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION="18.04" ]]
+		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION="18.04" || $OS_VERSION="20.04" ]]
 			then
 			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php php-cli mysql-server php-mysql libapache2-mod-php php-mbstring php-imap php-gd php-zip phpunit npm unzip git curl supervisor"
 		fi
@@ -636,7 +637,7 @@ install_fiercephish()
 	info "Installing Composer"
 	if [[ $OS = "Ubuntu" ]]
 		then
-		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" ]]
+		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION="20.04" ]]
 			then
 			sys_cmd "curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer"
 		fi
@@ -646,7 +647,7 @@ install_fiercephish()
 	info "Installing Bower"
 	if [[ $OS = "Ubuntu" ]]
 		then
-		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" ]]
+		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION="20.04" ]]
 			then
 			sys_cmd "npm install -g bower"
 			sys_cmd "ln -s /usr/bin/nodejs /usr/bin/node"
@@ -691,14 +692,20 @@ EOM
 		sys_cmd "a2ensite fiercephish"
 		sys_cmd "a2enmod rewrite"
 		sys_cmd "a2dissite 000-default"
-		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" ]]
+		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION="20.04" ]]
 			then
 			sys_cmd "phpenmod imap"
 		fi
+		sys_cmd "sed -i 's/PrivateTmp=true/PrivateTmp=false/' /etc/systemd/system/multi-user.target.wants/apache2.service"
+		sys_cmd "sed -i 's/PrivateTmp=true/PrivateTmp=false/' /usr/lib/systemd/system/apache2.service"
+		sys_cmd "sed -i 's/PrivateTmp=true/PrivateTmp=false/' /lib/systemd/system/apache2.service"
+		sys_cmd "systemctl daemon-reload"
 		sys_cmd "service apache2 restart"
 		sys_cmd "pushd /var/www/fiercephish"
 		sys_cmd "composer install"
 		sys_cmd "bower install --allow-root"
+		# Heres a gross fix for stupid old laravel issues
+		sys_cmd "sed -i 's/= compact(/= @compact(/g' /var/www/fiercephish/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php"
 		sys_cmd "mysql -u root --password='${MYSQL_ROOT_PASSWD}' -e 'create database fiercephish'"
 		FIERCEPHISH_MYSQL_PASSWD=$(random_str)
 		sys_cmd "mysql -u root --password='${MYSQL_ROOT_PASSWD}' -e \$'create user fiercephish@localhost identified by \'${FIERCEPHISH_MYSQL_PASSWD}\''"
@@ -864,22 +871,22 @@ install_smtp_imap()
 			grep -q -F 'SignatureAlgorithm' /etc/opendkim.conf || echo 'SignatureAlgorithm            rsa-sha256' >> /etc/opendkim.conf
 			grep -q -F 'UserID' /etc/opendkim.conf || echo 'UserID            opendkim:opendkim' >> /etc/opendkim.conf
 			grep -q -F 'Socket' /etc/opendkim.conf || echo 'Socket            inet:12301@localhost' >> /etc/opendkim.conf
-			sys_cmd "sed -i 's/AutoRestart .*$/AutoRestart           Yes/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/AutoRestartRate .*$/AutoRestartRate           10\/1h/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/UMask .*$/UMask           002/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/Syslog .*$/Syslog           yes/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/SyslogSuccess .*$/SyslogSuccess           Yes/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/LogWhy .*$/LogWhy           Yes/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/Canonicalization .*$/Canonicalization           relaxed\/simple/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/ExternalIgnoreList .*$/ExternalIgnoreList           refile:\/etc\/opendkim\/TrustedHosts/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/InternalHosts .*$/InternalHosts           refile:\/etc\/opendkim\/TrustedHosts/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/KeyTable .*$/KeyTable           refile:\/etc\/opendkim\/KeyTable/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/SigningTable .*$/SigningTable           refile:\/etc\/opendkim\/SigningTable/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/Mode .*$/Mode           sv/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/PidFile .*$/PidFile           \/var\/run\/opendkim\/opendkim.pid/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/SignatureAlgorithm .*$/SignatureAlgorithm           rsa-sha256/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/UserID .*$/UserID           opendkim:opendkim/' /etc/opendkim.conf"
-			sys_cmd "sed -i 's/Socket .*$/Socket           inet:12301@localhost/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/AutoRestart\s.*$/AutoRestart           Yes/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/AutoRestartRate\s.*$/AutoRestartRate           10\/1h/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/UMask\s.*$/UMask           002/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/Syslog\s.*$/Syslog           yes/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/SyslogSuccess\s.*$/SyslogSuccess           Yes/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/LogWhy\s.*$/LogWhy           Yes/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/Canonicalization\s.*$/Canonicalization           relaxed\/simple/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/ExternalIgnoreList\s.*$/ExternalIgnoreList           refile:\/etc\/opendkim\/TrustedHosts/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/InternalHosts\s.*$/InternalHosts           refile:\/etc\/opendkim\/TrustedHosts/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/KeyTable\s.*$/KeyTable           refile:\/etc\/opendkim\/KeyTable/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/SigningTable\s.*$/SigningTable           refile:\/etc\/opendkim\/SigningTable/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/Mode\s.*$/Mode           sv/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/PidFile\s.*$/PidFile           \/var\/run\/opendkim\/opendkim.pid/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/SignatureAlgorithm\s.*$/SignatureAlgorithm           rsa-sha256/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/UserID\s.*$/UserID           opendkim:opendkim/' /etc/opendkim.conf"
+			sys_cmd "sed -i 's/Socket\s.*$/Socket           inet:12301@localhost/' /etc/opendkim.conf"
 			grep -q -P '^SOCKET=' /etc/default/opendkim || echo 'SOCKET="inet:12301@localhost"' >> /etc/default/opendkim
 			sys_cmd "sed -i 's/^SOCKET=.*$/SOCKET=\"inet:12301@localhost\"/' /etc/default/opendkim"
 			grep -q -F 'milter_protocol' /etc/postfix/main.cf || echo 'milter_protocol = 2' >> /etc/postfix/main.cf
