@@ -615,7 +615,7 @@ install_fiercephish()
 	info "Updating package repositories"
 	if [[ $OS = "Ubuntu" ]]
 		then
-		sys_cmd "echo nameserver 8.8.8.8 > /etc/resolv.conf"
+		sys_cmd "echo nameserver 8.8.8.8 >> /etc/resolv.conf"
 		sys_cmd "apt-get update"
 	fi
 	
