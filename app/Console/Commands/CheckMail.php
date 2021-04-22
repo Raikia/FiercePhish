@@ -169,7 +169,7 @@ class CheckMail extends Command
         $obj_section = $obj_structure;
         $section = '1';
         for ($i = 0; $i < 10; $i++) {
-            if ($obj_section->type == 0) {
+            if ($obj_section->type == 0 || !property_exists($obj_section, 'parts')) {
                 break;
             } else {
                 $obj_section = $obj_section->parts[0];
