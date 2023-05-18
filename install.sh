@@ -244,7 +244,7 @@ check_os()
 		OS_VERSION=${DISTRIB_RELEASE}
 		if [[ $OS = 'Ubuntu' ]]
 			then
-			if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION = "20.04" ]]
+			if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION = "20.04" || $OS_VERSION = "22.04" || $OS_VERSION = "22.10" ]]
 				then
 				notice "Found that you are running ${LYELLOW}${OS} ${OS_VERSION}${WHITE}! This is a supported operating system!"
 			elif [[ $OS_VERSION = "14.04" ]]
@@ -625,7 +625,7 @@ install_fiercephish()
 		then
 		sys_cmd "debconf-set-selections <<< 'mysql-server mysql-server/root_password password $MYSQL_ROOT_PASSWD'"
 		sys_cmd "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWD'"
-		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION = "20.04" ]]
+		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION = "20.04" || $OS_VERSION = "22.04" || $OS_VERSION = "22.10" ]]
 			then
 			sys_cmd "DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php php-cli mysql-server php-mysql libapache2-mod-php php-mbstring php-imap php-gd php-zip php-curl phpunit npm unzip git curl supervisor"
 		fi
@@ -637,7 +637,7 @@ install_fiercephish()
 	info "Installing Composer"
 	if [[ $OS = "Ubuntu" ]]
 		then
-		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION = "20.04" ]]
+		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION = "20.04" || $OS_VERSION = "22.04" || $OS_VERSION = "22.10" ]]
 			then
 			sys_cmd "curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer"
 		fi
@@ -647,7 +647,7 @@ install_fiercephish()
 	info "Installing Bower"
 	if [[ $OS = "Ubuntu" ]]
 		then
-		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION = "20.04" ]]
+		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION = "20.04" || $OS_VERSION = "22.04" || $OS_VERSION = "22.10" ]]
 			then
 			sys_cmd "npm install -g bower"
 			sys_cmd "ln -s /usr/bin/nodejs /usr/bin/node"
@@ -692,7 +692,7 @@ EOM
 		sys_cmd "a2ensite fiercephish"
 		sys_cmd "a2enmod rewrite"
 		sys_cmd "a2dissite 000-default"
-		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION = "20.04" ]]
+		if [[ $OS_VERSION = "16.04" || $OS_VERSION = "16.10" || $OS_VERSION = "18.04" || $OS_VERSION = "20.04" || $OS_VERSION = "22.04" || $OS_VERSION = "22.10" ]]
 			then
 			sys_cmd "phpenmod imap"
 		fi
